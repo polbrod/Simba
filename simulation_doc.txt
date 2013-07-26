@@ -36,6 +36,7 @@ Description:
 1) Time: Stepped unit
 2)Distance: from last speed
 	no weird array size with time first.
+	this way 
 3)Speed(lookup): use distance to look up speed from Fast Gas bike run = l_speed
 	scale corners correctly?
 	needs to be a faster bike!
@@ -60,14 +61,10 @@ Description:
 First equation iteration: [0] before [1] now
 1) 	time[1] = time[0] + h
 2) 	dist[1] = dist[0] + speed[0]*h
+	check if completed lap
 3) 	l_speed[1] = Speed_lookup(dist[1])
 4) 	if l_speed[1] > top_speed then t_speed[1] = top_speed otherwise t_speed[1] = l_speed[1]
-5) 	accel[1] = (t_speed[1] - speed[0]) / h
-	drag[1] = 0.5 (drag area)(air density)*l_speed[1]^2
-	t_force[1] = accel[1]*mass + drag[1]
-6) 	if t_force[1] > top_force then solve equation for l_speed that gives top force
-7) 	in 6 speed[1]
-8)	accel[1] = (speed[1] - speed[0]) / h
+5) 	accel[1] = (speed[1] - speed[0]) / h
 	drag[1] = 0.5 (drag area)(air density)*speed[1]^2
 	incline[1] = m*g*sin(theta)
 	force[1] = accel[1]*mass + drag[1] + incline[1]
@@ -75,8 +72,11 @@ First equation iteration: [0] before [1] now
 	just add it, because that will subtract it which gives a good approx of energy still being used
 	incline is negative:
 	again add it because it will subtract from force which makes sense because it is force given by the earth
-9)	power[1] = force[1]*speed[1]
-10) energy[1] = energy[0] + power[1]*h
+6) 	if t_force[1] > top_force then solve equation for l_speed that gives top force
+7) 	in 6 speed[1]
+8)	power[1] = force[1]*speed[1]
+	force is either what was calculated in 5 or the max force
+9) energy[1] = energy[0] + power[1]*h
 
 python solving note:
 	from scipy import optimize as opt
