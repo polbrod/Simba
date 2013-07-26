@@ -1,0 +1,96 @@
+Goal: model the bike
+method: 
+Distance -> Speed(lookup) -> Compare to top speed -> Time -> Force -> compare to top torque -> Speed -> Distance -> Acceleration -> Force -> Power -> Energy
+
+Description: 
+1)Distance: Distance is the "stepped" unit
+	step is determined by equation. array size will be weird.
+2)Speed(lookup): use distance to look up speed from Fast Gas bike run = l_speed
+	scale corners correctly?
+	needs to be a faster bike!
+3)Compare to top speed: Check speed against top speed of bike, saturate to top speed of bike = t_speed
+	top speed in terms of battery pack,gearing, motor, motor controller etc
+4)Time: determine time given speed and distance gone = time
+	can also bring in acceleration 
+5)Force: find all forces that the bike has to over come
+	acceleration
+	drag
+	etc
+6)compare to top torque: saturate to top torque = t_force
+	in terms of battery pack,gearing, motor, motor controller etc
+7)Speed: find speed given real accel(portion of torque) and time
+	time is the same time determined at 4 because you are given the same amount of time but you would be at this speed instead
+	have to take into account all forces. might have to loop a few times
+8)Distance: find next distance step given speed
+	This determines the step size
+9)Force: determine all forces important
+	redo 5 with correct speeds and such.
+10)Power: determine powers
+	of all forces
+11)Energy: determine total energy
+
+method: 
+Time -> Distance -> Speed(lookup) -> Compare to top speed  -> Force -> compare to top Force -> Speed -> Force -> Power -> Energy
+
+Description: 
+1) Time: Stepped unit
+2)Distance: from last speed
+	no weird array size with time first.
+3)Speed(lookup): use distance to look up speed from Fast Gas bike run = l_speed
+	scale corners correctly?
+	needs to be a faster bike!
+4)Compare to top speed: Check speed against top speed of bike, saturate to top speed of bike = t_speed
+	top speed in terms of battery pack,gearing, motor, motor controller etc
+5)Force: find all forces that the bike has to over come
+	acceleration
+	drag
+	incline
+	etc
+6)compare to top force: saturate to top force = t_force
+	in terms of battery pack,gearing, motor, motor controller etc
+7)Speed: find speed given real accel(portion of torque) and time
+	time is the same time determined at 4 because you are given the same amount of time but you would be at this speed instead
+	have to take into account all forces. might have to loop a few times
+8)Force: determine all forces important
+	redo 5 with correct speeds and such. if compared this is just top force
+9)Power: determine powers
+	of all forces
+10)Energy: determine total energy
+
+First equation iteration: [0] before [1] now
+1) 	time[1] = time[0] + h
+2) 	dist[1] = dist[0] + speed[0]*h
+3) 	l_speed[1] = Speed_lookup(dist[1])
+4) 	if l_speed[1] > top_speed then t_speed[1] = top_speed otherwise t_speed[1] = l_speed[1]
+5) 	accel[1] = (t_speed[1] - speed[0]) / h
+	drag[1] = 0.5 (drag area)(air density)*l_speed[1]^2
+	t_force[1] = accel[1]*mass + drag[1]
+6) 	if t_force[1] > top_force then solve equation for l_speed that gives top force
+7) 	in 6 speed[1]
+8)	accel[1] = (speed[1] - speed[0]) / h
+	drag[1] = 0.5 (drag area)(air density)*speed[1]^2
+	incline[1] = m*g*sin(theta)
+	force[1] = accel[1]*mass + drag[1] + incline[1]
+	if delta speed is negative:
+	just add it, because that will subtract it which gives a good approx of energy still being used
+	incline is negative:
+	again add it because it will subtract from force which makes sense because it is force given by the earth
+9)	power[1] = force[1]*speed[1]
+10) energy[1] = energy[0] + power[1]*h
+
+python solving note:
+	from scipy import optimize as opt
+	def f(x):
+		return x + 10
+	opt.fsolve(f,9) 
+	>>> array([-10.])
+	
+	fsolve returns an array of zeros given a guess and a function
+	
+	for 6)
+	fsolve(f,l_speed[1])
+	def f(s):
+		a = (t_speed[1] - s) / h
+		d = 0.5 (drag area)(air density)*s^2
+		f = a*mass + d
+		return f - top_f
