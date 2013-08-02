@@ -11,5 +11,5 @@ def f((a,b,c,d)):
     
 
 x0 = [1,1,3,4]
-bound = [(0,10),(-1,5),(-10,-3),(-5,-1)]
+bound = [(0,10),(-1,5),(2,5),(10,100)]
 print(opt.minimize(f,x0,bounds = bound,method = 'TNC'))
