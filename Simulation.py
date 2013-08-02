@@ -12,7 +12,7 @@ import numpy as np
 import itertools
 
 
-
+tests = 1
 #parameters
 
 step = 0.1            #time step in seconds
@@ -91,14 +91,12 @@ altitude[0] = distancetoaltitude_lookup(1)
 #simulation and plot loop
 #(iteration,test conditions..) 
 def loop(n):
-    end = steps
     for n in range(steps):
         #model formulas here
         time[n+1] = time[n] + step
         distance[n+1] = distance[n] + speed[n]*step
         if (distance[n+1] > max_distance_travel):
-            end = n
-            break
+            return n
         l_speed[n+1] = distancetospeed_lookup(distance[n+1])
         
         if l_speed[n+1] > top_speed:
@@ -118,7 +116,8 @@ def loop(n):
         
         power[n+1] = (force[n+1] * speed[n+1])/efficiency
         energy[n+1] = energy[n] + power[n+1]*(step/(60*60))
-                    
+        
+    return steps
    #plot each loop here
 
 
@@ -127,9 +126,14 @@ def loop(n):
 
 n = 0
 #for c  in condition:
-loop(n)
+end = loop(n)
 n+=1
-    
+
+print 'average mph = ' + repr(mean(speed[:end])*2.23)
+print 'average power = ' + repr(mean(power[:end])*2.23)
+print 'max power = ' + repr(max(power)[0])
+print 'energy = ' + repr(max(energy)[0])
+
 #finish plot
 
     
