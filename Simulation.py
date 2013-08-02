@@ -11,36 +11,44 @@ import math
 import numpy as np
 import itertools
 
-#Tests
 
-    #condition = [1,2,3]                  #example test
 
-    #tests = size(condition)              #right formula for number of test
+#parameters
 
-tests = 1
-#Variables
+step = 0.1            #time step in seconds
+total_time = 60*60
+wheel_radius = 0.323596 #meters
+gearing = 2.174
+rider_mass = 81.64 #kg
+bike_mass = 226.7 #kg
+gravity = 9.81 
+air_resistance = .7
+air_density = 1.204
+frontal_area =  .7 #m^2
+rolling_resistance = .022
+top_torque = 200 #nm
+top_rpm = 5000
+efficiency = .95
+max_distance_travel = 60350 #meters
 
-h = 0.1                               #time step in seconds
-total_time = 60*60                      #total time (used to calc array size)
-steps = int(math.ceil(total_time/h))
+dist_to_speed_lookup = 'disttospeed.csv'
+dist_to_alt_lookup = 'disttoalt.csv'
 
-#constants 
-top_speed = 62
-top_force = 1500
-drag_area = 1.5
-air_density = 1.1839
-mass = 310
-gravity = 9.8
-max_distance = 60350
+#calc values
+top_speed = (wheel_radius * top_rpm) / (gearing)
+top_force = (top_torque * gearing) / wheel_radius
+drag_area = frontal_area * air_resistance
+mass = rider_mass + bike_mass
+steps = int(math.ceil(total_time/step))
 
-#Arrays
+#Arrays (output)
 time = np.zeros((steps+1,tests),dtype=float)
 distance = np.zeros((steps+1,tests),dtype=float)
-l_speed = np.zeros((steps+1,tests),dtype=float)
-t_speed = np.zeros((steps+1,tests),dtype=float)
-c_force = np.zeros((steps+1,tests),dtype=float)
-speed = np.zeros((steps+1,tests),dtype=float)
-force = np.zeros((steps+1,tests),dtype=float)
+l_speed = np.zeros((steps+1,tests),dtype=float) #look up speed
+t_speed = np.zeros((steps+1,tests),dtype=float) #speed after compare to top
+c_force = np.zeros((steps+1,tests),dtype=float) #force before compare
+speed = np.zeros((steps+1,tests),dtype=float)   #speed after compare (actual)
+force = np.zeros((steps+1,tests),dtype=float)   #force after compare (actual)
 power = np.zeros((steps+1,tests),dtype=float)
 energy = np.zeros((steps+1,tests),dtype=float)
 acceleration = np.zeros((steps+1,tests),dtype=float)
@@ -48,6 +56,7 @@ drag = np.zeros((steps+1,tests),dtype=float)
 altitude = np.zeros((steps+1,tests),dtype=float)
 slope = np.zeros((steps+1,tests),dtype=float)
 incline = np.zeros((steps+1,tests),dtype=float)
+rolling = np.zeros((steps+1,tests),dtype=float)
 
 #Lookups
 n = np.loadtxt('disttospeed.csv',dtype = 'string',delimiter = ';', skiprows = 1)
@@ -70,6 +79,7 @@ def Force(s,n):
     altitude[n+1] = distancetoaltitude_lookup(distance[n+1])
     slope[n+1] = (altitude[n+1] - altitude[n])/(distance[n+1] - distance[n])    
     incline[n+1] = mass*gravity*slope[n+1]
+    rolling[n+1] = mass*gravity*rolling_resistance
     return acceleration[n+1] + drag[n+1] + incline[n+1]
 
 
@@ -84,9 +94,9 @@ def loop(n):
     end = steps
     for n in range(steps):
         #model formulas here
-        time[n+1] = time[n] + h
-        distance[n+1] = distance[n] + speed[n]*h
-        if (distance[n+1] > max_distance):
+        time[n+1] = time[n] + step
+        distance[n+1] = distance[n] + speed[n]*step
+        if (distance[n+1] > max_distance_travel):
             end = n
             break
         l_speed[n+1] = distancetospeed_lookup(distance[n+1])
@@ -106,8 +116,8 @@ def loop(n):
             speed[n+1] = t_speed[n+1]
             force[n+1] = c_force[n+1]
         
-        power[n+1] = force[n+1] * speed[n+1]
-        energy[n+1] = energy[n] + power[n+1]*(h/(60*60))
+        power[n+1] = (force[n+1] * speed[n+1])/efficiency
+        energy[n+1] = energy[n] + power[n+1]*(step/(60*60))
                     
    #plot each loop here
 
