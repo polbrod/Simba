@@ -15,27 +15,27 @@ import itertools
 tests = 1
 #parameters
 
-step = 0.1            #time step in seconds
+step = 0.1           #time step in seconds
 total_time = 60*60
 wheel_radius = 0.323596 #meters
 gearing = 2.174
 rider_mass = 81.64 #kg
-bike_mass = 226.7 #kg
-gravity = 9.81 
-air_resistance = .7
+bike_mass = 192.695 #kg
+gravity = 9.81
+air_resistance = 0.7
 air_density = 1.204
-frontal_area =  .7 #m^2
-rolling_resistance = .022
+frontal_area =  0.7 #m^2
+rolling_resistance = 0.022
 top_torque = 200 #nm
 top_rpm = 5000
-efficiency = .95
-max_distance_travel = 60350 #meters
+efficiency = 1.0925
+max_distance_travel = 60350 #meters this needs to be calculated from lookups
 
 dist_to_speed_lookup = 'disttospeed.csv'
 dist_to_alt_lookup = 'disttoalt.csv'
 
 #calc values
-top_speed = (wheel_radius * top_rpm) / (gearing)
+top_speed = ((wheel_radius*2*np.pi* (top_rpm) / (gearing))/60)
 top_force = (top_torque * gearing) / wheel_radius
 drag_area = frontal_area * air_resistance
 mass = rider_mass + bike_mass
@@ -74,7 +74,7 @@ def force_solve(s,n):
     return Force(s,n) - top_force
 
 def Force(s,n):
-    acceleration[n+1] = (s - speed[n])/h
+    acceleration[n+1] = (s - speed[n])/step
     drag[n+1] = 0.5 * drag_area*air_density*s**2
     altitude[n+1] = distancetoaltitude_lookup(distance[n+1])
     slope[n+1] = (altitude[n+1] - altitude[n])/(distance[n+1] - distance[n])    
@@ -129,10 +129,10 @@ n = 0
 end = loop(n)
 n+=1
 
-print 'average mph = ' + repr(mean(speed[:end])*2.23)
-print 'average power = ' + repr(mean(power[:end])*2.23)
-print 'max power = ' + repr(max(power)[0])
-print 'energy = ' + repr(max(energy)[0])
+print 'average mph = ' + repr(np.mean(speed[:end])*2.23)
+print 'average power = ' + repr(np.mean(power[:end]))
+print 'max power = ' + repr(np.max(power[:end]))
+print 'energy = ' + repr(np.max(energy))
 
 #finish plot
 
