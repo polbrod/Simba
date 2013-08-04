@@ -20,17 +20,18 @@ total_time = 60*60
 wheel_radius = 0.323596 #meters
 gearing = 2.174
 rider_mass = 81.64 #kg
-bike_mass = 192.695 #kg
+bike_mass = 226.7 #kg
 gravity = 9.81
 air_resistance = 0.7
 air_density = 1.204
 frontal_area =  0.7 #m^2
-rolling_resistance = 0.022
+rolling_resistance = 0.0253
 top_torque = 200 #nm
 top_rpm = 5000
-efficiency = 1.0925
-max_distance_travel = 60350 #meters this needs to be calculated from lookups
+efficiency = 0.8075
 
+#max_distance_travel = 60350 #meters this needs to be calculated from lookups
+max_distance_travel = 3218.69
 dist_to_speed_lookup = 'disttospeed.csv'
 dist_to_alt_lookup = 'disttoalt.csv'
 
@@ -59,14 +60,18 @@ incline = np.zeros((steps+1,tests),dtype=float)
 rolling = np.zeros((steps+1,tests),dtype=float)
 
 #Lookups
-n = np.loadtxt('disttospeed.csv',dtype = 'string',delimiter = ';', skiprows = 1)
-x = n[:,0].astype(np.float) * 1609.34
-y = n[:,1].astype(np.float)
+#n = np.loadtxt(dist_to_speed_lookup,dtype = 'string',delimiter = ';', skiprows = 1)
+#x = n[:,0].astype(np.float) * 1609.34
+#y = n[:,1].astype(np.float)
+x = np.array([0,3220])
+y = np.array([1000,1000])
 distancetospeed_lookup = interp1d(x,y)
 
-n = np.loadtxt('disttoalt.csv',dtype = 'string',delimiter = ',', skiprows = 1)
-x = n[:,0].astype(np.float) * 1000
-y = n[:,1].astype(np.float)
+#n = np.loadtxt(dist_to_alt_lookup,dtype = 'string',delimiter = ',', skiprows = 1)
+#x = n[:,0].astype(np.float) * 1000
+#y = n[:,1].astype(np.float)
+x = np.array([0,3220])
+y = np.array([0,0])
 distancetoaltitude_lookup = interp1d(x,y)
 
 #functions
@@ -129,7 +134,7 @@ n = 0
 end = loop(n)
 n+=1
 
-print 'average mph = ' + repr(np.mean(speed[:end])*2.23)
+print 'max mph = ' + repr(np.max(speed[:end])*2.23)
 print 'average power = ' + repr(np.mean(power[:end]))
 print 'max power = ' + repr(np.max(power[:end]))
 print 'energy = ' + repr(np.max(energy))
