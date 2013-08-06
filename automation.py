@@ -4,25 +4,33 @@ Created on Wed Jul 31 20:10:55 2013
 
 @author: Sean
 """
-import os, glob
+import os
 import numpy as np
+import Simulation as sim
 
-def FileToParams(folderDirectory):
+def dependencies_for_automation():  #Missing imports needed to convert to .exe
+    from scipy.sparse.csgraph import _validation
+
+def FileToParams(inFiles):
     
-    files = []
+    optionsFile = inFiles
+    os.chdir(os.path.dirname(os.path.realpath(inFiles)))    
+    
+    inFiles = np.loadtxt(open(inFiles, "rb"), dtype = 'string', delimiter = ',')
+    files = inFiles[1:,0]
     inputDict = dict()
-    os.chdir(folderDirectory)
-    for file in glob.glob("*.csv"): #Find all .csv files, add to total files
-        files.append(file)
-    for file in glob.glob("*.txt"): #Find all .txt files add to total files
-        files.append(file)
     
+    completedTransfers = 1
     for file in files:  #For each file, create a dictionary out of data
         fileName = file
         
-        data = np.loadtxt(open(fileName, "rb"), dtype = 'string', delimiter=',')
+        try:
+            data = np.loadtxt(open(fileName, "rb"), dtype = 'string', delimiter=',')
                 #Extracts all data from file into variable data
-        
+        except IOError:
+            raise Exception("File in " + optionsFile + " not found.  Please remove entry or place file in same folder")
+            
+        fileName = inFiles[completedTransfers,1]      
         params = data[0]    #Creates array of params and inputs
         data = data[1:]     #Creates array of data without headers        
         fileDict = dict()
@@ -39,9 +47,14 @@ def FileToParams(folderDirectory):
                     fileDict[category] = np.delete(fileDict[category], elementIndex)
                 else:
                     elementIndex += 1
-            fileDict[category] = fileDict[category].astype(np.float) #Converts to float
+                    
+            try: #Try to convert to float, otherwise don't change
+                fileDict[category] = fileDict[category].astype(np.float) 
+            except:
+                pass
 
         inputDict[fileName] = fileDict
+        completedTransfers += 1
     
     return inputDict
     
@@ -62,8 +75,17 @@ def OutputFile(folderName, outputDict):
         fileName = folderName + key
         currentDict = outputDict[key]
         
+        
         paramHeaders = np.array(currentDict.keys())  #Turns headers into numpy array
-        values = np.zeros((len(currentDict[paramHeaders[0]]),len(paramHeaders)))
+
+        ### NEEDS MORE TESTING ###        
+        maxColumnLength = 0
+        for x in paramHeaders:
+            if maxColumnLength < np.size(currentDict[x]):
+                maxColumnLength = np.size(currentDict[x])
+        ### END OF TESTING ZONE ###
+                
+        values = np.zeros((maxColumnLength,len(paramHeaders)))
                 #Creates an "empty" array with the total number of data points
         for x in range(len(paramHeaders)):
             currentValues = currentDict[paramHeaders[x]] #Gets list of header values
@@ -74,22 +96,26 @@ def OutputFile(folderName, outputDict):
         data = np.vstack((paramHeaders, values))    #Combines headers with values
         np.savetxt(fileName, data, delimiter=",", fmt="%s")
         print("Data transfer to " + fileName + " complete")
-            
-def Simulation(dictionary):
-    
-    for file in dictionary:
-        for key in dictionary[file]:
-            for value in range(dictionary[file][key].size):
-                dictionary[file][key][value] = dictionary[file][key][value] + 1
-                
-    return dictionary    
-    
-    
-folderDirectory = input("Enter full path folder directory for in files: ")
-dictionary = FileToParams(folderDirectory)
+
+
+print
+print
+print
+
+while True:   
+    try:
+        options = raw_input("Enter full path to options file: ")
+        if os.path.exists(options):
+            break
+        else:
+            print "File not found. Please enter a new file path"
+    except:
+        pass
+        
+dictionary = FileToParams(options)
 
 #Pass dictionary to simulation, gets a new dictionary in return
-dictionary = Simulation(dictionary)
+dictionary = sim.Simulation(dictionary)
 
-outputDirectory = input("Enter full path folder directory for out files: ")
+outputDirectory = raw_input("Enter full path folder directory for out files: ")
 OutputFile(outputDirectory, dictionary)
