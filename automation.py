@@ -62,11 +62,7 @@ def FileToParams(inFiles):
        
 def OutputFile(folderName, outputDict):
     
-    if not os.path.exists(folderName):  #Creates a new folder if it doesn't exist
-        os.makedirs(folderName)
-        
-    if not folderName.endswith("\\"):   #Corrects folderName if needed
-            folderName = folderName + "\\"
+
             
     fileNames = np.array(outputDict.keys())
     
@@ -78,22 +74,30 @@ def OutputFile(folderName, outputDict):
         
         paramHeaders = np.array(currentDict.keys())  #Turns headers into numpy array
 
-        ### NEEDS MORE TESTING ###        
-        maxColumnLength = 0
+       
+        maxColumnLength = 0 #Find maximum number of rows
         for x in paramHeaders:
             if maxColumnLength < np.size(currentDict[x]):
                 maxColumnLength = np.size(currentDict[x])
-        ### END OF TESTING ZONE ###
-                
-        values = np.zeros((maxColumnLength,len(paramHeaders)))
+
+        values = np.ma.zeros((maxColumnLength,len(paramHeaders)))
                 #Creates an "empty" array with the total number of data points
+
+        
         for x in range(len(paramHeaders)):
             currentValues = currentDict[paramHeaders[x]] #Gets list of header values
-            currentValues = np.asarray(currentValues)   #Turns list into numpy array
-            values[:,x] = currentValues #Plugs currentValues into "empty" array
+               #Turns list into numpy array
+
+            if np.ndim(currentValues) > 1:
+                currentValues = np.asarray(currentValues)
+                values[:,x] = currentValues[:,0] #Plugs currentValues into "empty" array
+            else:
+                values[0,x] = currentValues
+                values[:,x] = np.ma.masked_less_equal(values[:,x],0.1)
+        
     
-        values.astype(str)  #Turns all floats into strings
-        data = np.vstack((paramHeaders, values))    #Combines headers with values
+        data = np.ma.vstack((paramHeaders, values))    #Combines headers with values
+
         np.savetxt(fileName, data, delimiter=",", fmt="%s")
         print("Data transfer to " + fileName + " complete")
 
@@ -102,20 +106,32 @@ print
 print
 print
 
-while True:   
+while True: #Make sure user input points to a file
     try:
         options = raw_input("Enter full path to options file: ")
-        if os.path.exists(options):
+        if os.path.isfile(options):
             break
         else:
             print "File not found. Please enter a new file path"
     except:
         pass
-        
-dictionary = FileToParams(options)
+    
+while True: #Make sure user input points to a writable (or possible) folder
+    try:
+        outputDirectory = raw_input("Enter full path folder directory for out files: ")
+        if not os.path.exists(outputDirectory):  #Creates a new folder if it doesn't exist
+            os.makedirs(outputDirectory)
+        if not outputDirectory.endswith("\\"):   #Corrects directory if needed
+            outputDirectory = outputDirectory + "//"
+        np.savetxt((outputDirectory + "test.txt"), np.array([0]), delimiter=",", fmt="%s")
+        os.remove(outputDirectory + "test.txt")
+        break
+    
+    except:
+        print "Directory can't be created or is not writable. Enter a new path"
 
+
+dictionary = FileToParams(options)
 #Pass dictionary to simulation, gets a new dictionary in return
 dictionary = sim.Simulation(dictionary)
-
-outputDirectory = raw_input("Enter full path folder directory for out files: ")
 OutputFile(outputDirectory, dictionary)

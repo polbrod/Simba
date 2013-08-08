@@ -10,6 +10,7 @@ from scipy.interpolate import UnivariateSpline,interp1d
 import math 
 import numpy as np
 import itertools
+import collections
 
 def dependencies_for_simulation(): #missing imports needs to convert to .exe
     from scipy.sparse.csgraph import _validation
@@ -110,7 +111,7 @@ def Simulation(dict_in):
             return Force(s,n) - top_force
         
         def Force(s,n):
-            acceleration[n+1] = (s - speed[n])/step
+            acceleration[n+1] = mass*((s - speed[n])/step)
             drag[n+1] = 0.5 * drag_area*air_density*s**2
             altitude[n+1] = distancetoaltitude_lookup(distance[n+1])
             slope[n+1] = (altitude[n+1] - altitude[n])/(distance[n+1] - distance[n])    
@@ -165,12 +166,27 @@ def Simulation(dict_in):
         end = loop(n)
         n+=1
         
-        newData = dict()
+        newData = collections.OrderedDict()
         
+        newData["Time (Seconds)"] = (time)
+        newData["Distance (Meters)"] = (distance)
+        newData["L_Speed (MPH)"] = (l_speed)
+        newData["T_Speed (MPH)"] = (t_speed)
+        newData["C_Force (N)"] = (c_force)
+        newData["Actual Speed (MPH)"] = (speed)
+        newData["Actual Force (N)"] = (force)
+        newData["Power (Watts)"] = (power)
+        newData["Energy (KW/Hr)"] = (energy)
+        newData["Acceleration (M/S^2)"] = (acceleration)
+        newData["Drag (N)"] = (drag)
+        newData["Altitude (Meters)"] = (altitude)
+        newData["Slope"] = (slope)
+        newData["Incline"] = (incline)
+        newData["Rolling"] = (rolling)
         newData["Average MPH"] = repr(np.mean(speed[:end])*2.23)
         newData["Average Power (Watts)"] = repr(np.mean(power[:end])*2.23)
         newData["Max Power (Watts)"] = repr(np.max(power))
-        newData["Energy (KW/Hr)"] = repr(np.max(energy))
+        newData["Max Energy (KW/Hr)"] = repr(np.max(energy))
 
         dict_in[file] = newData
     return dict_in
