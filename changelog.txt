@@ -1,3 +1,13 @@
+CHANGELOG 0.21
+	
+	- Corrected how force is calculated
+
+	- Fixed unit labels on output parameters
+
+	- Added log that records script progress and any errors that occur. Log is saved
+	  to directory that BCS.exe was ran from.
+
+
 CHANGELOG 0.2
 
 	- Asks user for input file and output folder before running simulation
@@ -16,5 +26,3 @@ CHANGELOG 0.2
 	
 	- Fixed an issue where user could enter any output folder even if it's not
 	  a possible or a writable folder
-
-	

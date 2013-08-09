@@ -11,56 +11,94 @@ import math
 import numpy as np
 import itertools
 import collections
+import logging
 
 def dependencies_for_simulation(): #missing imports needs to convert to .exe
     from scipy.sparse.csgraph import _validation
 
 def Simulation(dict_in):
 
+    logging.info("STARTING Simulation.py")
     for file in dict_in:
         
         currentData = dict_in[file]
     
         for key in currentData:
             if np.size(currentData[key]) > 1:
-                raise Exception("One or more params in " + file + "have two or more values. Each param can only have one value")
+                logging.critical("Parameter %s in %s has more than 1 value",key,file)
+                raise Exception("One or more params in " + file + " have two or more values. Each param can only have one value")
 
         tests = 1
 	#parameters
-	
-        assert "step" in currentData, "%r is missing data: step" % file
+        logging.info("Checking to make sure file %s has needed parameters...", file)
+        
+        assert "step" in currentData, logging.critical("%s is missing data: step" % file)
+        logging.info("Step found")
         step = currentData["step"]           #time step in seconds
-        assert "total_time" in currentData, "%r is missing data: total_time" % file        
+        
+        assert "total_time" in currentData, logging.critical("%s is missing data: total_time" % file)
+        logging.info("total_time found")
         total_time = currentData["total_time"]
-        assert "wheel_radius" in currentData, "%r is missing data: wheel_radius" % file
+        
+        assert "wheel_radius" in currentData, logging.critical("%s is missing data: wheel_radius" % file)
+        logging.info("wheel_radius found")
         wheel_radius = currentData["wheel_radius"] #meters
-        assert "gearing" in currentData, "%r is missing data: gearing" % file
+        
+        assert "gearing" in currentData, logging.critical("%s is missing data: gearing" % file)
+        logging.info("gearing found")
         gearing = currentData["gearing"]
-        assert "rider_mass" in currentData, "%r is missing data: rider_mass" % file
+        
+        assert "rider_mass" in currentData, logging.critical("%s is missing data: rider_mass" % file)
+        logging.info("rider_mass found")
         rider_mass = currentData["rider_mass"] #kg
-        assert "bike_mass" in currentData, "%r is missing data: bike_mass" % file
+        
+        
+        assert "bike_mass" in currentData, logging.critical("%s is missing data: bike_mass" % file)
+        logging.info("bike_mass found")
         bike_mass = currentData["bike_mass"] #kg
-        assert "gravity" in currentData, "%r is missing data: gravity" % file
+        
+        assert "gravity" in currentData, logging.critical("%s is missing data: gravity" % file)
+        logging.info("gravity found")
         gravity = currentData["gravity"] 
-        assert "air_resistance" in currentData, "%r is missing data: air_resistance" % file
+        
+        assert "air_resistance" in currentData, logging.critical("%s is missing data: air_resistance" % file)
+        logging.info("air_resistance found")
         air_resistance = currentData["air_resistance"]
-        assert "air_density" in currentData, "%r is missing data: air_density" % file
+        
+        assert "air_density" in currentData, logging.critical("%s is missing data: air_density" % file)
+        logging.info("air_density found")
         air_density = currentData["air_density"]
-        assert "frontal_area" in currentData, "%r is missing data: frontal_area" % file
+        
+        assert "frontal_area" in currentData, logging.critical("%s is missing data: frontal_area" % file)
+        logging.info("frontal_area found")
         frontal_area =  currentData["frontal_area"] #m^2
-        assert "rolling_resistance" in currentData, "%r is missing data: rolling_resistance" % file
+        
+        assert "rolling_resistance" in currentData, logging.critical("%s is missing data: rolling_resistance" % file)
+        logging.info("rolling_resistance found")
         rolling_resistance = currentData["rolling_resistance"]
-        assert "top_torque" in currentData, "%r is missing data: top_torque" % file
+        
+        assert "top_torque" in currentData, logging.critical("%s is missing data: top_torque" % file)
+        logging.info("top_torque found")
         top_torque = currentData["top_torque"] #nm
-        assert "top_rpm" in currentData, "%r is missing data: top_rpm" % file
+        
+        assert "top_rpm" in currentData, logging.critical("%s is missing data: top_rpm" % file)
+        logging.info("top_rpm found")
         top_rpm = currentData["top_rpm"]
-        assert "efficiency" in currentData, "%r is missing data: efficiency" % file
+        
+        assert "efficiency" in currentData, logging.critical("%s is missing data: efficiency" % file)
+        logging.info("efficiency found")
         efficiency = currentData["efficiency"]
-        assert "max_distance_travel" in currentData, "%r is missing data: max_distance_travel" % file
+        
+        assert "max_distance_travel" in currentData, logging.critical("%s is missing data: max_distance_travel" % file)
+        logging.info("max_distance_travel found")
         max_distance_travel = currentData["max_distance_travel"] #meters       
-        assert "dist_to_speed_lookup" in currentData, "%r is missing data: dist_to_speed_lookup" % file
+        
+        assert "dist_to_speed_lookup" in currentData, logging.critical("%s is missing data: dist_to_speed_lookup" % file)
+        logging.info("dist_to_speed_lookup found")
         dist_to_speed_lookup = currentData["dist_to_speed_lookup"][0]
-        assert "dist_to_alt_lookup" in currentData, "%r is missing data: dist_to_alt_lookup" % file
+        
+        assert "dist_to_alt_lookup" in currentData, logging.critical("%s is missing data: dist_to_alt_lookup" % file)
+        logging.info("dist_to_alt_lookup found")
         dist_to_alt_lookup = currentData["dist_to_alt_lookup"][0]
 
 	
@@ -91,7 +129,9 @@ def Simulation(dict_in):
         dist_to_speed_lookup = "Lookup Files\\" + dist_to_speed_lookup
         try:
             n = np.loadtxt(dist_to_speed_lookup,dtype = 'string',delimiter = ',', skiprows = 1)
+            logging.info("%s loaded", dist_to_speed_lookup)
         except IOError:
+            logging.critical("Unable to load %s", dist_to_speed_lookup)
             raise Exception("Unable to load \'" + dist_to_speed_lookup + "\'")
         x = n[:,0].astype(np.float)
         y = n[:,1].astype(np.float)
@@ -100,7 +140,9 @@ def Simulation(dict_in):
         dist_to_alt_lookup = "Lookup Files\\" + dist_to_alt_lookup
         try:
             n = np.loadtxt(dist_to_alt_lookup,dtype = 'string',delimiter = ',', skiprows = 1)
+            logging.info("%s loaded", dist_to_alt_lookup)
         except IOError:
+            logging.critical("Unable to load %s", dist_to_alt_lookup)
             raise Exception("Unable to load \'" + dist_to_alt_lookup + "\'")
         x = n[:,0].astype(np.float)
         y = n[:,1].astype(np.float)
@@ -168,27 +210,30 @@ def Simulation(dict_in):
         
         newData = collections.OrderedDict()
         
-        newData["Time (Seconds)"] = (time)
-        newData["Distance (Meters)"] = (distance)
-        newData["L_Speed (MPH)"] = (l_speed)
-        newData["T_Speed (MPH)"] = (t_speed)
-        newData["C_Force (N)"] = (c_force)
-        newData["Actual Speed (MPH)"] = (speed)
-        newData["Actual Force (N)"] = (force)
-        newData["Power (Watts)"] = (power)
-        newData["Energy (KW/Hr)"] = (energy)
-        newData["Acceleration (M/S^2)"] = (acceleration)
-        newData["Drag (N)"] = (drag)
-        newData["Altitude (Meters)"] = (altitude)
-        newData["Slope"] = (slope)
-        newData["Incline"] = (incline)
-        newData["Rolling"] = (rolling)
+        newData["Time (Seconds)"] = (time[:end])
+        newData["Distance (Meters)"] = (distance[:end])
+        newData["L_Speed (M/S)"] = (l_speed[:end])
+        newData["T_Speed (M/S)"] = (t_speed[:end])
+        newData["C_Force (N)"] = (c_force[:end])
+        newData["Actual Speed (M/S)"] = (speed[:end])
+        newData["Actual Force (N)"] = (force[:end])
+        newData["Power (Watts)"] = (power[:end])
+        newData["Energy (Watt/Hr)"] = (energy[:end])
+        newData["Acceleration (N)"] = (acceleration[:end])
+        newData["Drag (N)"] = (drag[:end])
+        newData["Altitude (Meters)"] = (altitude[:end])
+        newData["Slope (Ratio)"] = (slope[:end])
+        newData["Incline (N)"] = (incline[:end])
+        newData["Rolling (N)"] = (rolling[:end])
         newData["Average MPH"] = repr(np.mean(speed[:end])*2.23)
         newData["Average Power (Watts)"] = repr(np.mean(power[:end])*2.23)
         newData["Max Power (Watts)"] = repr(np.max(power))
         newData["Max Energy (KW/Hr)"] = repr(np.max(energy))
 
         dict_in[file] = newData
+        logging.info("Converted %s to a dictionary successfully", file)
+        
+    logging.info("ENDING Simulation.py")
     return dict_in
 
     

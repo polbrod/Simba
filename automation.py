@@ -4,6 +4,8 @@ Created on Wed Jul 31 20:10:55 2013
 
 @author: Sean
 """
+
+import logging
 import os
 import numpy as np
 import Simulation as sim
@@ -13,7 +15,7 @@ def dependencies_for_automation():  #Missing imports needed to convert to .exe
 
 def FileToParams(inFiles):
     
-    optionsFile = inFiles
+    logging.info("STARTING FUNCTIONS FileToParams")
     os.chdir(os.path.dirname(os.path.realpath(inFiles)))    
     
     inFiles = np.loadtxt(open(inFiles, "rb"), dtype = 'string', delimiter = ',')
@@ -22,13 +24,17 @@ def FileToParams(inFiles):
     
     completedTransfers = 1
     for file in files:  #For each file, create a dictionary out of data
+        
+        logging.info("Current file to search for data: %s",file)
         fileName = file
         
         try:
             data = np.loadtxt(open(fileName, "rb"), dtype = 'string', delimiter=',')
+            logging.info("Data extraction from %s complete", file)
                 #Extracts all data from file into variable data
         except IOError:
-            raise Exception("File in " + optionsFile + " not found.  Please remove entry or place file in same folder")
+            logging.critical("Unable to load %s",file)
+            raise Exception("File " + fileName + " not found.  Please remove entry or place file in same folder")
             
         fileName = inFiles[completedTransfers,1]      
         params = data[0]    #Creates array of params and inputs
@@ -56,6 +62,7 @@ def FileToParams(inFiles):
         inputDict[fileName] = fileDict
         completedTransfers += 1
     
+    logging.info("Files have been converted to dictionaries")
     return inputDict
     
     
@@ -63,12 +70,14 @@ def FileToParams(inFiles):
 def OutputFile(folderName, outputDict):
     
 
-            
+    logging.info("STARTING FUNCTION OutputFile")        
     fileNames = np.array(outputDict.keys())
     
     for key in fileNames:
-            
+        
+        logging.info("Converting dictionary %s to file",key)
         fileName = folderName + key
+        logging.debug("File will be saved at %s",fileName)
         currentDict = outputDict[key]
         
         
@@ -97,41 +106,60 @@ def OutputFile(folderName, outputDict):
         
     
         data = np.ma.vstack((paramHeaders, values))    #Combines headers with values
-
-        np.savetxt(fileName, data, delimiter=",", fmt="%s")
+        try:
+            np.savetxt(fileName, data, delimiter=",", fmt="%s")
+        except IOError:
+            logging.critical("Unable to save %s",fileName)
+            raise Exception("Unable to save file")
+            
         print("Data transfer to " + fileName + " complete")
+        logging.info("Data converted and saved to %s", fileName)
 
+print
+print
+print
 
-print
-print
-print
+logging.basicConfig(filename="BCS_log.txt",format='%(asctime)s - %(levelname)s - %(message)s',level=logging.DEBUG)
+#
+logging.info("STARTING automation.py")
 
 while True: #Make sure user input points to a file
     try:
         options = raw_input("Enter full path to options file: ")
+        logging.debug("Entered path: %s", options)
         if os.path.isfile(options):
+            logging.info("Path to options file is valid")
             break
         else:
             print "File not found. Please enter a new file path"
+            logging.warning("%s is invalid",options)
     except:
         pass
     
 while True: #Make sure user input points to a writable (or possible) folder
     try:
         outputDirectory = raw_input("Enter full path folder directory for out files: ")
+        logging.debug("Entered out path: %s",outputDirectory)
+        
         if not os.path.exists(outputDirectory):  #Creates a new folder if it doesn't exist
             os.makedirs(outputDirectory)
+            logging.info("Created new directory")
+            
         if not outputDirectory.endswith("\\"):   #Corrects directory if needed
             outputDirectory = outputDirectory + "//"
+            logging.info("Modified input to %s",outputDirectory)
+            
         np.savetxt((outputDirectory + "test.txt"), np.array([0]), delimiter=",", fmt="%s")
         os.remove(outputDirectory + "test.txt")
         break
     
     except:
         print "Directory can't be created or is not writable. Enter a new path"
-
+        logging.warning("User output path invalid")
 
 dictionary = FileToParams(options)
 #Pass dictionary to simulation, gets a new dictionary in return
 dictionary = sim.Simulation(dictionary)
 OutputFile(outputDirectory, dictionary)
+logging.info("ENDING automation.py" + os.linesep + os.linesep)
+logging.shutdown()
