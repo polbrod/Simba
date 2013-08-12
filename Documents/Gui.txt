@@ -1,0 +1,27 @@
+What:
+        Goal is to make a gui that helps automate the input into the
+simulation exe.
+
+1) Decide on how gui will be made and programmed. This should include
+research and reason for choosing this way of doing it. The Graphing project
+should be considered.
+
+2) Demo. Create a gui. That takes in an option file location and output
+directory location and runs the exe
+        bonus 1: display errors in the gui
+        bonus 2: Use a file chooser to do these input operations
+        This Demo needs to be deployable
+
+3) Design complete layout and workflow of the gui
+        drawings and operations for complete project laid out
+        Talk with people on the team to come up with best layout and workflow
+
+4) Design road map for development.
+        Break into workable tasks that can be given to others
+
+Resource:
+        https://netbeans.org/ (Nathan's recommendation)
+
+Due date:
+        Beginning of School so programming of gui can start with new
+membership

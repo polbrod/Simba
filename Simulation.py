@@ -192,7 +192,7 @@ def Simulation(dict_in):
                 else:
                     speed[n+1] = t_speed[n+1]
                     force[n+1] = c_force[n+1]
-                
+                force[n+1] = np.max([0,force[n+1]])
                 power[n+1] = (force[n+1] * speed[n+1])/efficiency
                 energy[n+1] = energy[n] + power[n+1]*(step/(60*60))
                 
