@@ -101,6 +101,7 @@ def Simulation(dict_in):
         logging.info("dist_to_alt_lookup found")
         dist_to_alt_lookup = currentData["dist_to_alt_lookup"][0]
 
+		motor_controller_eff_lookup
 	
         top_speed = ((wheel_radius*2*np.pi* (top_rpm) / (gearing))/60)
         top_force = (top_torque * gearing) / wheel_radius
@@ -148,6 +149,17 @@ def Simulation(dict_in):
         y = n[:,1].astype(np.float)
         distancetoaltitude_lookup = interp1d(x,y)
         
+		motor_controller_eff_lookup = "Lookup Files\\" + motor_controller_eff_lookup
+        try:
+            n = np.loadtxt(motor_controller_eff_lookup,dtype = 'string',delimiter = ',', skiprows = 1)
+            logging.info("%s loaded", dist_to_alt_lookup)
+        except IOError:
+            logging.critical("Unable to load %s", dist_to_alt_lookup)
+            raise Exception("Unable to load \'" + dist_to_alt_lookup + "\'")
+        x = n[:,0].astype(np.float)
+        y = n[:,1].astype(np.float)
+        distancetoaltitude_lookup = interp1d(x,y)
+		
         #functions
         def force_solve(s,n):
             return Force(s,n) - top_force
