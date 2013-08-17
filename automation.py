@@ -276,6 +276,7 @@ logging.basicConfig(filename="BCS_log.txt",format='%(asctime)s - %(levelname)s -
 logging.info("STARTING automation.py")
 
 
+
 app = wx.App(False)
 mainWindow = MainWindow(None, "Buckeye Current Simulation")
 app.MainLoop()

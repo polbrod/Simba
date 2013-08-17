@@ -6,7 +6,7 @@ Created on Fri Jun 28 22:43:03 2013
 """
 
 from scipy import optimize as opt
-from scipy.interpolate import UnivariateSpline,interp1d
+from scipy.interpolate import UnivariateSpline,interp1d,griddata
 import math 
 import numpy as np
 import itertools
@@ -85,9 +85,9 @@ def Simulation(dict_in):
         logging.info("top_rpm found")
         top_rpm = currentData["top_rpm"]
         
-        assert "efficiency" in currentData, logging.critical("%s is missing data: efficiency" % file)
-        logging.info("efficiency found")
-        efficiency = currentData["efficiency"]
+#        assert "efficiency" in currentData, logging.critical("%s is missing data: efficiency" % file)
+#        logging.info("efficiency found")
+#        efficiency = currentData["efficiency"]
         
         assert "max_distance_travel" in currentData, logging.critical("%s is missing data: max_distance_travel" % file)
         logging.info("max_distance_travel found")
@@ -101,7 +101,12 @@ def Simulation(dict_in):
         logging.info("dist_to_alt_lookup found")
         dist_to_alt_lookup = currentData["dist_to_alt_lookup"][0]
 
-		motor_controller_eff_lookup
+        motor_controller_eff_lookup = 'Tritum_ws200_eff.csv'
+        motor_eff_lookup = 'Emrax_eff.csv'
+        chain_efficiency = .98
+        battery_efficiency = .98
+        motor_torque_constant = 1
+        motor_rpm_constant = 12
 	
         top_speed = ((wheel_radius*2*np.pi* (top_rpm) / (gearing))/60)
         top_force = (top_torque * gearing) / wheel_radius
@@ -117,7 +122,7 @@ def Simulation(dict_in):
         c_force = np.zeros((steps+1,tests),dtype=float) #force before compare
         speed = np.zeros((steps+1,tests),dtype=float)   #speed after compare (actual)
         force = np.zeros((steps+1,tests),dtype=float)   #force after compare (actual)
-        power = np.zeros((steps+1,tests),dtype=float)
+        power = np.zeros((steps+1,tests),dtype=float)   #power without losses
         energy = np.zeros((steps+1,tests),dtype=float)
         acceleration = np.zeros((steps+1,tests),dtype=float)
         drag = np.zeros((steps+1,tests),dtype=float)
@@ -125,6 +130,16 @@ def Simulation(dict_in):
         slope = np.zeros((steps+1,tests),dtype=float)
         incline = np.zeros((steps+1,tests),dtype=float)
         rolling = np.zeros((steps+1,tests),dtype=float)
+        
+        motor_rpm = np.zeros((steps+1,tests),dtype=float)
+        motor_torque = np.zeros((steps+1,tests),dtype=float)
+        motor_loss = np.zeros((steps+1,tests),dtype=float)
+        motor_controller_loss = np.zeros((steps+1,tests),dtype=float)
+        chain_loss = np.zeros((steps+1,tests),dtype=float)
+        battery_loss = np.zeros((steps+1,tests),dtype=float)
+        total_power = np.zeros((steps+1,tests),dtype=float) #power with losses
+        arms = np.zeros((steps+1,tests),dtype=float)
+        vrms = np.zeros((steps+1,tests),dtype=float)      
         
         #Lookups
         dist_to_speed_lookup = "Lookup Files\\" + dist_to_speed_lookup
@@ -149,16 +164,35 @@ def Simulation(dict_in):
         y = n[:,1].astype(np.float)
         distancetoaltitude_lookup = interp1d(x,y)
         
-		motor_controller_eff_lookup = "Lookup Files\\" + motor_controller_eff_lookup
+        motor_controller_eff_lookup = "Lookup Files\\" + motor_controller_eff_lookup
         try:
             n = np.loadtxt(motor_controller_eff_lookup,dtype = 'string',delimiter = ',', skiprows = 1)
-            logging.info("%s loaded", dist_to_alt_lookup)
+            logging.info("%s loaded", motor_controller_eff_lookup)
         except IOError:
-            logging.critical("Unable to load %s", dist_to_alt_lookup)
-            raise Exception("Unable to load \'" + dist_to_alt_lookup + "\'")
+            logging.critical("Unable to load %s", motor_controller_eff_lookup)
+            raise Exception("Unable to load \'" + motor_controller_eff_lookup + "\'")
         x = n[:,0].astype(np.float)
         y = n[:,1].astype(np.float)
-        distancetoaltitude_lookup = interp1d(x,y)
+        z = n[:,2].astype(np.float)
+        points = np.transpose(np.array([x,y]))
+        values = np.array(z)
+        grid_x, grid_y = np.mgrid[np.min(x):np.max(x), np.min(y):np.max(y)]
+        motor_controller_eff_grid = griddata(points, values, (grid_x, grid_y), method='cubic')
+		
+        motor_eff_lookup = "Lookup Files\\" + motor_eff_lookup
+        try:
+            n = np.loadtxt(motor_eff_lookup,dtype = 'string',delimiter = ',', skiprows = 1)
+            logging.info("%s loaded", motor_eff_lookup)
+        except IOError:
+            logging.critical("Unable to load %s", motor_eff_lookup)
+            raise Exception("Unable to load \'" + motor_eff_lookup + "\'")
+        x = n[:,0].astype(np.float)
+        y = n[:,1].astype(np.float)
+        z = n[:,2].astype(np.float)
+        points = np.transpose(np.array([x,y]))
+        values = np.array(z)
+        grid_x, grid_y = np.mgrid[np.min(x):np.max(x), np.min(y):np.max(y)]
+        motor_eff_grid = griddata(points, values, (grid_x, grid_y), method='cubic')
 		
         #functions
         def force_solve(s,n):
@@ -173,6 +207,17 @@ def Simulation(dict_in):
             rolling[n+1] = mass*gravity*rolling_resistance
             return acceleration[n+1] + drag[n+1] + incline[n+1]
         
+        def Efficiency(n):
+            motor_rpm[n+1] = ((speed[n+1])/(wheel_radius*2*np.pi)) * gearing * 60
+            motor_torque[n+1] = (force[n+1] * wheel_radius)/gearing
+            arms[n+1] = motor_torque[n+1]*motor_torque_constant
+            vrms[n+1] = motor_rpm[n+1]*motor_rpm_constant*(1/(np.sqrt(2)))            
+            
+            motor_loss[n+1] = power[n+1]*(1-motor_eff_grid[np.around(motor_rpm[n+1])][np.around(motor_torque[n+1])])
+            motor_controller_loss[n+1] = power[n+1]*(1-motor_controller_eff_grid[np.around(vrms[n+1])][np.around(arms[n+1])])
+            chain_loss[n+1] = power[n+1]*(1-chain_efficiency)
+            battery_loss[n+1] = power[n+1]*(1-battery_efficiency)
+            return motor_loss + motor_controller_loss + chain_loss + battery_loss
         
         #initial condidtions
         distance[0] = .1
@@ -205,7 +250,8 @@ def Simulation(dict_in):
                     speed[n+1] = t_speed[n+1]
                     force[n+1] = c_force[n+1]
                 force[n+1] = np.max([0,force[n+1]])
-                power[n+1] = (force[n+1] * speed[n+1])/efficiency
+                power[n+1] = (force[n+1] * speed[n+1])
+                total_power[n+1] = Efficiency(n) + power[n+1]
                 energy[n+1] = energy[n] + power[n+1]*(step/(60*60))
                 
             return steps
