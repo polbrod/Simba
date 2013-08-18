@@ -1,0 +1,121 @@
+2013-08-14 22:14:46,630 - INFO - STARTING automation.py
+2013-08-14 22:15:50,838 - DEBUG - Entered path: C:\Users\Nathan\Desktop\CAR sync\Buckeye_Current\python\bike_optimization\test_in\OPTIONS.csv
+2013-08-14 22:15:50,838 - INFO - STARTING FUNCTIONS FileToParams
+2013-08-14 22:15:50,838 - DEBUG - Options file location passed: C:\Users\Nathan\Desktop\CAR sync\Buckeye_Current\python\bike_optimization\test_in\OPTIONS.csv
+2013-08-14 22:15:50,839 - INFO - Current file to search for data: test1.txt
+2013-08-14 22:15:50,839 - INFO - Data extraction from test1.txt complete
+2013-08-14 22:15:50,841 - INFO - Current file to search for data: test2.csv
+2013-08-14 22:15:50,842 - INFO - Data extraction from test2.csv complete
+2013-08-14 22:15:50,842 - INFO - Files have been converted to dictionaries
+2013-08-14 22:15:50,842 - INFO - STARTING Simulation.py
+2013-08-14 22:15:50,842 - INFO - Checking to make sure file testresult1.csv has needed parameters...
+2013-08-14 22:15:50,842 - INFO - Step found
+2013-08-14 22:15:50,842 - INFO - total_time found
+2013-08-14 22:15:50,842 - INFO - wheel_radius found
+2013-08-14 22:15:50,842 - INFO - gearing found
+2013-08-14 22:15:50,844 - INFO - rider_mass found
+2013-08-14 22:15:50,844 - INFO - bike_mass found
+2013-08-14 22:15:50,844 - INFO - gravity found
+2013-08-14 22:15:50,844 - INFO - air_resistance found
+2013-08-14 22:15:50,844 - INFO - air_density found
+2013-08-14 22:15:50,845 - INFO - frontal_area found
+2013-08-14 22:15:50,845 - INFO - rolling_resistance found
+2013-08-14 22:15:50,845 - INFO - top_torque found
+2013-08-14 22:15:50,845 - INFO - top_rpm found
+2013-08-14 22:15:50,845 - INFO - efficiency found
+2013-08-14 22:15:50,845 - INFO - max_distance_travel found
+2013-08-14 22:15:50,845 - INFO - dist_to_speed_lookup found
+2013-08-14 22:15:50,845 - INFO - dist_to_alt_lookup found
+2013-08-14 22:15:51,171 - INFO - Lookup Files\disttospeed.csv loaded
+2013-08-14 22:15:51,219 - INFO - Lookup Files\disttoalt.csv loaded
+2013-08-14 22:15:52,562 - INFO - Converted testresult1.csv to a dictionary successfully
+2013-08-14 22:15:52,562 - INFO - Checking to make sure file testresult2.csv has needed parameters...
+2013-08-14 22:15:52,562 - INFO - Step found
+2013-08-14 22:15:52,562 - INFO - total_time found
+2013-08-14 22:15:52,562 - INFO - wheel_radius found
+2013-08-14 22:15:52,562 - INFO - gearing found
+2013-08-14 22:15:52,562 - INFO - rider_mass found
+2013-08-14 22:15:52,562 - INFO - bike_mass found
+2013-08-14 22:15:52,562 - INFO - gravity found
+2013-08-14 22:15:52,562 - INFO - air_resistance found
+2013-08-14 22:15:52,562 - INFO - air_density found
+2013-08-14 22:15:52,562 - INFO - frontal_area found
+2013-08-14 22:15:52,562 - INFO - rolling_resistance found
+2013-08-14 22:15:52,562 - INFO - top_torque found
+2013-08-14 22:15:52,562 - INFO - top_rpm found
+2013-08-14 22:15:52,562 - INFO - efficiency found
+2013-08-14 22:15:52,562 - INFO - max_distance_travel found
+2013-08-14 22:15:52,563 - INFO - dist_to_speed_lookup found
+2013-08-14 22:15:52,563 - INFO - dist_to_alt_lookup found
+2013-08-14 22:15:52,838 - INFO - Lookup Files\disttospeed.csv loaded
+2013-08-14 22:15:52,881 - INFO - Lookup Files\disttoalt.csv loaded
+2013-08-14 22:15:54,234 - INFO - Converted testresult2.csv to a dictionary successfully
+2013-08-14 22:15:54,234 - INFO - ENDING Simulation.py
+2013-08-14 22:15:54,234 - DEBUG - Entered out path: C:\Users\Nathan\Desktop\CAR sync\Buckeye_Current\python\bike_optimization\test_in\exe1
+2013-08-14 22:15:54,234 - INFO - STARTING FUNCTION OutputFile
+2013-08-14 22:15:54,234 - INFO - Converting dictionary testresult1.csv to file
+2013-08-14 22:15:54,234 - DEBUG - File will be saved at C:\Users\Nathan\Desktop\CAR sync\Buckeye_Current\python\bike_optimization\test_in\exe1\testresult1.csv
+2013-08-14 22:15:54,266 - INFO - Data converted and saved to C:\Users\Nathan\Desktop\CAR sync\Buckeye_Current\python\bike_optimization\test_in\exe1\testresult1.csv
+2013-08-14 22:15:54,266 - INFO - Converting dictionary testresult2.csv to file
+2013-08-14 22:15:54,266 - DEBUG - File will be saved at C:\Users\Nathan\Desktop\CAR sync\Buckeye_Current\python\bike_optimization\test_in\exe1\testresult2.csv
+2013-08-14 22:15:54,308 - INFO - Data converted and saved to C:\Users\Nathan\Desktop\CAR sync\Buckeye_Current\python\bike_optimization\test_in\exe1\testresult2.csv
+2013-08-14 22:16:47,555 - DEBUG - Entered path: C:\Users\Nathan\Desktop\CAR sync\Buckeye_Current\python\bike_optimization\test_in\OPTIONS.csv
+2013-08-14 22:16:47,555 - INFO - STARTING FUNCTIONS FileToParams
+2013-08-14 22:16:47,555 - DEBUG - Options file location passed: C:\Users\Nathan\Desktop\CAR sync\Buckeye_Current\python\bike_optimization\test_in\OPTIONS.csv
+2013-08-14 22:16:47,555 - INFO - Current file to search for data: test1.txt
+2013-08-14 22:16:47,555 - INFO - Data extraction from test1.txt complete
+2013-08-14 22:16:47,556 - INFO - Current file to search for data: test2.csv
+2013-08-14 22:16:47,556 - INFO - Data extraction from test2.csv complete
+2013-08-14 22:16:47,556 - INFO - Files have been converted to dictionaries
+2013-08-14 22:16:47,556 - INFO - STARTING Simulation.py
+2013-08-14 22:16:47,556 - INFO - Checking to make sure file testresult1.csv has needed parameters...
+2013-08-14 22:16:47,556 - INFO - Step found
+2013-08-14 22:16:47,556 - INFO - total_time found
+2013-08-14 22:16:47,556 - INFO - wheel_radius found
+2013-08-14 22:16:47,558 - INFO - gearing found
+2013-08-14 22:16:47,558 - INFO - rider_mass found
+2013-08-14 22:16:47,558 - INFO - bike_mass found
+2013-08-14 22:16:47,558 - INFO - gravity found
+2013-08-14 22:16:47,558 - INFO - air_resistance found
+2013-08-14 22:16:47,558 - INFO - air_density found
+2013-08-14 22:16:47,558 - INFO - frontal_area found
+2013-08-14 22:16:47,558 - INFO - rolling_resistance found
+2013-08-14 22:16:47,558 - INFO - top_torque found
+2013-08-14 22:16:47,558 - INFO - top_rpm found
+2013-08-14 22:16:47,558 - INFO - efficiency found
+2013-08-14 22:16:47,558 - INFO - max_distance_travel found
+2013-08-14 22:16:47,558 - INFO - dist_to_speed_lookup found
+2013-08-14 22:16:47,559 - INFO - dist_to_alt_lookup found
+2013-08-14 22:16:47,848 - INFO - Lookup Files\disttospeed.csv loaded
+2013-08-14 22:16:47,884 - INFO - Lookup Files\disttoalt.csv loaded
+2013-08-14 22:16:49,296 - INFO - Converted testresult1.csv to a dictionary successfully
+2013-08-14 22:16:49,296 - INFO - Checking to make sure file testresult2.csv has needed parameters...
+2013-08-14 22:16:49,296 - INFO - Step found
+2013-08-14 22:16:49,296 - INFO - total_time found
+2013-08-14 22:16:49,296 - INFO - wheel_radius found
+2013-08-14 22:16:49,296 - INFO - gearing found
+2013-08-14 22:16:49,298 - INFO - rider_mass found
+2013-08-14 22:16:49,298 - INFO - bike_mass found
+2013-08-14 22:16:49,298 - INFO - gravity found
+2013-08-14 22:16:49,298 - INFO - air_resistance found
+2013-08-14 22:16:49,298 - INFO - air_density found
+2013-08-14 22:16:49,298 - INFO - frontal_area found
+2013-08-14 22:16:49,298 - INFO - rolling_resistance found
+2013-08-14 22:16:49,298 - INFO - top_torque found
+2013-08-14 22:16:49,298 - INFO - top_rpm found
+2013-08-14 22:16:49,299 - INFO - efficiency found
+2013-08-14 22:16:49,299 - INFO - max_distance_travel found
+2013-08-14 22:16:49,299 - INFO - dist_to_speed_lookup found
+2013-08-14 22:16:49,299 - INFO - dist_to_alt_lookup found
+2013-08-14 22:16:49,631 - INFO - Lookup Files\disttospeed.csv loaded
+2013-08-14 22:16:49,684 - INFO - Lookup Files\disttoalt.csv loaded
+2013-08-14 22:16:51,105 - INFO - Converted testresult2.csv to a dictionary successfully
+2013-08-14 22:16:51,105 - INFO - ENDING Simulation.py
+2013-08-14 22:16:51,105 - DEBUG - Entered out path: C:\Users\Nathan\Desktop\CAR sync\Buckeye_Current\python\bike_optimization\test_in\exe1
+2013-08-14 22:16:51,105 - INFO - STARTING FUNCTION OutputFile
+2013-08-14 22:16:51,105 - INFO - Converting dictionary testresult1.csv to file
+2013-08-14 22:16:51,105 - DEBUG - File will be saved at C:\Users\Nathan\Desktop\CAR sync\Buckeye_Current\python\bike_optimization\test_in\exe1\testresult1.csv
+2013-08-14 22:16:51,135 - INFO - Data converted and saved to C:\Users\Nathan\Desktop\CAR sync\Buckeye_Current\python\bike_optimization\test_in\exe1\testresult1.csv
+2013-08-14 22:16:51,135 - INFO - Converting dictionary testresult2.csv to file
+2013-08-14 22:16:51,135 - DEBUG - File will be saved at C:\Users\Nathan\Desktop\CAR sync\Buckeye_Current\python\bike_optimization\test_in\exe1\testresult2.csv
+2013-08-14 22:16:51,165 - INFO - Data converted and saved to C:\Users\Nathan\Desktop\CAR sync\Buckeye_Current\python\bike_optimization\test_in\exe1\testresult2.csv
