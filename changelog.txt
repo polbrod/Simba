@@ -1,3 +1,15 @@
+CHANGELOG 0.31
+
+	- New input parameters added
+
+	- New output data from each simulation performed
+
+	- Fixes to unit labels
+
+	- Removed ability to select graphing program in preparation for next update
+
+	- Added "Tools" to menubar (NOT FULLY IMPLEMENTED)
+
 
 CHANGELOG 0.30
 

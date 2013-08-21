@@ -25,8 +25,8 @@ gravity = 9.81
 air_resistance = 0.7
 air_density = 1.204
 frontal_area =  0.7 #m^2
-rolling_resistance = 0.022
-top_torque = 200 #nm
+rolling_resistance = 0.0187
+top_torque = 120 #nm
 top_rpm = 5000
 #efficiency = 0.8075
 
@@ -125,7 +125,7 @@ def Force(s,n):
     slope[n+1] = (altitude[n+1] - altitude[n])/(distance[n+1] - distance[n])    
     incline[n+1] = mass*gravity*slope[n+1]
     rolling[n+1] = mass*gravity*rolling_resistance
-    return acceleration[n+1] + drag[n+1] + incline[n+1]
+    return acceleration[n+1] + drag[n+1] + incline[n+1] + rolling[n+1]
 
 def Efficiency(n):
     motor_rpm[n+1] = ((speed[n+1])/(wheel_radius*2*np.pi)) * gearing * 60
@@ -173,7 +173,7 @@ def loop(n):
         force[n+1] = np.max([0,force[n+1]])
         power[n+1] = (force[n+1] * speed[n+1])
         total_power[n+1] = Efficiency(n) + power[n+1]
-        energy[n+1] = energy[n] + power[n+1]*(step/(60*60))
+        energy[n+1] = energy[n] + total_power[n+1]*(step/(60*60))
         
     return steps
    #plot each loop here

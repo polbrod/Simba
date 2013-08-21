@@ -89,13 +89,21 @@ def Simulation(dict_in):
         logging.info("top_rpm found")
         top_rpm = currentData["top_rpm"]
         
-#        assert "efficiency" in currentData, logging.critical("%s is missing data: efficiency" % file)
-#        logging.info("efficiency found")
-#        efficiency = currentData["efficiency"]
+        assert "chain_efficiency" in currentData, logging.critical("%s is missing data: chain_efficiency" % file)
+        logging.info("chain_efficiency found")
+        chain_efficiency = currentData["chain_efficiency"]
         
-        assert "max_distance_travel" in currentData, logging.critical("%s is missing data: max_distance_travel" % file)
-        logging.info("max_distance_travel found")
-        max_distance_travel = currentData["max_distance_travel"] #meters       
+        assert "battery_efficiency" in currentData, logging.critical("%s is missing data: chain_efficiency" % file)
+        logging.info("battery_efficiency found")
+        battery_efficiency = currentData["battery_efficiency"]
+        
+        assert "motor_torque_constant" in currentData, logging.critical("%s is missing data: motor_torque_constant" % file)
+        logging.info("motor_torque_constant found")
+        motor_torque_constant = currentData["motor_torque_constant"] #torque to current constant of motor. torque/amp
+    
+        assert "motor_rpm_constant" in currentData, logging.critical("%s is missing data: motor_rpm_constant" % file)
+        logging.info("motor_rpm_constant found")
+        motor_rpm_constant = currentData["motor_rpm_constant"] #rpm to voltage dc constant of motor. rpm/volt     
         
         assert "dist_to_speed_lookup" in currentData, logging.critical("%s is missing data: dist_to_speed_lookup" % file)
         logging.info("dist_to_speed_lookup found")
@@ -104,19 +112,24 @@ def Simulation(dict_in):
         assert "dist_to_alt_lookup" in currentData, logging.critical("%s is missing data: dist_to_alt_lookup" % file)
         logging.info("dist_to_alt_lookup found")
         dist_to_alt_lookup = currentData["dist_to_alt_lookup"][0]
+        
+        assert "motor_controller_eff_lookup" in currentData, logging.critical("%s is missing data: motor_controller_eff_lookup" % file)
+        logging.info("motor_controller_eff_lookup found")
+        motor_controller_eff_lookup = currentData["motor_controller_eff_lookup"][0]
+        
+        assert "motor_eff_lookup" in currentData, logging.critical("%s is missing data: motor_eff_lookup" % file)
+        logging.info("motor_eff_lookup found")
+        motor_eff_lookup = currentData["motor_eff_lookup"][0]
 
-        motor_controller_eff_lookup = 'Tritum_ws200_eff.csv'
-        motor_eff_lookup = 'Emrax_eff.csv'
-        chain_efficiency = .98
-        battery_efficiency = .98
-        motor_torque_constant = 1
-        motor_rpm_constant = 12
-	
+        max_distance_travel = 60350        
+        
+        #calc values
         top_speed = ((wheel_radius*2*np.pi* (top_rpm) / (gearing))/60)
         top_force = (top_torque * gearing) / wheel_radius
         drag_area = frontal_area * air_resistance
         mass = rider_mass + bike_mass
         steps = int(math.ceil(total_time/step))
+        sqrt2 = np.sqrt(2)     
         
         #Arrays (output)
         time = np.zeros((steps+1,tests),dtype=float)
@@ -126,7 +139,7 @@ def Simulation(dict_in):
         c_force = np.zeros((steps+1,tests),dtype=float) #force before compare
         speed = np.zeros((steps+1,tests),dtype=float)   #speed after compare (actual)
         force = np.zeros((steps+1,tests),dtype=float)   #force after compare (actual)
-        power = np.zeros((steps+1,tests),dtype=float)   #power without losses
+        power = np.zeros((steps+1,tests),dtype=float)
         energy = np.zeros((steps+1,tests),dtype=float)
         acceleration = np.zeros((steps+1,tests),dtype=float)
         drag = np.zeros((steps+1,tests),dtype=float)
@@ -134,7 +147,7 @@ def Simulation(dict_in):
         slope = np.zeros((steps+1,tests),dtype=float)
         incline = np.zeros((steps+1,tests),dtype=float)
         rolling = np.zeros((steps+1,tests),dtype=float)
-        
+
         motor_rpm = np.zeros((steps+1,tests),dtype=float)
         motor_torque = np.zeros((steps+1,tests),dtype=float)
         motor_loss = np.zeros((steps+1,tests),dtype=float)
@@ -142,8 +155,8 @@ def Simulation(dict_in):
         chain_loss = np.zeros((steps+1,tests),dtype=float)
         battery_loss = np.zeros((steps+1,tests),dtype=float)
         total_power = np.zeros((steps+1,tests),dtype=float) #power with losses
-        arms = np.zeros((steps+1,tests),dtype=float)
-        vrms = np.zeros((steps+1,tests),dtype=float)      
+        arms = np.zeros((steps+1,tests),dtype=float)    #amps rms out from motor controller
+        vrms = np.zeros((steps+1,tests),dtype=float)    #voltage rms out from motor controller
         
         #Lookups
         dist_to_speed_lookup = "Lookup Files\\" + dist_to_speed_lookup
@@ -181,8 +194,9 @@ def Simulation(dict_in):
         points = np.transpose(np.array([x,y]))
         values = np.array(z)
         grid_x, grid_y = np.mgrid[np.min(x):np.max(x), np.min(y):np.max(y)]
-        motor_controller_eff_grid = griddata(points, values, (grid_x, grid_y), method='cubic')
-		
+        motor_controller_eff_grid = griddata(points, values, (grid_x, grid_y), method='linear')
+        #[volts_rms][amps_rms]
+        
         motor_eff_lookup = "Lookup Files\\" + motor_eff_lookup
         try:
             n = np.loadtxt(motor_eff_lookup,dtype = 'string',delimiter = ',', skiprows = 1)
@@ -196,8 +210,9 @@ def Simulation(dict_in):
         points = np.transpose(np.array([x,y]))
         values = np.array(z)
         grid_x, grid_y = np.mgrid[np.min(x):np.max(x), np.min(y):np.max(y)]
-        motor_eff_grid = griddata(points, values, (grid_x, grid_y), method='cubic')
-		
+        motor_eff_grid = griddata(points, values, (grid_x, grid_y), method='linear')
+        #[rpm][torque]
+
         #functions
         def force_solve(s,n):
             return Force(s,n) - top_force
@@ -209,20 +224,20 @@ def Simulation(dict_in):
             slope[n+1] = (altitude[n+1] - altitude[n])/(distance[n+1] - distance[n])    
             incline[n+1] = mass*gravity*slope[n+1]
             rolling[n+1] = mass*gravity*rolling_resistance
-            return acceleration[n+1] + drag[n+1] + incline[n+1]
+            return acceleration[n+1] + drag[n+1] + incline[n+1] + rolling[n+1]
         
         def Efficiency(n):
             motor_rpm[n+1] = ((speed[n+1])/(wheel_radius*2*np.pi)) * gearing * 60
             motor_torque[n+1] = (force[n+1] * wheel_radius)/gearing
-            arms[n+1] = motor_torque[n+1]*motor_torque_constant
-            vrms[n+1] = motor_rpm[n+1]*motor_rpm_constant*(1/(np.sqrt(2)))            
+            arms[n+1] = motor_torque[n+1]/motor_torque_constant
+            vrms[n+1] = motor_rpm[n+1]/(motor_rpm_constant)*(1/(sqrt2))           
             
-            motor_loss[n+1] = power[n+1]*(1-motor_eff_grid[np.around(motor_rpm[n+1])][np.around(motor_torque[n+1])])
-            motor_controller_loss[n+1] = power[n+1]*(1-motor_controller_eff_grid[np.around(vrms[n+1])][np.around(arms[n+1])])
+            motor_loss[n+1] = power[n+1]*(1-motor_eff_grid[np.int(np.around(motor_rpm[n+1]))][np.int(np.around(motor_torque[n+1]))])
+            motor_controller_loss[n+1] = power[n+1]*(1-motor_controller_eff_grid[np.int(np.around(vrms[n+1]))][np.int(np.around(arms[n+1]))])
             chain_loss[n+1] = power[n+1]*(1-chain_efficiency)
             battery_loss[n+1] = power[n+1]*(1-battery_efficiency)
-            return motor_loss + motor_controller_loss + chain_loss + battery_loss
-        
+            return motor_loss[n+1] + motor_controller_loss[n+1] + chain_loss[n+1] + battery_loss[n+1]
+            
         #initial condidtions
         distance[0] = .1
         speed[0] = .1
@@ -253,10 +268,11 @@ def Simulation(dict_in):
                 else:
                     speed[n+1] = t_speed[n+1]
                     force[n+1] = c_force[n+1]
+                    
                 force[n+1] = np.max([0,force[n+1]])
                 power[n+1] = (force[n+1] * speed[n+1])
                 total_power[n+1] = Efficiency(n) + power[n+1]
-                energy[n+1] = energy[n] + power[n+1]*(step/(60*60))
+                energy[n+1] = energy[n] + total_power[n+1]*(step/(60*60))
                 
             return steps
            #plot each loop here
@@ -280,17 +296,29 @@ def Simulation(dict_in):
         newData["Actual Speed (M/S)"] = (speed[:end])
         newData["Actual Force (N)"] = (force[:end])
         newData["Power (Watts)"] = (power[:end])
-        newData["Energy (Watt/Hr)"] = (energy[:end])
+        newData["Energy (Wh)"] = (energy[:end])
         newData["Acceleration (N)"] = (acceleration[:end])
         newData["Drag (N)"] = (drag[:end])
         newData["Altitude (Meters)"] = (altitude[:end])
         newData["Slope (Ratio)"] = (slope[:end])
         newData["Incline (N)"] = (incline[:end])
         newData["Rolling (N)"] = (rolling[:end])
+        newData["Motor RPM"] = (motor_rpm[:end])
+        newData["Motor Torque (Nm)"] = (motor_torque[:end])      
+        newData["Motor Loss (Watts)"] = (motor_loss[:end])
+        newData["Motor Controller Loss (Watts)"] = (motor_controller_loss[:end])
+        newData["Chain Loss (Watts)"] = (chain_loss[:end])
+        newData["Battery Loss (Watts)"] = (battery_loss[:end])
+        newData["Total Power (Watts)"] = (total_power[:end])
+        newData["Arms"] = (arms[:end])
+        newData["Vrms"] = (vrms[:end])     
+        
         newData["Average MPH"] = repr(round(np.mean(speed[:end])*2.23,3))
+        newData["Max MPH"] = repr(round(np.max(speed[:end])*2.23,3))
         newData["Average Power (Watts)"] = repr(round(np.mean(power[:end]),3))
         newData["Max Power (Watts)"] = repr(round(np.max(power),3))
-        newData["Max Energy (KW/Hr)"] = repr(round(np.max(energy),3))
+        newData["Max Energy (Wh)"] = repr(round(np.max(energy),3))
+        
 
         dict_in[file] = newData
         logging.info("Converted %s to a dictionary successfully", file)

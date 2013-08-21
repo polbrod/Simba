@@ -127,7 +127,13 @@ def OutputFile(folderName, outputDict):
         logging.info("Data converted and saved to %s", fileName)
 
 
-
+def CreateRawData(optionsFile, folderName):
+    
+    files = optionsFile[1:]
+    for file in files:
+        file = folderName + "\\" + file
+    print files
+    
 
 ##############################################################################
 # GUI Starts Here
@@ -144,21 +150,30 @@ class MainWindow(wx.Frame):
         #else:
          #   iconLoc = os.path.join(os.path.dirname(__file__),__file__)
 
-        
+        pub.subscribe(self.ShowNewParams, ("optionsControl.filled"))
         # Setting up menu
         filemenu = wx.Menu()
+        self.menuAbout = filemenu.Append(wx.ID_ABOUT, "&About"," Information about this program")
+        self.menuExit = filemenu.Append(wx.ID_EXIT, "&Exit"," Terminate the program")
         
-        menuAbout = filemenu.Append(wx.ID_ABOUT, "About"," Information about this program")
-        menuExit = filemenu.Append(wx.ID_EXIT, "Exit"," Terminate the program")
+        toolsmenu = wx.Menu()
+        self.menuNewProject = toolsmenu.Append(wx.ID_ANY, "Create New Project", " Create new project including parameter files and necessary components")
+        self.menuNewParamFile = toolsmenu.Append(wx.ID_ANY, "New &Parameters File"," Create new parameter file to add to current options file")
+        
         
         # Creating menubar
         menuBar = wx.MenuBar()
         menuBar.Append(filemenu, "&File") #Adds "filemenu" to the MenuBar
+        menuBar.Append(toolsmenu, "&Tools")
+        
         self.SetMenuBar(menuBar)
 
         # Set Events
-        self.Bind(wx.EVT_MENU, self.OnAbout, menuAbout)
-        self.Bind(wx.EVT_MENU, self.OnExit, menuExit)
+        self.Bind(wx.EVT_MENU, self.OnAbout, self.menuAbout)
+        self.Bind(wx.EVT_MENU, self.OnExit, self.menuExit)
+        self.Bind(wx.EVT_MENU, self.CreateNewProject, self.menuNewProject)
+        self.Bind(wx.EVT_MENU, self.NewParamsFile, self.menuNewParamFile)
+
 
         self.MainPanel = wx.Panel(self,-1)
         self.Panel = Panel1(self)
@@ -181,6 +196,21 @@ class MainWindow(wx.Frame):
         logging.info("ENDING automation.py" + os.linesep + os.linesep)
         logging.shutdown()
         self.Close(True)
+    
+    def ShowNewParams(self, msg):
+        
+        if msg.data == True:
+            self.menuNewParamFile.Enable(True)
+        else:
+            self.menuNewParamFile.Enable(False)   
+        
+    def NewParamsFile(self,e):
+        newParamsWindow = NewParamsWindow(None, "Create new parameters file")
+        newParamsWindow.Show()
+        
+    def CreateNewProject(self,e):
+        newProjectWindow = NewProjectWindow(None, "Create new project")
+        newProjectWindow.Show()
         
 ###############################################################################
         
@@ -219,14 +249,34 @@ class QuickResultsWindow(wx.Frame):
     def PlugInValues(self,msg):
         """Inserts quick value data into corresponding tab"""
         data = msg.data
-        compiledMessage = os.linesep
+        compiledMessage = ""
         for index in data:
             compiledMessage += index + ": " + data[index] + os.linesep
         
         self.page.quickData.SetValue(compiledMessage)
 
 ##############################################################################
-            
+
+class NewParamsWindow(wx.Frame):
+    """Displays window allowing user to make new parameters file"""
+    def __init__(self, parent, title):
+        wx.Frame.__init__(self,parent, title=title, size=(400,400), style=wx.DEFAULT_FRAME_STYLE ^ wx.RESIZE_BORDER ^ wx.MAXIMIZE_BOX ^ wx.MINIMIZE_BOX)
+        
+        panel = wx.Panel(self)
+        sizer = wx.BoxSizer(wx.VERTICAL)
+        panel.SetSizer(sizer)
+        self.Show(True)
+
+class NewProjectWindow(wx.Frame):
+    """Displays window allowing user to create a new project"""
+    def __init__(self, parent, title):
+        wx.Frame.__init__(self, parent, title=title, size=(400,400), style=wx.DEFAULT_FRAME_STYLE ^ wx.RESIZE_BORDER ^ wx.MAXIMIZE_BOX ^ wx.MINIMIZE_BOX)
+        
+        panel = wx.Panel(self)
+        sizer = wx.BoxSizer(wx.VERTICAL)
+        panel.SetSizer(sizer)
+        self.Show(True)
+      
 class Panel1(wx.Panel):
     """Holds all the main components (buttons, text boxes)"""
     def __init__(self, parent, *args, **kwargs):
@@ -253,19 +303,36 @@ class Panel1(wx.Panel):
         self.runButton.Bind(wx.EVT_BUTTON, self.RunSim)        
         
         # Create static box with along with it's sizer
-        self.staticBox = wx.StaticBox(self, label = "Optional: Graphing Utility")
-        self.boxSizer = wx.StaticBoxSizer(self.staticBox, wx.HORIZONTAL)
-        
-        #self.graphText = wx.StaticText(self, wx.ID_ANY, "Graphing program: ", size = (100,25))
+        '''
+        self.staticBox = wx.StaticBox(self, label = "Quick Options")
+        self.boxSizerVert = wx.StaticBoxSizer(self.staticBox, wx.VERTICAL)
+        self.boxSizerHori1 = wx.BoxSizer(wx.HORIZONTAL)
+        self.boxSizerHori2 = wx.BoxSizer(wx.HORIZONTAL)        
+        '''
+        '''
+        self.graphText = wx.StaticText(self, wx.ID_ANY, "Graphing program", size = (100,-1))
         self.graphControl = wx.TextCtrl(self, size = (200,-1))
         self.graphExplorer = wx.Button(self, -1, "Browse")
         self.graphExplorer.Bind(wx.EVT_BUTTON, self.BrowseUtilities)
         
-        #self.boxSizer.Add(self.graphText, 1)
-        self.boxSizer.Add(self.graphControl)
-        self.boxSizer.AddSpacer((10,-1))
-        self.boxSizer.Add(self.graphExplorer)
+        self.outputInputCheckBox = wx.CheckBox(self, name = "Output Input Parameters")
+        self.outputInputText = wx.StaticText(self, wx.ID_ANY, "Transfer input parameters to output files")
+        '''
+        '''
+        self.boxSizerHori1.Add(self.graphControl)
+        self.boxSizerHori1.AddSpacer((10,-1))
+        self.boxSizerHori1.Add(self.graphExplorer)
         
+        self.boxSizerHori2.AddSizer((30,-1))
+        self.boxSizerHori2.Add(self.outputInputCheckBox)
+        self.boxSizerHori2.AddSpacer((5,-1))
+        self.boxSizerHori2.Add(self.outputInputText)
+        self.boxSizerVert.AddSpacer((-1,7))
+        self.boxSizerVert.Add(self.graphText)
+        self.boxSizerVert.Add(self.boxSizerHori1)
+        self.boxSizerVert.AddSpacer((-1,10))
+        self.boxSizerVert.Add(self.boxSizerHori2)
+        '''
 
         # Create timer that triggers event 'OnTimer' every 100ms
         self.timer = wx.Timer(self)
@@ -293,14 +360,11 @@ class Panel1(wx.Panel):
         self.hSizer2.Add(self.folderExplorer)
         self.hSizer2.AddSpacer((20,-1))
             
-        # Insert optional program into 3rd row
-        self.hSizer3.AddSpacer((20,-1))
-        self.hSizer3.Add(self.boxSizer)
-        self.hSizer3.AddSpacer((80,-1))
-        
+        # Insert third row objects
+        self.hSizer3.AddSpacer((420,-1))
+    
         # Create vertical sizer to lower 'Run Button'
         self.runVSizer = wx.BoxSizer(wx.VERTICAL)
-        self.runVSizer.AddSpacer((-1,17))
         self.runVSizer.Add(self.runButton)
         
         # Insert sizer containing 'Run Button' into 3rd row
@@ -335,6 +399,10 @@ class Panel1(wx.Panel):
         outputDirectory = self.folderControl.GetValue()
         logging.debug("Entered out path: %s",outputDirectory)
         OutputFile(outputDirectory, dictionary)
+        #CreateRawData(options,outputDirectory)
+
+        
+        
         
         # Gather filenames and value for quick values
         self.fileNames = np.array(dictionary.keys())
@@ -356,11 +424,13 @@ class Panel1(wx.Panel):
             msg = quickValues
             pub.sendMessage(("key.quickValues"),msg)
             
+            '''
             #Open files in graphing program if specified
             if len(self.graphControl.GetValue()) > 0:
                 outFileLoc = os.path.join(outputDirectory, key)
                 subprocess.Popen([self.graphFileLoc, outFileLoc])
-                
+            '''
+            
         resultsWindow.Show()
         
             
@@ -402,6 +472,15 @@ class Panel1(wx.Panel):
         else:
             self.runButton.Enable(True)
         
+        if self.optionsControl.IsEmpty():
+            msg = False
+            pub.sendMessage(("optionsControl.filled"), msg)
+        else:
+            msg = True
+            pub.sendMessage(("optionsControl.filled"), msg)            
+        #if len(self.optionsControl.GetValue()) > 0:
+            
+        
         
 class TabPanel(wx.Panel):
     """
@@ -428,7 +507,6 @@ class TabPanel(wx.Panel):
 
 logging.basicConfig(filename="BCS_log.txt",format='%(asctime)s - %(levelname)s - %(message)s',level=logging.DEBUG)
 logging.info("STARTING automation.py")
-
 
 
 app = wx.App(False)
