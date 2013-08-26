@@ -15,10 +15,10 @@ import itertools
 tests = 1
 #parameters
 
-step = 0.1       #time step in seconds
+step = .1       #time step in seconds
 total_time = 60*30
 wheel_radius = 0.323596 #meters
-gearing = 2.174
+gearing = 2.1
 rider_mass = 81.64 #kg
 bike_mass = 226.7 #kg
 gravity = 9.81
@@ -26,16 +26,18 @@ air_resistance = 0.7
 air_density = 1.204
 frontal_area =  0.7 #m^2
 rolling_resistance = 0.0187
-top_torque = 120 #nm
-top_rpm = 5000
+top_torque = 500 #nm
+top_rpm = 6000
 #efficiency = 0.8075
 
 
+#simulation calcs
+steps = int(math.ceil(total_time/step))
+sqrt2 = np.sqrt(2)
 
-
-max_distance_travel = 60350 #meters this needs to be calculated from lookups
+max_distance_travel = 60600 #meters this needs to be calculated from lookups
 #max_distance_travel = 3218.69
-dist_to_speed_lookup = 'disttospeed.csv'
+dist_to_speed_lookup = 'iom_data.csv'
 dist_to_alt_lookup = 'disttoalt.csv'
 
 motor_controller_eff_lookup = 'Tritium_ws200_eff.csv'
@@ -45,13 +47,7 @@ battery_efficiency = .98
 motor_torque_constant = 1   #torque to current constant of motor. torque/amp
 motor_rpm_constant = 12     #rpm to voltage dc constant of motor. rpm/volt
 
-#calc values
-top_speed = ((wheel_radius*2*np.pi* (top_rpm) / (gearing))/60)
-top_force = (top_torque * gearing) / wheel_radius
-drag_area = frontal_area * air_resistance
-mass = rider_mass + bike_mass
-steps = int(math.ceil(total_time/step))
-sqrt2 = np.sqrt(2)
+
 
 #Arrays (output)
 time = np.zeros((steps+1,tests),dtype=float)
@@ -101,7 +97,7 @@ y = n[:,1].astype(np.float)
 z = n[:,2].astype(np.float)
 points = np.transpose(np.array([x,y]))
 values = np.array(z)
-grid_x, grid_y = np.mgrid[np.min(x):np.max(x), np.min(y):np.max(y)]
+grid_x, grid_y = np.mgrid[np.min(x):np.max(x)+1, np.min(y):np.max(y)+1]
 motor_controller_eff_grid = griddata(points, values, (grid_x, grid_y), method='linear')
 #[volts_rms][amps_rms]
 n = np.loadtxt(motor_eff_lookup,dtype = 'string',delimiter = ',', skiprows = 1)
@@ -110,10 +106,45 @@ y = n[:,1].astype(np.float)
 z = n[:,2].astype(np.float)
 points = np.transpose(np.array([x,y]))
 values = np.array(z)
-grid_x, grid_y = np.mgrid[np.min(x):np.max(x), np.min(y):np.max(y)]
+grid_x, grid_y = np.mgrid[np.min(x):np.max(x)+1, np.min(y):np.max(y)+1]
 motor_eff_grid = griddata(points, values, (grid_x, grid_y), method='linear')
 #[rpm][torque]
 
+#look up tests
+
+if np.max(distancetospeed_lookup.x) < max_distance_travel:
+    max_distance_travel =  np.max(distancetospeed_lookup.x)  
+    print 'max_distance_travel greater than speed to distance look up'
+    print 'max_distance_travel changed to ' + repr(max_distance_travel)
+
+
+if np.max(distancetoaltitude_lookup.x) < max_distance_travel:
+    max_distance_travel =  np.max(distancetoaltitude_lookup.x)  
+    print 'max_distance_travel greater than altitude to distance look up'
+    print 'max_distance_travel changed to ' + repr(max_distance_travel)
+
+(x,y) = motor_eff_grid.shape
+if y-1 <  top_torque:
+    top_torque = y-1
+    print 'top_torque greater than motor efficiency look up'
+    print 'top_torque changed to ' + repr(top_torque)
+
+if x-1 <  top_rpm:
+    top_rpm = x-1
+    print 'top_rpm greater than motor efficiency look up'
+    print 'top_rpm changed to ' + repr(top_rpm)
+
+(x,y) = motor_controller_eff_grid.shape
+if y-1 <  top_torque/motor_torque_constant:
+    top_torque = (y-1) * motor_torque_constant
+    print 'possible arms (from top_torque and motor torque constant) is greater than motor controller efficiency look up'
+    print 'top_torque changed to ' + repr(top_torque)
+
+if x-1 <  (top_rpm/(motor_rpm_constant)*(1/(sqrt2))) :
+    top_rpm = (x-1)*(motor_rpm_constant)*(1/(sqrt2)) 
+    print 'possible Vrms (from top_rpm and motor rpm constant) is greater than motor controller efficiency look up'
+    print 'top_rpm changed to ' + repr(top_rpm)
+    
 #functions
 def force_solve(s,n):
     return Force(s,n) - top_force
@@ -138,6 +169,15 @@ def Efficiency(n):
     chain_loss[n+1] = power[n+1]*(1-chain_efficiency)
     battery_loss[n+1] = power[n+1]*(1-battery_efficiency)
     return motor_loss[n+1] + motor_controller_loss[n+1] + chain_loss[n+1] + battery_loss[n+1]
+      
+      
+#parameter calc values
+top_speed = ((wheel_radius*2*np.pi* (top_rpm) / (gearing))/60)
+top_force = (top_torque * gearing) / wheel_radius
+drag_area = frontal_area * air_resistance
+mass = rider_mass + bike_mass
+
+
       
 #initial condidtions
 distance[0] = .1
