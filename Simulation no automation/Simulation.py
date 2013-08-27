@@ -29,7 +29,7 @@ rolling_resistance = 0.0187
 top_torque = 500 #nm
 top_rpm = 6000
 #efficiency = 0.8075
-
+top_power = 87000
 
 #simulation calcs
 steps = int(math.ceil(total_time/step))
@@ -55,8 +55,11 @@ distance = np.zeros((steps+1,tests),dtype=float)
 l_speed = np.zeros((steps+1,tests),dtype=float) #look up speed
 t_speed = np.zeros((steps+1,tests),dtype=float) #speed after compare to top
 c_force = np.zeros((steps+1,tests),dtype=float) #force before compare
+p_force = np.zeros((steps+1,tests),dtype=float) #force before power compare
+p_speed = np.zeros((steps+1,tests),dtype=float) #speed before power compare
 speed = np.zeros((steps+1,tests),dtype=float)   #speed after compare (actual)
 force = np.zeros((steps+1,tests),dtype=float)   #force after compare (actual)
+c_power = np.zeros((steps+1,tests),dtype=float) #power before compare
 power = np.zeros((steps+1,tests),dtype=float)
 energy = np.zeros((steps+1,tests),dtype=float)
 acceleration = np.zeros((steps+1,tests),dtype=float)
@@ -146,6 +149,13 @@ if x-1 <  (top_rpm/(motor_rpm_constant)*(1/(sqrt2))) :
     print 'top_rpm changed to ' + repr(top_rpm)
     
 #functions
+
+def Power(s,n):
+    return Force(s,n) * s
+
+def power_solve(s,n):
+    return Power(s,n) - top_power
+    
 def force_solve(s,n):
     return Force(s,n) - top_force
 
@@ -156,7 +166,7 @@ def Force(s,n):
     slope[n+1] = (altitude[n+1] - altitude[n])/(distance[n+1] - distance[n])    
     incline[n+1] = mass*gravity*slope[n+1]
     rolling[n+1] = mass*gravity*rolling_resistance
-    return acceleration[n+1] + drag[n+1] + incline[n+1] + rolling[n+1]
+    return np.max([0,(acceleration[n+1] + drag[n+1] + incline[n+1] + rolling[n+1])])
 
 def Efficiency(n):
     motor_rpm[n+1] = ((speed[n+1])/(wheel_radius*2*np.pi)) * gearing * 60
@@ -204,14 +214,24 @@ def loop(n):
         c_force[n+1] = Force(t_speed[n+1],n)
         
         if c_force[n+1] > top_force:
-            speed[n+1] = (opt.fsolve(force_solve,t_speed[n+1],n))[0]
-            force[n+1] = Force(speed[n+1],n)
+            p_speed[n+1] = (opt.fsolve(force_solve,t_speed[n+1],n))[0]
+            p_force[n+1] = Force(p_speed[n+1],n)
         else:
-            speed[n+1] = t_speed[n+1]
-            force[n+1] = c_force[n+1]
+            p_speed[n+1] = t_speed[n+1]
+            p_force[n+1] = c_force[n+1]
         
-        force[n+1] = np.max([0,force[n+1]])
-        power[n+1] = (force[n+1] * speed[n+1])
+        c_power[n+1] = Power(p_speed[n+1],n)
+        
+        if c_power[n+1] > top_power:
+            speed[n+1] = (opt.fsolve(power_solve,p_speed[n+1],n))[0]
+            force[n+1] = Force(speed[n+1],n)
+            power[n+1] = Power(speed[n+1],n)
+        else:
+            speed[n+1] = p_speed[n+1]
+            force[n+1] = p_force[n+1]
+            power[n+1] = c_power[n+1]
+            
+    
         total_power[n+1] = Efficiency(n) + power[n+1]
         energy[n+1] = energy[n] + total_power[n+1]*(step/(60*60))
         
