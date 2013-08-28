@@ -13,6 +13,7 @@ import itertools
 import collections
 import logging
 import wx
+from os import linesep
 
 def dependencies_for_simulation(): #missing imports needs to convert to .exe
     from scipy.sparse.csgraph import _validation
@@ -103,7 +104,11 @@ def Simulation(dict_in):
     
         assert "motor_rpm_constant" in currentData, logging.critical("%s is missing data: motor_rpm_constant" % file)
         logging.info("motor_rpm_constant found")
-        motor_rpm_constant = currentData["motor_rpm_constant"] #rpm to voltage dc constant of motor. rpm/volt     
+        motor_rpm_constant = currentData["motor_rpm_constant"] #rpm to voltage dc constant of motor. rpm/volt
+
+        assert "top_power" in currentData, logging.critical("%s is missing data: top_power" % file)
+        logging.info("top_power found")
+        top_power = currentData["top_power"]
         
         assert "dist_to_speed_lookup" in currentData, logging.critical("%s is missing data: dist_to_speed_lookup" % file)
         logging.info("dist_to_speed_lookup found")
@@ -121,7 +126,8 @@ def Simulation(dict_in):
         logging.info("motor_eff_lookup found")
         motor_eff_lookup = currentData["motor_eff_lookup"][0]
 
-        max_distance_travel = 60350        
+
+        max_distance_travel = 60600        
         
         #calc values
         top_speed = ((wheel_radius*2*np.pi* (top_rpm) / (gearing))/60)
@@ -137,8 +143,11 @@ def Simulation(dict_in):
         l_speed = np.zeros((steps+1,tests),dtype=float) #look up speed
         t_speed = np.zeros((steps+1,tests),dtype=float) #speed after compare to top
         c_force = np.zeros((steps+1,tests),dtype=float) #force before compare
+        p_force = np.zeros((steps+1,tests),dtype=float) #force before power compare	  p_speed = np.zeros((steps+1,tests),dtype=float) #speed before power compare
+        p_speed = np.zeros((steps+1,tests),dtype=float) #speed before power compare        
         speed = np.zeros((steps+1,tests),dtype=float)   #speed after compare (actual)
         force = np.zeros((steps+1,tests),dtype=float)   #force after compare (actual)
+        c_power = np.zeros((steps+1,tests),dtype=float) #power before compare
         power = np.zeros((steps+1,tests),dtype=float)
         energy = np.zeros((steps+1,tests),dtype=float)
         acceleration = np.zeros((steps+1,tests),dtype=float)
@@ -168,6 +177,8 @@ def Simulation(dict_in):
             raise Exception("Unable to load \'" + dist_to_speed_lookup + "\'")
         x = n[:,0].astype(np.float)
         y = n[:,1].astype(np.float)
+	  #x = np.array([0,3220])
+	  #y = np.array([1000,1000])
         distancetospeed_lookup = interp1d(x,y)
         
         dist_to_alt_lookup = "Lookup Files\\" + dist_to_alt_lookup
@@ -179,6 +190,8 @@ def Simulation(dict_in):
             raise Exception("Unable to load \'" + dist_to_alt_lookup + "\'")
         x = n[:,0].astype(np.float)
         y = n[:,1].astype(np.float)
+	  #x = np.array([0,3220])
+	  #y = np.array([0,0])
         distancetoaltitude_lookup = interp1d(x,y)
         
         motor_controller_eff_lookup = "Lookup Files\\" + motor_controller_eff_lookup
@@ -193,7 +206,7 @@ def Simulation(dict_in):
         z = n[:,2].astype(np.float)
         points = np.transpose(np.array([x,y]))
         values = np.array(z)
-        grid_x, grid_y = np.mgrid[np.min(x):np.max(x), np.min(y):np.max(y)]
+        grid_x, grid_y = np.mgrid[np.min(x):np.max(x)+1, np.min(y):np.max(y)+1]
         motor_controller_eff_grid = griddata(points, values, (grid_x, grid_y), method='linear')
         #[volts_rms][amps_rms]
         
@@ -209,11 +222,65 @@ def Simulation(dict_in):
         z = n[:,2].astype(np.float)
         points = np.transpose(np.array([x,y]))
         values = np.array(z)
-        grid_x, grid_y = np.mgrid[np.min(x):np.max(x), np.min(y):np.max(y)]
+        grid_x, grid_y = np.mgrid[np.min(x):np.max(x)+1, np.min(y):np.max(y)+1]
         motor_eff_grid = griddata(points, values, (grid_x, grid_y), method='linear')
         #[rpm][torque]
 
+	  #look up tests
+
+        message = '';        
+        
+        if np.max(distancetospeed_lookup.x) < max_distance_travel:
+            max_distance_travel =  np.max(distancetospeed_lookup.x)  
+            message += 'max_distance_travel greater than speed to distance look up --- '
+            message += 'max_distance_travel changed to ' + repr(max_distance_travel) + linesep
+            message += linesep
+
+        if np.max(distancetoaltitude_lookup.x) < max_distance_travel:
+            max_distance_travel =  np.max(distancetoaltitude_lookup.x)  
+            message += 'max_distance_travel greater than altitude to distance look up --- '
+            message += 'max_distance_travel changed to ' + repr(max_distance_travel) + linesep
+            message += linesep
+
+        (x,y) = motor_eff_grid.shape
+        if y-1 <  top_torque:
+            top_torque = y-1
+            message += 'top_torque greater than motor efficiency look up --- '
+            message += 'top_torque changed to ' + repr(top_torque) + linesep
+            message += linesep
+
+        if x-1 <  top_rpm:
+            top_rpm = x-1
+            message += 'top_rpm greater than motor efficiency look up --- '
+            message += 'top_rpm changed to ' + repr(top_rpm) + linesep
+            message += linesep
+
+        (x,y) = motor_controller_eff_grid.shape
+        if y-1 <  top_torque/motor_torque_constant:
+            top_torque = (y-1) * motor_torque_constant
+            message += 'possible arms (from top_torque and motor torque constant) is greater than motor controller efficiency look up --- '
+            message += 'top_torque changed to ' + repr(top_torque) + linesep
+            message += linesep
+
+        if x-1 <  (top_rpm/(motor_rpm_constant)*(1/(sqrt2))) :
+            top_rpm = (x-1)*(motor_rpm_constant)*(1/(sqrt2)) 
+            message += 'possible Vrms (from top_rpm and motor rpm constant) is greater than motor controller efficiency look up --- '
+            message += 'top_rpm changed to ' + repr(top_rpm) + linesep
+            
+        if len(message) > 1:
+            GUIdialog = wx.MessageDialog(None, message, "Warning", wx.OK)
+            GUIdialog.ShowModal()
+            GUIdialog.Destroy()     
+         
+        
         #functions
+
+        def Power(s,n):
+            return Force(s,n) * s
+
+        def power_solve(s,n):
+            return Power(s,n) - top_power
+    
         def force_solve(s,n):
             return Force(s,n) - top_force
         
@@ -224,7 +291,7 @@ def Simulation(dict_in):
             slope[n+1] = (altitude[n+1] - altitude[n])/(distance[n+1] - distance[n])    
             incline[n+1] = mass*gravity*slope[n+1]
             rolling[n+1] = mass*gravity*rolling_resistance
-            return acceleration[n+1] + drag[n+1] + incline[n+1] + rolling[n+1]
+    	    return np.max([0,(acceleration[n+1] + drag[n+1] + incline[n+1] + rolling[n+1])])
         
         def Efficiency(n):
             motor_rpm[n+1] = ((speed[n+1])/(wheel_radius*2*np.pi)) * gearing * 60
@@ -238,6 +305,15 @@ def Simulation(dict_in):
             battery_loss[n+1] = power[n+1]*(1-battery_efficiency)
             return motor_loss[n+1] + motor_controller_loss[n+1] + chain_loss[n+1] + battery_loss[n+1]
             
+      
+        #parameter calc values
+        top_speed = ((wheel_radius*2*np.pi* (top_rpm) / (gearing))/60)
+        top_force = (top_torque * gearing) / wheel_radius
+        drag_area = frontal_area * air_resistance
+        mass = rider_mass + bike_mass
+
+
+      
         #initial condidtions
         distance[0] = .1
         speed[0] = .1
@@ -263,11 +339,23 @@ def Simulation(dict_in):
                 c_force[n+1] = Force(t_speed[n+1],n)
                 
                 if c_force[n+1] > top_force:
-                    speed[n+1] = (opt.fsolve(force_solve,t_speed[n+1],n))[0]
-                    force[n+1] = Force(speed[n+1],n)
+                    p_speed[n+1] = (opt.fsolve(force_solve,t_speed[n+1],n))[0]
+                    p_force[n+1] = Force(p_speed[n+1],n)
                 else:
-                    speed[n+1] = t_speed[n+1]
-                    force[n+1] = c_force[n+1]
+            	   p_speed[n+1] = t_speed[n+1]
+            	   p_force[n+1] = c_force[n+1]
+        
+                c_power[n+1] = Power(p_speed[n+1],n)
+        
+                if c_power[n+1] > top_power:
+                    speed[n+1] = (opt.fsolve(power_solve,p_speed[n+1],n))[0]
+                    force[n+1] = Force(speed[n+1],n)
+                    power[n+1] = Power(speed[n+1],n)
+                else:
+            	   speed[n+1] = p_speed[n+1]
+            	   force[n+1] = p_force[n+1]
+            	   power[n+1] = c_power[n+1]
+            
                     
                 force[n+1] = np.max([0,force[n+1]])
                 power[n+1] = (force[n+1] * speed[n+1])
@@ -293,8 +381,11 @@ def Simulation(dict_in):
         newData["L_Speed (M/S)"] = (l_speed[:end])
         newData["T_Speed (M/S)"] = (t_speed[:end])
         newData["C_Force (N)"] = (c_force[:end])
+        newData["P_Force (N)"] = (p_force[:end])
+        newData["P_Speed (M/S)"] = (p_speed[:end])
         newData["Actual Speed (M/S)"] = (speed[:end])
         newData["Actual Force (N)"] = (force[:end])
+        newData["C_Power [Watts]"] = (c_power[:end])
         newData["Power (Watts)"] = (power[:end])
         newData["Energy (Wh)"] = (energy[:end])
         newData["Acceleration (N)"] = (acceleration[:end])
@@ -318,7 +409,7 @@ def Simulation(dict_in):
         newData["Average Power (Watts)"] = repr(round(np.mean(power[:end]),3))
         newData["Max Power (Watts)"] = repr(round(np.max(power),3))
         newData["Max Energy (Wh)"] = repr(round(np.max(energy),3))
-        
+
 
         dict_in[file] = newData
         logging.info("Converted %s to a dictionary successfully", file)

@@ -127,14 +127,37 @@ def OutputFile(folderName, outputDict):
         logging.info("Data converted and saved to %s", fileName)
 
 
-def CreateRawData(optionsFile, folderName):
+def GrabFolder(optionsFile): #Returns full path folder in options if found otherwise, nothing
     
-    files = optionsFile[1:]
-    for file in files:
-        file = folderName + "\\" + file
-    print files
+    folderName = optionsFile[1,3]
     
+    return folderName
+    
+def WriteFolder(optionsFile, folderName):
+    
+    try:
+        data = np.loadtxt(open(optionsFile, "rb"), dtype = "|S256", delimiter=',')
+        logging.info("Data extraction from %s complete", file)
+                #Extracts all data from file into variable data
+    except IOError:
+        logging.critical("Unable to load %s",file)
+        GUIdialog = wx.MessageDialog(None, "Unable to edit " + optionsFile +". Make sure "+ optionsFile + " is correct or specify a new options file", "Error", wx.OK)
+        GUIdialog.ShowModal()
+        GUIdialog.Destroy()
+        raise Exception("File " + optionsFile + " not found")
+      
 
+    if np.shape(data)[1] <= 2:
+        newArray = np.zeros((np.shape(data)[0],1), dtype = "|S256")
+        newArray[0] = "Output Folder"
+        newArray[1] = folderName
+        data = np.concatenate((data, newArray), axis=1)
+    else:
+        data[0,2] = "Output Folder"
+        data[1,2] = folderName
+        
+    np.savetxt(optionsFile, data, delimiter=",", fmt="%s")
+    logging.info("%s successfully edited", optionsFile)
 ##############################################################################
 # GUI Starts Here
 ##############################################################################
@@ -150,7 +173,6 @@ class MainWindow(wx.Frame):
         #else:
          #   iconLoc = os.path.join(os.path.dirname(__file__),__file__)
 
-        pub.subscribe(self.ShowNewParams, ("optionsControl.filled"))
         # Setting up menu
         filemenu = wx.Menu()
         self.menuAbout = filemenu.Append(wx.ID_ABOUT, "&About"," Information about this program")
@@ -399,7 +421,7 @@ class Panel1(wx.Panel):
         outputDirectory = self.folderControl.GetValue()
         logging.debug("Entered out path: %s",outputDirectory)
         OutputFile(outputDirectory, dictionary)
-        #CreateRawData(options,outputDirectory)
+        WriteFolder(options,outputDirectory)
 
         
         
@@ -443,6 +465,16 @@ class Panel1(wx.Panel):
             self.filename = dlg.GetFilename()
             self.dirname = dlg.GetDirectory()
             self.optionsControl.SetValue(os.path.join(self.dirname, self.filename))
+            
+            if os.path.exists(self.optionsControl.GetValue()) and self.folderControl.IsEmpty():
+                try:
+                    data = np.loadtxt(open(self.optionsControl.GetValue(), "rb"), dtype = 'string', delimiter=',')
+                    self.folderControl.SetValue(data[1,2])
+                    
+                #Extracts all data from file into variable data
+                except:
+                    pass
+                
         dlg.Destroy()
         
     def BrowseFolders(self,e):
@@ -472,13 +504,7 @@ class Panel1(wx.Panel):
         else:
             self.runButton.Enable(True)
         
-        if self.optionsControl.IsEmpty():
-            msg = False
-            pub.sendMessage(("optionsControl.filled"), msg)
-        else:
-            msg = True
-            pub.sendMessage(("optionsControl.filled"), msg)            
-        #if len(self.optionsControl.GetValue()) > 0:
+
             
         
         

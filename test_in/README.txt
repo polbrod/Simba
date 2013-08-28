@@ -29,6 +29,8 @@ HOW TO RUN:
 
 	- Open OPTIONS.csv and change the input file and output file names as needed
 
-	- Make sure Automation.py and Simulation.py are in the same directory.  Run Automation.py.
+	- Run BCS.exe
 
 //////////////////////////////////////////////////////////////////////////////////////////////////////////////////////////////////
+
+FOR MORE INFORMATION AND A STEP BY STEP GUIDE, LOOK FOR SIMULATION GUIDE IN THE DOCUMENTS SECTION

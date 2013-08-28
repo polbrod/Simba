@@ -1,3 +1,25 @@
+CHANGELOG 0.33
+
+	- Added input parameter (top_power)
+
+	- Various bug fixes in automation and simulation
+
+	- If certain input parameters are higher than values available in look up tables,
+	  the simulation will warn the user about the issue and then change those parameters
+	  to the highest value in the lookup table
+
+
+CHANGELOG 0.32
+
+	- Changes made to OPTIONS.csv to take input in from the third column. The column 
+	  header should be "Output Folder" with the full path below it in the next row.
+
+	- If the OPTIONS.csv the user inputs already has a output directory specified in it,
+	  it is automatically copied into the output folder field. Otherwise, the simulation
+	  will copy the value in the GUI field into OPTIONS.csv after running the simulation
+
+
+
 CHANGELOG 0.31
 
 	- New input parameters added
