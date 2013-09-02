@@ -2,7 +2,7 @@
 """
 Created on Wed Jul 31 20:10:55 2013
 
-@author: Sean
+@author: Sean Harrington
 """
 
 import logging
@@ -236,6 +236,60 @@ class MainWindow(wx.Frame):
         
 ###############################################################################
         
+class WIP_New_Window(wx.Frame):
+    """ WIP Window to be incorporated in future verison """
+    def __init__(self, parent, title):
+        wx.Frame.__init__(self, parent, title=title, size=(800,800), style=wx.DEFAULT_FRAME_STYLE)
+        
+        # Load icon       
+        if hasattr(sys, 'frozen'):
+            iconLoc = os.path.join(os.path.dirname(sys.executable),"BCS.exe")
+            iconLoc = wx.IconLocation(iconLoc,0)
+            self.SetIcon(wx.IconFromLocation(iconLoc))    
+        
+        self.mainPanel = wx.Panel(self, -1)
+        self.inputPanel = InputPanel(self.mainPanel)
+        self.outputPanel = OutputPanel(self.mainPanel)
+        self.statusPanel = StatusPanel(self.mainPanel)
+        
+        self.horizontalPanelSizer = wx.BoxSizer(wx.HORIZONTAL)
+        self.horizontalPanelSizer.Add(self.inputPanel)
+        self.horizontalPanelSizer.Add(self.outputPanel)
+        
+        self.verticalPanelSizer = wx.BoxSizer(wx.VERTICAL)
+        self.verticalPanelSizer.Add(self.horizontalPanelSizer)
+        self.verticalPanelSizer.Add(self.statusPanel)
+        
+        self.mainPanel.SetSizer(self.verticalPanelSizer)
+
+        self.Show(False)
+        
+class InputPanel(wx.Panel):
+    """Left panel in WIP GUI window that manages all the import tools"""
+    def __init__(self, parent, *args, **kwargs):
+        wx.Panel.__init__(self, parent, *args, **kwargs)
+        self.parent = parent
+        
+        ## Insert components in the panel after here
+        
+
+class OutputPanel(wx.Panel):
+    """Right panel in WIP GUI window that shows all the results after running the simulation"""
+    def __init__(self, parent, *args, **kwargs):
+        wx.Panel.__init__(self, parent, *args, **kwargs)
+        self.parent = parent
+        
+        ## Insert components in the panel after here
+        
+        
+class StatusPanel(wx.Panel):
+    """Panel below InputPanel and OutputPanel that shows simulation status messages"""
+    def __init__(self, parent, *args, **kwargs):
+        wx.Panel.__init__(self, parent, *args, **kwargs)
+        self.parent = parent
+        
+        
+        
 class QuickResultsWindow(wx.Frame):
     """Displays quick results in new window"""
     def __init__(self, parent, title):
@@ -412,6 +466,7 @@ class Panel1(wx.Panel):
     def RunSim(self,e):
         """Runs the simulation and opens files if needed"""
         
+        
         options = self.optionsControl.GetValue()
         logging.debug("Entered path: %s", options)
         
@@ -455,7 +510,19 @@ class Panel1(wx.Panel):
             
         resultsWindow.Show()
         
-            
+        path = os.path.dirname(os.path.realpath("OPTIONS.csv"))
+        path = os.path.join(path, "SimOutputMacro.xlsm")
+        try:
+            os.startfile(path)
+        except AttributeError:
+            subprocess.call(['open', path])
+        except:
+            GUIdialog = wx.MessageDialog(None, "Error running macro. Please make sure SimOutputMacro is in the same folder as OPTIONS.csv.", "Error", wx.OK)
+            GUIdialog.ShowModal()
+            GUIdialog.Destroy()  
+        
+        
+    
     
     def BrowseOptions(self,e):
         """ Browse for the options file """
@@ -537,6 +604,7 @@ logging.info("STARTING automation.py")
 
 app = wx.App(False)
 mainWindow = MainWindow(None, "Buckeye Current Simulation")
+testWindow = WIP_New_Window(None, "Test window")
 #quickWindow = QuickResultsWindow(None, "Quick Results")
 app.MainLoop()
 
