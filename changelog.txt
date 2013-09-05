@@ -1,3 +1,9 @@
+CHANGELOG 0.34
+
+	- Added Julia's macro that manages post simulation data organization/representation
+
+	- Added a feature request from Polina.
+
 CHANGELOG 0.33
 
 	- Added input parameter (top_power)

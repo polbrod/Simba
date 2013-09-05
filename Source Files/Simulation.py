@@ -110,6 +110,10 @@ def Simulation(dict_in):
         logging.info("top_power found")
         top_power = currentData["top_power"]
         
+        assert "max_distance_travel" in currentData, logging.critical("%s is missing data: max_distance_travel" % file)
+        logging.info("max_distance_travel found")
+        max_distance_travel = currentData["max_distance_travel"]  
+        
         assert "dist_to_speed_lookup" in currentData, logging.critical("%s is missing data: dist_to_speed_lookup" % file)
         logging.info("dist_to_speed_lookup found")
         dist_to_speed_lookup = currentData["dist_to_speed_lookup"][0]
@@ -126,8 +130,7 @@ def Simulation(dict_in):
         logging.info("motor_eff_lookup found")
         motor_eff_lookup = currentData["motor_eff_lookup"][0]
 
-
-        max_distance_travel = 60600        
+    
         
         #calc values
         top_speed = ((wheel_radius*2*np.pi* (top_rpm) / (gearing))/60)

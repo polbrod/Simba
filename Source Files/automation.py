@@ -9,16 +9,45 @@ import logging
 import os
 import numpy as np
 import Simulation as sim
+import win32com.client
 import wx
 
 from wx.lib.pubsub import setuparg1
 from wx.lib.pubsub import pub
+from copy import deepcopy
 
 import sys, subprocess
 
 def dependencies_for_automation():  #Missing imports needed to convert to .exe
     from scipy.sparse.csgraph import _validation
 
+
+def AdjustParams(dictionary, percentChange):  
+    
+    resultDict = dict()
+    dictionary = deepcopy(dictionary)
+    percentChange = float(percentChange) / 100
+    
+    for file in dictionary:
+        
+        currentData = deepcopy(dictionary[file])
+        percentDown = deepcopy(dictionary[file])
+        percentUp = deepcopy(dictionary[file])
+        file = file[:-4]
+        
+        for key in currentData:
+            if not isinstance(currentData[key][0], str):
+                
+                originalValue = currentData[key][0]
+                percentDown[key] = originalValue - (originalValue * percentChange)
+                resultDict[file + "." + key + ".down.csv"] = percentDown.copy()
+                percentUp[key] = originalValue + (originalValue * percentChange)
+                resultDict[file + "." + key + ".up.csv"] = percentUp.copy()
+                percentDown[key] = originalValue
+                percentUp[key] = originalValue
+            
+    return resultDict
+    
 def FileToParams(inFiles):
     
     optionsFile = inFiles
@@ -126,12 +155,6 @@ def OutputFile(folderName, outputDict):
         print("Data transfer to " + fileName + " complete")
         logging.info("Data converted and saved to %s", fileName)
 
-
-def GrabFolder(optionsFile): #Returns full path folder in options if found otherwise, nothing
-    
-    folderName = optionsFile[1,3]
-    
-    return folderName
     
 def WriteFolder(optionsFile, folderName):
     
@@ -147,14 +170,14 @@ def WriteFolder(optionsFile, folderName):
         raise Exception("File " + optionsFile + " not found")
       
 
-    if np.shape(data)[1] <= 2:
-        newArray = np.zeros((np.shape(data)[0],1), dtype = "|S256")
+    if np.shape(data)[1] <= 4:
+        newArray = np.zeros((np.shape(data)[0],2), dtype = "|S256")
         newArray[0] = "Output Folder"
         newArray[1] = folderName
         data = np.concatenate((data, newArray), axis=1)
     else:
-        data[0,2] = "Output Folder"
-        data[1,2] = folderName
+        data[0,3] = "Output Folder"
+        data[1,3] = folderName
         
     np.savetxt(optionsFile, data, delimiter=",", fmt="%s")
     logging.info("%s successfully edited", optionsFile)
@@ -167,7 +190,7 @@ class MainWindow(wx.Frame):
         
         # Load icon
         if hasattr(sys, 'frozen'):
-            iconLoc = os.path.join(os.path.dirname(sys.executable),"BCS.exe")
+            iconLoc = os.path.join(os.path.dirname(sys.executable),"SIMBA.exe")
             iconLoc = wx.IconLocation(iconLoc,0)
             self.SetIcon(wx.IconFromLocation(iconLoc))
         #else:
@@ -243,9 +266,25 @@ class WIP_New_Window(wx.Frame):
         
         # Load icon       
         if hasattr(sys, 'frozen'):
-            iconLoc = os.path.join(os.path.dirname(sys.executable),"BCS.exe")
+            iconLoc = os.path.join(os.path.dirname(sys.executable),"SIMBA.exe")
             iconLoc = wx.IconLocation(iconLoc,0)
-            self.SetIcon(wx.IconFromLocation(iconLoc))    
+            self.SetIcon(wx.IconFromLocation(iconLoc)) 
+            
+        filemenu = wx.Menu()
+        self.menuAbout = filemenu.Append(wx.ID_ABOUT, "&About"," Information about this program")
+        self.menuExit = filemenu.Append(wx.ID_EXIT, "&Exit"," Terminate the program")
+        
+        toolsmenu = wx.Menu()
+        self.menuNewProject = toolsmenu.Append(wx.ID_ANY, "Create New Project", " Create new project including parameter files and necessary components")
+        self.menuNewParamFile = toolsmenu.Append(wx.ID_ANY, "New &Parameters File"," Create new parameter file to add to current options file")
+
+        # Creating menubar
+        menuBar = wx.MenuBar()
+        menuBar.Append(filemenu, "&File") #Adds "filemenu" to the MenuBar
+        menuBar.Append(toolsmenu, "&Tools")
+        
+        self.SetMenuBar(menuBar)
+        self.NewToolBar()
         
         self.mainPanel = wx.Panel(self, -1)
         self.inputPanel = InputPanel(self.mainPanel)
@@ -261,8 +300,76 @@ class WIP_New_Window(wx.Frame):
         self.verticalPanelSizer.Add(self.statusPanel)
         
         self.mainPanel.SetSizer(self.verticalPanelSizer)
-
+        
+        # Change this to True to show the WIP GUI
         self.Show(False)
+    
+    def NewToolBar(self):
+        """ Creates tool bar just under the file menu"""
+        self.toolbar = self.CreateToolBar()
+        
+        self.toolbar.Realize()
+        
+    def runFile(self, e):
+        
+        """ Makes calls to functions to run the simulation """
+        pub.sendMessage(("quickValues.close"), "Close")
+        
+        options = self.optionsControl.GetValue()
+        logging.debug("Entered path: %s", options)
+        
+        dictionary = FileToParams(options)
+         
+        
+        # Sensitivity Analysis Function calls
+        #percentChange = 15
+        #senseAnalysis = AdjustParams(dictionary, percentChange)
+        #senseAnalysisDict = sim.Simulation(senseAnalysis)
+        dictionary = sim.Simulation(dictionary)
+        
+        outputDirectory = self.folderControl.GetValue()
+        logging.debug("Entered out path: %s",outputDirectory)
+        OutputFile(outputDirectory, dictionary)
+        #OutputFile(outputDirectory, senseAnalysisDict)
+        WriteFolder(options,outputDirectory)
+
+        
+        
+        
+        # Gather filenames and value for quick values
+        fileNames = np.array(dictionary.keys())
+        
+        for key in fileNames:
+            msg = key
+            pub.sendMessage(("fileNames.key"), msg)      
+            
+            if dictionary.has_key(key):
+                currentDict = dictionary[key]
+            #else:         # Used to make quick value tabs for senseAnalysis files
+            #    currentDict = senseAnalysisDict[key]
+            values = dict()
+
+            paramHeaders = np.array(currentDict.keys())
+            
+            for x in range(len(paramHeaders)):
+                currentValues = currentDict[paramHeaders[x]]
+                values[paramHeaders[x]] = currentValues
+                    
+            msg = values
+            pub.sendMessage(("fileName.data"),msg)
+            
+            
+        
+        path = os.path.dirname(os.path.realpath("OPTIONS.csv"))
+        path = os.path.join(path, "SimOutputMacro.xlsm")        
+        
+        excel = win32com.client.DispatchEx("Excel.Application")
+        workbook = excel.workbooks.open(path)
+        excel.run("ConsolidateData")
+        excel.Visible = True
+        workbook.Close(SaveChanges=1)
+        excel.Quit
+        
         
 class InputPanel(wx.Panel):
     """Left panel in WIP GUI window that manages all the import tools"""
@@ -280,6 +387,23 @@ class OutputPanel(wx.Panel):
         self.parent = parent
         
         ## Insert components in the panel after here
+        #pub.subscribe(self.CreateTab, ("fileNames.key"))
+        #pub.subscribe(self.PlugInData, ("fileName.data"))
+        #pub.subscribe(self.ClearTabs, ("ClearTabs"))
+        
+        '''
+        notebookPanel = wx.Panel(self)
+        self.notebook = wx.Notebook(notebookPanel)
+        
+        sizer = wx.BoxSizer(wx.VERTICAL)
+        sizer.Add(self.notebook, 1, wx.ALL|wx.EXPAND, 5)
+        notebookPanel.SetSizer(sizer)
+                
+        
+        def CreateTab(self, msg):
+            pass
+            
+        '''        
         
         
 class StatusPanel(wx.Panel):
@@ -297,13 +421,14 @@ class QuickResultsWindow(wx.Frame):
         
         # Load icon       
         if hasattr(sys, 'frozen'):
-            iconLoc = os.path.join(os.path.dirname(sys.executable),"BCS.exe")
+            iconLoc = os.path.join(os.path.dirname(sys.executable),"SIMBA.exe")
             iconLoc = wx.IconLocation(iconLoc,0)
             self.SetIcon(wx.IconFromLocation(iconLoc))       
         
         # Looks for messages with these names and triggers event if found
         pub.subscribe(self.CreatePage, ("fileNames.key"))       
         pub.subscribe(self.PlugInValues, ("key.quickValues"))
+        pub.subscribe(self.CloseWindow, ("quickValues.close"))
         
         panel = wx.Panel(self)
         self.notebook = wx.Notebook(panel)
@@ -330,6 +455,12 @@ class QuickResultsWindow(wx.Frame):
             compiledMessage += index + ": " + data[index] + os.linesep
         
         self.page.quickData.SetValue(compiledMessage)
+    
+    def CloseWindow(self,msg):
+        if msg.data == "Close":
+            self.Close(True)
+        
+
 
 ##############################################################################
 
@@ -465,32 +596,55 @@ class Panel1(wx.Panel):
     
     def RunSim(self,e):
         """Runs the simulation and opens files if needed"""
-        
+        pub.sendMessage(("quickValues.close"), "Close")
         
         options = self.optionsControl.GetValue()
         logging.debug("Entered path: %s", options)
         
         dictionary = FileToParams(options)
+        
+        
+        # Easter egg
+        
+        path = os.path.realpath("Lookup Files\Simba.mp4")
+        print path
+        try:
+            os.startfile(path)
+        except AttributeError:
+            subprocess.call(['open', path])
+        except:
+            pass   
+        
+        # Sensitivity Analysis Function calls
+        #percentChange = 15
+        #senseAnalysis = AdjustParams(dictionary, percentChange)
+        #senseAnalysisDict = sim.Simulation(senseAnalysis)
         dictionary = sim.Simulation(dictionary)
         
         outputDirectory = self.folderControl.GetValue()
         logging.debug("Entered out path: %s",outputDirectory)
         OutputFile(outputDirectory, dictionary)
+        #OutputFile(outputDirectory, senseAnalysisDict)
         WriteFolder(options,outputDirectory)
 
         
         
         
         # Gather filenames and value for quick values
-        self.fileNames = np.array(dictionary.keys())
+        fileNames = np.array(dictionary.keys())
+        #fileNames = np.append(dictionary.keys(), senseAnalysisDict.keys())
         resultsWindow = QuickResultsWindow(None, "Quick Results")
         
-        for key in self.fileNames:
+        for key in fileNames:
             msg = key
             pub.sendMessage(("fileNames.key"), msg)      
             
-            currentDict = dictionary[key]
+            if dictionary.has_key(key):
+                currentDict = dictionary[key]
+            #else:         # Used to make quick value tabs for senseAnalysis files
+            #    currentDict = senseAnalysisDict[key]
             quickValues = dict()
+
             paramHeaders = np.array(currentDict.keys())
             
             for x in range(len(paramHeaders)):
@@ -511,7 +665,17 @@ class Panel1(wx.Panel):
         resultsWindow.Show()
         
         path = os.path.dirname(os.path.realpath("OPTIONS.csv"))
-        path = os.path.join(path, "SimOutputMacro.xlsm")
+        path = os.path.join(path, "SimOutputMacro0904.xlsm")        
+        
+        excel = win32com.client.DispatchEx("Excel.Application")
+        workbook = excel.workbooks.open(path)
+        excel.run("ConsolidateData")
+        excel.Visible = True
+        workbook.Close(SaveChanges=1)
+        excel.Quit
+        
+        resultsWindow.Freeze()
+        '''
         try:
             os.startfile(path)
         except AttributeError:
@@ -520,7 +684,7 @@ class Panel1(wx.Panel):
             GUIdialog = wx.MessageDialog(None, "Error running macro. Please make sure SimOutputMacro is in the same folder as OPTIONS.csv.", "Error", wx.OK)
             GUIdialog.ShowModal()
             GUIdialog.Destroy()  
-        
+        '''
         
     
     
@@ -536,7 +700,7 @@ class Panel1(wx.Panel):
             if os.path.exists(self.optionsControl.GetValue()) and self.folderControl.IsEmpty():
                 try:
                     data = np.loadtxt(open(self.optionsControl.GetValue(), "rb"), dtype = 'string', delimiter=',')
-                    self.folderControl.SetValue(data[1,2])
+                    self.folderControl.SetValue(data[1,3])
                     
                 #Extracts all data from file into variable data
                 except:
@@ -603,7 +767,7 @@ logging.info("STARTING automation.py")
 
 
 app = wx.App(False)
-mainWindow = MainWindow(None, "Buckeye Current Simulation")
+mainWindow = MainWindow(None, "SIMBA")
 testWindow = WIP_New_Window(None, "Test window")
 #quickWindow = QuickResultsWindow(None, "Quick Results")
 app.MainLoop()
