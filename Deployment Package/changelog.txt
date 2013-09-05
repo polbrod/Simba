@@ -1,0 +1,104 @@
+CHANGELOG 0.35
+
+	- Changed folder system to have a Deployment Package and a Full Package. Deployment
+	  is for team members who want to use the Simulation while the Full Package is for
+	  programmers
+
+	- Removed Polina's feature request
+
+	- Temporary fix to prevent the simulation from running after it's been closed
+
+	- Changed the log name to accurately reflect new simulation name (SIMBA)
+
+
+CHANGELOG 0.34
+
+	- Added Julia's macro that manages post simulation data organization/representation
+
+	- Changes requirements for OPTIONS.csv
+
+	- Added a feature request from Polina.
+
+
+CHANGELOG 0.33
+
+	- Added input parameter (top_power)
+
+	- Various bug fixes in automation and simulation
+
+	- If certain input parameters are higher than values available in look up tables,
+	  the simulation will warn the user about the issue and then change those parameters
+	  to the highest value in the lookup table
+
+
+CHANGELOG 0.32
+
+	- Changes made to OPTIONS.csv to take input in from the third column. The column 
+	  header should be "Output Folder" with the full path below it in the next row.
+
+	- If the OPTIONS.csv the user inputs already has a output directory specified in it,
+	  it is automatically copied into the output folder field. Otherwise, the simulation
+	  will copy the value in the GUI field into OPTIONS.csv after running the simulation
+
+
+
+CHANGELOG 0.31
+
+	- New input parameters added
+
+	- New output data from each simulation performed
+
+	- Fixes to unit labels
+
+	- Removed ability to select graphing program in preparation for next update
+
+	- Added "Tools" to menubar (NOT FULLY IMPLEMENTED)
+
+
+CHANGELOG 0.30
+
+	- GUI introduced
+
+	- Optional input for graphing program. Entering a graphing program will
+	  automatically opened the files with that program when simulation is finished
+
+	- Average Power calculation fixed
+
+	- Dialog boxes appear when certain errors are found during execution
+
+	- Quick values popup box added to quickly see certain results from the
+	  simulation
+
+	- Removed console
+
+	- Updated Simulation Guide to reflect the new GUI and changes
+
+
+CHANGELOG 0.21
+	
+	- Corrected how force is calculated
+
+	- Fixed unit labels on output parameters
+
+	- Added log that records script progress and any errors that occur. Log is saved
+	  to directory that BCS.exe was ran from.
+
+
+CHANGELOG 0.2
+
+	- Asks user for input file and output folder before running simulation
+
+	- Changed output parameters and values
+
+	- Fixes to simulation.py for more accurate results
+
+	- Fixes to Lookup Files
+
+	- Sorts output files so that parameters with multiple values come first,
+	  followed by parameters with only 1 value
+
+	- Fixed an issue where if user entered a folder into the input options file
+	  field, the program would crash
+	
+	- Fixed an issue where user could enter any output folder even if it's not
+	  a possible or a writable folder

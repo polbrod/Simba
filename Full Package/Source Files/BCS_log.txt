@@ -1,0 +1,2 @@
+2013-09-05 14:17:28,352 - INFO - STARTING automation.py
+2013-09-05 14:17:53,476 - INFO - STARTING automation.py
