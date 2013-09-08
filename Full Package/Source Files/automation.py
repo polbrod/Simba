@@ -11,6 +11,7 @@ import numpy as np
 import Simulation as sim
 import win32com.client
 import wx
+import wx.grid as gridlib
 
 from wx.lib.pubsub import setuparg1
 from wx.lib.pubsub import pub
@@ -259,117 +260,53 @@ class MainWindow(wx.Frame):
         
 ###############################################################################
         
-class WIP_New_Window(wx.Frame):
-    """ WIP Window to be incorporated in future verison """
-    def __init__(self, parent, title):
-        wx.Frame.__init__(self, parent, title=title, size=(800,800), style=wx.DEFAULT_FRAME_STYLE)
-        
-        # Load icon       
-        if hasattr(sys, 'frozen'):
-            iconLoc = os.path.join(os.path.dirname(sys.executable),"SIMBA.exe")
-            iconLoc = wx.IconLocation(iconLoc,0)
-            self.SetIcon(wx.IconFromLocation(iconLoc)) 
-            
-        filemenu = wx.Menu()
-        self.menuAbout = filemenu.Append(wx.ID_ABOUT, "&About"," Information about this program")
-        self.menuExit = filemenu.Append(wx.ID_EXIT, "&Exit"," Terminate the program")
-        
-        toolsmenu = wx.Menu()
-        self.menuNewProject = toolsmenu.Append(wx.ID_ANY, "Create New Project", " Create new project including parameter files and necessary components")
-        self.menuNewParamFile = toolsmenu.Append(wx.ID_ANY, "New &Parameters File"," Create new parameter file to add to current options file")
+class IOSplitterPanel(wx.Panel):
+    """ Constructs a Vertical splitter window with left and right panels"""
+    #----------------------------------------------------------------------
+    def __init__(self, parent, color):
+        """Constructor"""
+        wx.Panel.__init__(self, parent)
+        self.SetBackgroundColour(color)
+        splitter = wx.SplitterWindow(self, style = wx.SP_3D| wx.SP_LIVE_UPDATE)
+        splitter.SetSashGravity(0.5)
+        splitter.SetMinimumPaneSize(20)        
+        leftPanel = InputPanel(splitter)
+        rightPanel = OutputPanel(splitter)
+        leftPanel.SetBackgroundColour('SEA GREEN')
+        rightPanel.SetBackgroundColour('STEEL BLUE')
 
-        # Creating menubar
-        menuBar = wx.MenuBar()
-        menuBar.Append(filemenu, "&File") #Adds "filemenu" to the MenuBar
-        menuBar.Append(toolsmenu, "&Tools")
-        
-        self.SetMenuBar(menuBar)
-        self.NewToolBar()
-        
-        self.mainPanel = wx.Panel(self, -1)
-        self.inputPanel = InputPanel(self.mainPanel)
-        self.outputPanel = OutputPanel(self.mainPanel)
-        self.statusPanel = StatusPanel(self.mainPanel)
-        
-        self.horizontalPanelSizer = wx.BoxSizer(wx.HORIZONTAL)
-        self.horizontalPanelSizer.Add(self.inputPanel)
-        self.horizontalPanelSizer.Add(self.outputPanel)
-        
-        self.verticalPanelSizer = wx.BoxSizer(wx.VERTICAL)
-        self.verticalPanelSizer.Add(self.horizontalPanelSizer)
-        self.verticalPanelSizer.Add(self.statusPanel)
-        
-        self.mainPanel.SetSizer(self.verticalPanelSizer)
-        
-        # Change this to True to show the WIP GUI
-        self.Show(False)
-    
-    def NewToolBar(self):
-        """ Creates tool bar just under the file menu"""
-        self.toolbar = self.CreateToolBar()
-        
-        self.toolbar.Realize()
-        
-    def runFile(self, e):
-        
-        """ Makes calls to functions to run the simulation """
-        pub.sendMessage(("quickValues.close"), "Close")
-        
-        options = self.optionsControl.GetValue()
-        logging.debug("Entered path: %s", options)
-        
-        dictionary = FileToParams(options)
-         
-        
-        # Sensitivity Analysis Function calls
-        #percentChange = 15
-        #senseAnalysis = AdjustParams(dictionary, percentChange)
-        #senseAnalysisDict = sim.Simulation(senseAnalysis)
-        dictionary = sim.Simulation(dictionary)
-        
-        outputDirectory = self.folderControl.GetValue()
-        logging.debug("Entered out path: %s",outputDirectory)
-        OutputFile(outputDirectory, dictionary)
-        #OutputFile(outputDirectory, senseAnalysisDict)
-        WriteFolder(options,outputDirectory)
+        splitter.SplitVertically(leftPanel, rightPanel) 
+        PanelSizer=wx.BoxSizer(wx.VERTICAL)
+        PanelSizer.Add(splitter, 1, wx.EXPAND | wx.ALL)
+        self.SetSizer(PanelSizer)
 
-        
-        
-        
-        # Gather filenames and value for quick values
-        fileNames = np.array(dictionary.keys())
-        
-        for key in fileNames:
-            msg = key
-            pub.sendMessage(("fileNames.key"), msg)      
-            
-            if dictionary.has_key(key):
-                currentDict = dictionary[key]
-            #else:         # Used to make quick value tabs for senseAnalysis files
-            #    currentDict = senseAnalysisDict[key]
-            values = dict()
+########################################################################
 
-            paramHeaders = np.array(currentDict.keys())
-            
-            for x in range(len(paramHeaders)):
-                currentValues = currentDict[paramHeaders[x]]
-                values[paramHeaders[x]] = currentValues
-                    
-            msg = values
-            pub.sendMessage(("fileName.data"),msg)
-            
-            
-        
-        path = os.path.dirname(os.path.realpath("OPTIONS.csv"))
-        path = os.path.join(path, "SimOutputMacro.xlsm")        
-        
-        excel = win32com.client.DispatchEx("Excel.Application")
-        workbook = excel.workbooks.open(path)
-        excel.run("ConsolidateData")
-        excel.Visible = True
-        workbook.Close(SaveChanges=1)
-        excel.Quit
-        
+class MainFrame(wx.Frame):
+    """Constructor"""
+    #----------------------------------------------------------------------
+    def __init__(self, parent, id):
+        wx.Frame.__init__(self, None, title="Basic Splitter Panel Skeleton",size=(800,600))
+        self.sb=self.CreateStatusBar()
+        ################################################################
+        # Define mainsplitter as child of Frame and add H and VSplitterPanel as children
+        mainsplitter = wx.SplitterWindow(self, style = wx.SP_3D| wx.SP_LIVE_UPDATE)
+        mainsplitter.SetSashGravity(0.5)
+
+        splitterpanel = IOSplitterPanel(mainsplitter,'LIGHT BLUE')
+        statusPanel = StatusPanel(mainsplitter)
+        statusPanel.SetBackgroundColour("RED")
+
+        mainsplitter.SplitHorizontally(splitterpanel, statusPanel)
+        MainSizer = wx.BoxSizer(wx.VERTICAL)
+        MainSizer.Add(mainsplitter, 1, wx.EXPAND | wx.ALL)
+        self.SetSizer(MainSizer)
+        #################################################################
+        self.Refresh()
+        self.Show()
+
+
+
         
 class InputPanel(wx.Panel):
     """Left panel in WIP GUI window that manages all the import tools"""
@@ -399,12 +336,32 @@ class OutputPanel(wx.Panel):
         sizer = wx.BoxSizer(wx.VERTICAL)
         sizer.Add(self.notebook, 1, wx.ALL|wx.EXPAND, 5)
         notebookPanel.SetSizer(sizer)
-                
+        '''       
+
+        myGrid = gridlib.Grid(self)
+        myGrid.CreateGrid(10000,40)
+        myGrid.EnableEditing(False)
+        sizer = wx.BoxSizer(wx.VERTICAL)
+        sizer.Add(myGrid, 1, wx.ALL|wx.EXPAND, 5)
+        self.SetSizer(sizer)
+        self.Layout()
         
-        def CreateTab(self, msg):
-            pass
-        '''
-            
+    '''    
+    def CreateTab(self, msg):
+        self.page = TabPanel(self.notebook)
+        self.notebook.AddPage(self.page, msg.data)
+        
+    def PlugInData(self, msg):
+        data = msg.data
+        compiledMessage = ""
+        for index in data:
+            compiledMessage += index + ": " + data[index] + os.linesep
+    
+        self.page.quickData.SetValue(compiledMessage)
+        
+    def ClearTabs(self, msg):
+        pass
+    '''        
         
         
         
@@ -583,10 +540,10 @@ class Panel1(wx.Panel):
         # Insert each row into vertical sizer to make 1 sizer
         self.vSizer = wx.BoxSizer(wx.VERTICAL)
         self.vSizer.AddSpacer((-1,20))
-        self.vSizer.Add(self.hSizer1, 0, wx.EXPAND)
-        self.vSizer.Add(self.hSizer2, 0, wx.EXPAND)
+        self.vSizer.Add(self.hSizer1)
+        self.vSizer.Add(self.hSizer2)
         self.vSizer.AddSpacer((-1,20))
-        self.vSizer.Add(self.hSizer3, 0, wx.EXPAND)
+        self.vSizer.Add(self.hSizer3)
         self.vSizer.AddSpacer((-1,20))
         
         
@@ -759,8 +716,7 @@ logging.info("STARTING automation.py")
 
 app = wx.App(False)
 mainWindow = MainWindow(None, "SIMBA")
-testWindow = WIP_New_Window(None, "Test window")
-testWindow.Destroy()
+testWindow = MainFrame(None, "TEST")
 #quickWindow = QuickResultsWindow(None, "Quick Results")
 app.MainLoop()
 
