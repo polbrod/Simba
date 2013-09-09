@@ -263,17 +263,16 @@ class MainWindow(wx.Frame):
 class IOSplitterPanel(wx.Panel):
     """ Constructs a Vertical splitter window with left and right panels"""
     #----------------------------------------------------------------------
-    def __init__(self, parent, color):
+    def __init__(self, parent):
         """Constructor"""
         wx.Panel.__init__(self, parent)
-        self.SetBackgroundColour(color)
         splitter = wx.SplitterWindow(self, style = wx.SP_3D| wx.SP_LIVE_UPDATE)
         splitter.SetSashGravity(0.5)
         splitter.SetMinimumPaneSize(20)        
         leftPanel = InputPanel(splitter)
         rightPanel = OutputPanel(splitter)
         leftPanel.SetBackgroundColour('SEA GREEN')
-        rightPanel.SetBackgroundColour('STEEL BLUE')
+        
 
         splitter.SplitVertically(leftPanel, rightPanel) 
         PanelSizer=wx.BoxSizer(wx.VERTICAL)
@@ -286,14 +285,40 @@ class MainFrame(wx.Frame):
     """Constructor"""
     #----------------------------------------------------------------------
     def __init__(self, parent, id):
-        wx.Frame.__init__(self, None, title="Basic Splitter Panel Skeleton",size=(800,600))
-        self.sb=self.CreateStatusBar()
+        wx.Frame.__init__(self, None, title="NEW GUI LAYOUT",size=(1800,1600))
+        
+        # Load icon
+        if hasattr(sys, 'frozen'):
+            iconLoc = os.path.join(os.path.dirname(sys.executable),"SIMBA.exe")
+            iconLoc = wx.IconLocation(iconLoc,0)
+            self.SetIcon(wx.IconFromLocation(iconLoc))
+        #else:
+         #   iconLoc = os.path.join(os.path.dirname(__file__),__file__)
+
+        # Setting up menu
+        filemenu = wx.Menu()
+        self.menuAbout = filemenu.Append(wx.ID_ABOUT, "&About"," Information about this program")
+        self.menuExit = filemenu.Append(wx.ID_EXIT, "&Exit"," Terminate the program")
+        
+        toolsmenu = wx.Menu()
+        self.menuNewProject = toolsmenu.Append(wx.ID_ANY, "Create New Project", " Create new project including parameter files and necessary components")
+        self.menuNewParamFile = toolsmenu.Append(wx.ID_ANY, "New &Parameters File"," Create new parameter file to add to current options file")
+        
+        
+        # Creating menubar
+        menuBar = wx.MenuBar()
+        menuBar.Append(filemenu, "&File") #Adds "filemenu" to the MenuBar
+        menuBar.Append(toolsmenu, "&Tools")
+        
+        self.SetMenuBar(menuBar)        
+        
         ################################################################
-        # Define mainsplitter as child of Frame and add H and VSplitterPanel as children
+        # Define mainsplitter as child of Frame and add IOSplitterPanel and StatusPanel as children
         mainsplitter = wx.SplitterWindow(self, style = wx.SP_3D| wx.SP_LIVE_UPDATE)
         mainsplitter.SetSashGravity(0.5)
+        mainsplitter.SetMinimumPaneSize(20)
 
-        splitterpanel = IOSplitterPanel(mainsplitter,'LIGHT BLUE')
+        splitterpanel = IOSplitterPanel(mainsplitter)
         statusPanel = StatusPanel(mainsplitter)
         statusPanel.SetBackgroundColour("RED")
 
@@ -323,45 +348,68 @@ class OutputPanel(wx.Panel):
         wx.Panel.__init__(self, parent, *args, **kwargs)
         self.parent = parent
         
-        '''
+        
         ## Insert components in the panel after here
         pub.subscribe(self.CreateTab, ("fileNames.key"))
         pub.subscribe(self.PlugInData, ("fileName.data"))
         pub.subscribe(self.ClearTabs, ("ClearTabs"))
         
         
-        notebookPanel = wx.Panel(self)
-        self.notebook = wx.Notebook(notebookPanel)
-        
+        self.notebook = wx.Notebook(self)
         sizer = wx.BoxSizer(wx.VERTICAL)
         sizer.Add(self.notebook, 1, wx.ALL|wx.EXPAND, 5)
-        notebookPanel.SetSizer(sizer)
-        '''       
-
-        myGrid = gridlib.Grid(self)
-        myGrid.CreateGrid(10000,40)
-        myGrid.EnableEditing(False)
-        sizer = wx.BoxSizer(wx.VERTICAL)
-        sizer.Add(myGrid, 1, wx.ALL|wx.EXPAND, 5)
         self.SetSizer(sizer)
         self.Layout()
+
         
-    '''    
+    
     def CreateTab(self, msg):
-        self.page = TabPanel(self.notebook)
+        self.page = NewTabPanel(self.notebook)
         self.notebook.AddPage(self.page, msg.data)
         
     def PlugInData(self, msg):
+        
         data = msg.data
-        compiledMessage = ""
-        for index in data:
-            compiledMessage += index + ": " + data[index] + os.linesep
+        #Run through the dictionary passed, individually assign each cell in grid
+        column = 0;
+        keys = data.keys()
+
+        self.page.myGrid.CreateGrid(len(data[keys[0]]),len(keys))
+
+        for key in data:
+            
+            self.page.myGrid.SetColLabelValue(column, key)
+            row = 0
+            
+            if not isinstance(data[key], float):
+                for value in data[key]:
+                    if not type(value) == str:
+                        value = repr(round(value, 3))
     
-        self.page.quickData.SetValue(compiledMessage)
+                    self.page.myGrid.SetCellValue(row, column, value)
+                    row = row + 1
+                column = column + 1
+                
+            else:
+                value = repr(round(data[key], 3))
+                self.page.myGrid.SetCellValue(row, column, value)
+                column = column + 1
+                
+                
+        
+        self.page.myGrid.AutoSizeColumns()
+
         
     def ClearTabs(self, msg):
-        pass
-    '''        
+        if msg.data == "True":   
+            try:
+                self.notebook.DeleteAllPages()
+                self.page.myGrid.ClearGrid()
+            except:
+                pass
+            
+            
+          
         
         
         
@@ -411,7 +459,8 @@ class QuickResultsWindow(wx.Frame):
         data = msg.data
         compiledMessage = ""
         for index in data:
-            compiledMessage += index + ": " + data[index] + os.linesep
+            value = repr(round(data[index], 3))
+            compiledMessage += index + ": " + value + os.linesep
         
         self.page.quickData.SetValue(compiledMessage)
     
@@ -556,7 +605,7 @@ class Panel1(wx.Panel):
     def RunSim(self,e):
         """Runs the simulation and opens files if needed"""
         pub.sendMessage(("quickValues.close"), "Close")
-        
+        pub.sendMessage(("ClearTabs"), "True")
         options = self.optionsControl.GetValue()
         logging.debug("Entered path: %s", options)
         
@@ -591,7 +640,10 @@ class Panel1(wx.Panel):
                 currentDict = dictionary[key]
             #else:         # Used to make quick value tabs for senseAnalysis files
             #    currentDict = senseAnalysisDict[key]
+            msg = currentDict
+            pub.sendMessage(("fileName.data"), msg)
             quickValues = dict()
+            
 
             paramHeaders = np.array(currentDict.keys())
             
@@ -702,7 +754,18 @@ class TabPanel(wx.Panel):
         self.SetSizer(sizer)
         self.Fit()
     
-
+class NewTabPanel(wx.Panel):
+    """Generates panel for each tab"""
+    def __init__(self,parent):
+        
+        wx.Panel.__init__(self, parent= parent, id=wx.ID_ANY)
+        
+        self.myGrid = gridlib.Grid(self)
+        self.myGrid.EnableEditing(False)
+        sizer = wx.BoxSizer(wx.VERTICAL)
+        sizer.Add(self.myGrid, 1, wx.ALL|wx.EXPAND, 5)
+        self.SetSizer(sizer)
+        self.Layout()
 
 ###############################################################################
 # GUI Ends Here

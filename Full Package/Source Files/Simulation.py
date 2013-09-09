@@ -407,11 +407,11 @@ def Simulation(dict_in):
         newData["Arms"] = (arms[:end])
         newData["Vrms"] = (vrms[:end])     
         
-        newData["Average MPH"] = repr(round(np.mean(speed[:end])*2.23,3))
-        newData["Max MPH"] = repr(round(np.max(speed[:end])*2.23,3))
-        newData["Average Power (Watts)"] = repr(round(np.mean(power[:end]),3))
-        newData["Max Power (Watts)"] = repr(round(np.max(power),3))
-        newData["Max Energy (Wh)"] = repr(round(np.max(energy),3))
+        newData["Average MPH"] = (round(np.mean(speed[:end])*2.23,3))
+        newData["Max MPH"] = (round(np.max(speed[:end])*2.23,3))
+        newData["Average Power (Watts)"] = (round(np.mean(power[:end]),3))
+        newData["Max Power (Watts)"] = (round(np.max(power),3))
+        newData["Max Energy (Wh)"] = (round(np.max(energy),3))
 
 
         dict_in[file] = newData
