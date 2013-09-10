@@ -79,6 +79,14 @@ total_power = np.zeros((steps+1,tests),dtype=float) #power with losses
 arms = np.zeros((steps+1,tests),dtype=float)    #amps rms out from motor controller
 vrms = np.zeros((steps+1,tests),dtype=float)    #voltage rms out from motor controller
 
+motor_efficiency = np.zeros((steps+1,tests),dtype=float)
+motor_controller_efficiency = np.zeros((steps+1,tests),dtype=float)
+chain_power = np.zeros((steps+1,tests),dtype=float)
+motor_power = np.zeros((steps+1,tests),dtype=float)
+motor_controller_power = np.zeros((steps+1,tests),dtype=float)
+battery_power = np.zeros((steps+1,tests),dtype=float)
+
+
 #Lookups
 n = np.loadtxt(dist_to_speed_lookup,dtype = 'string',delimiter = ',', skiprows = 1)
 x = n[:,0].astype(np.float)
@@ -172,13 +180,21 @@ def Efficiency(n):
     motor_rpm[n+1] = ((speed[n+1])/(wheel_radius*2*np.pi)) * gearing * 60
     motor_torque[n+1] = (force[n+1] * wheel_radius)/gearing
     arms[n+1] = motor_torque[n+1]/motor_torque_constant
-    vrms[n+1] = motor_rpm[n+1]/(motor_rpm_constant)*(1/(sqrt2))           
-     
-    motor_loss[n+1] = power[n+1]*(1-motor_eff_grid[np.int(np.around(motor_rpm[n+1]))][np.int(np.around(motor_torque[n+1]))])
-    motor_controller_loss[n+1] = power[n+1]*(1-motor_controller_eff_grid[np.int(np.around(vrms[n+1]))][np.int(np.around(arms[n+1]))])
-    chain_loss[n+1] = power[n+1]*(1-chain_efficiency)
-    battery_loss[n+1] = power[n+1]*(1-battery_efficiency)
-    return motor_loss[n+1] + motor_controller_loss[n+1] + chain_loss[n+1] + battery_loss[n+1]
+    vrms[n+1] = motor_rpm[n+1]/(motor_rpm_constant)*(1/(sqrt2))  
+
+    motor_efficiency[n+1] = motor_eff_grid[np.int(np.around(motor_rpm[n+1]))][np.int(np.around(motor_torque[n+1]))]
+    motor_controller_efficiency[n+1] = motor_controller_eff_grid[np.int(np.around(vrms[n+1]))][np.int(np.around(arms[n+1]))]
+    
+    chain_power[n+1] = (power[n+1]/(chain_efficiency))
+    motor_power[n+1] = (chain_power[n+1]/(motor_efficiency[n+1]))
+    motor_controller_power[n+1] = (motor_power[n+1]/(motor_controller_efficiency[n+1]))
+    battery_power[n+1] = (motor_controller_power[n+1]/(battery_efficiency))
+    
+    motor_loss[n+1] = motor_power[n+1]*(1-motor_efficiency[n+1])
+    motor_controller_loss[n+1] = motor_controller_power[n+1]*(1-motor_controller_efficiency[n+1])
+    chain_loss[n+1] = chain_power[n+1]*(1-chain_efficiency)
+    battery_loss[n+1] = battery_power[n+1]*(1-battery_efficiency)
+    return battery_power[n+1]
       
       
 #parameter calc values
@@ -232,7 +248,7 @@ def loop(n):
             power[n+1] = c_power[n+1]
             
     
-        total_power[n+1] = Efficiency(n) + power[n+1]
+        total_power[n+1] = Efficiency(n)
         energy[n+1] = energy[n] + total_power[n+1]*(step/(60*60))
         
     return steps
