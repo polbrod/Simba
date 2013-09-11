@@ -29,7 +29,7 @@ rolling_resistance = 0.0187
 top_torque = 500 #nm
 top_rpm = 6000
 #efficiency = 0.8075
-top_power = 87000
+motor_top_power = 87000
 
 #simulation calcs
 steps = int(math.ceil(total_time/step))
@@ -37,7 +37,7 @@ sqrt2 = np.sqrt(2)
 
 max_distance_travel = 60600 #meters this needs to be calculated from lookups
 #max_distance_travel = 3218.69
-dist_to_speed_lookup = 'iom_data.csv'
+dist_to_speed_lookup = 'disttospeed.csv'
 dist_to_alt_lookup = 'disttoalt.csv'
 
 motor_controller_eff_lookup = 'Tritium_ws200_eff.csv'
@@ -47,7 +47,10 @@ battery_efficiency = .98
 motor_torque_constant = 1   #torque to current constant of motor. torque/amp
 motor_rpm_constant = 12     #rpm to voltage dc constant of motor. rpm/volt
 
-
+soc_to_voltage_lookup = 'simple_bat.csv'
+series_cells = 108
+max_amphour = 40
+batt_max_current = 200
 
 #Arrays (output)
 time = np.zeros((steps+1,tests),dtype=float)
@@ -86,8 +89,20 @@ motor_power = np.zeros((steps+1,tests),dtype=float)
 motor_controller_power = np.zeros((steps+1,tests),dtype=float)
 battery_power = np.zeros((steps+1,tests),dtype=float)
 
+voltage = np.zeros((steps+1,tests),dtype=float)
+top_force = np.zeros((steps+1,tests),dtype=float)
+top_speed = np.zeros((steps+1,tests),dtype=float)
+top_power = np.zeros((steps+1,tests),dtype=float)
+amphour = np.zeros((steps+1,tests),dtype=float)
 
 #Lookups
+n = np.loadtxt(soc_to_voltage_lookup,dtype = 'string',delimiter = ',', skiprows = 1)
+x = n[:,0].astype(np.float)
+y = n[:,1].astype(np.float)
+#x = np.array([0,3220])
+#y = np.array([1000,1000])
+soctovoltage_lookup = interp1d(x,y)
+
 n = np.loadtxt(dist_to_speed_lookup,dtype = 'string',delimiter = ',', skiprows = 1)
 x = n[:,0].astype(np.float)
 y = n[:,1].astype(np.float)
@@ -162,10 +177,10 @@ def Power(s,n):
     return Force(s,n) * s
 
 def power_solve(s,n):
-    return Power(s,n) - top_power
+    return Power(s,n) - top_power[n+1]
     
 def force_solve(s,n):
-    return Force(s,n) - top_force
+    return Force(s,n) - top_force[n+1]
 
 def Force(s,n):
     acceleration[n+1] = mass*((s - speed[n])/step)
@@ -195,11 +210,26 @@ def Efficiency(n):
     chain_loss[n+1] = chain_power[n+1]*(1-chain_efficiency)
     battery_loss[n+1] = battery_power[n+1]*(1-battery_efficiency)
     return battery_power[n+1]
-      
-      
+ 
+def Battery_Voltage(n):
+    return series_cells*soctovoltage_lookup(max([0,1-(amphour[n]/max_amphour)]))
+     
+def Top_force(n):
+    return motor_top_force
+        
+def Top_speed(n):
+    return motor_top_speed
+    
+def Top_power(n):
+    batt_top_power = voltage[n+1] * batt_max_current
+    if motor_top_power < batt_top_power:
+        return motor_top_power
+    else:
+        return batt_top_power
+
 #parameter calc values
-top_speed = ((wheel_radius*2*np.pi* (top_rpm) / (gearing))/60)
-top_force = (top_torque * gearing) / wheel_radius
+motor_top_speed = ((wheel_radius*2*np.pi* (top_rpm) / (gearing))/60)
+motor_top_force = (top_torque * gearing) / wheel_radius
 drag_area = frontal_area * air_resistance
 mass = rider_mass + bike_mass
 
@@ -219,17 +249,23 @@ def loop(n):
         distance[n+1] = distance[n] + speed[n]*step
         if (distance[n+1] > max_distance_travel):
             return n
+            
+        voltage[n+1] = Battery_Voltage(n)
+        top_force[n+1] = Top_force(n)
+        top_speed[n+1] = Top_speed(n)
+        top_power[n+1] = Top_power(n)
+        
         l_speed[n+1] = distancetospeed_lookup(distance[n+1])
         
-        if l_speed[n+1] > top_speed:
-            t_speed[n+1] = top_speed
+        if l_speed[n+1] > top_speed[n+1]:
+            t_speed[n+1] = top_speed[n+1]
         else:
             t_speed[n+1] = l_speed[n+1]
             
         
         c_force[n+1] = Force(t_speed[n+1],n)
         
-        if c_force[n+1] > top_force:
+        if c_force[n+1] > top_force[n+1]:
             p_speed[n+1] = (opt.fsolve(force_solve,t_speed[n+1],n))[0]
             p_force[n+1] = Force(p_speed[n+1],n)
         else:
@@ -238,7 +274,7 @@ def loop(n):
         
         c_power[n+1] = Power(p_speed[n+1],n)
         
-        if c_power[n+1] > top_power:
+        if c_power[n+1] > top_power[n+1]:
             speed[n+1] = (opt.fsolve(power_solve,p_speed[n+1],n))[0]
             force[n+1] = Force(speed[n+1],n)
             power[n+1] = Power(speed[n+1],n)
@@ -249,6 +285,7 @@ def loop(n):
             
     
         total_power[n+1] = Efficiency(n)
+        amphour[n+1] = amphour[n] + (total_power[n+1]/voltage[n+1])*(step/(60*60))
         energy[n+1] = energy[n] + total_power[n+1]*(step/(60*60))
         
     return steps
@@ -268,6 +305,7 @@ print 'average mph = ' + repr(np.mean(speed[:end])*2.23)
 print 'average power = ' + repr(np.mean(power[:end]))
 print 'max power = ' + repr(np.max(power[:end]))
 print 'energy = ' + repr(np.max(energy))
+print 'amphour = ' + repr(np.max(amphour))
 
 #finish plot
 
