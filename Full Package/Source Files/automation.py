@@ -12,12 +12,10 @@ import Simulation as sim
 import win32com.client
 import wx
 import wx.grid as gridlib
-import collections
 
 from wx.lib.pubsub import setuparg1
 from wx.lib.pubsub import pub
 from copy import deepcopy
-from datetime import datetime
 
 import sys, subprocess
 
@@ -59,8 +57,7 @@ def FileToParams(inFiles):
     logging.debug("Options file location passed: %s", inFiles)
     inFiles = np.loadtxt(open(inFiles, "rb"), dtype = 'string', delimiter = ',')
     files = inFiles[1:,0]
-    pub.sendMessage(("InputFiles"), files)
-    inputDict = collections.OrderedDict()
+    inputDict = dict()
     
     completedTransfers = 1
     for file in files:  #For each file, create a dictionary out of data
@@ -82,7 +79,7 @@ def FileToParams(inFiles):
         fileName = inFiles[completedTransfers,1]      
         params = data[0]    #Creates array of params and inputs
         data = data[1:]     #Creates array of data without headers        
-        fileDict = collections.OrderedDict()
+        fileDict = dict()
     
         for index in range(len(params)):
             fileDict[params[index]] = data[:,index]    #Assigns data in same column as header
@@ -135,7 +132,7 @@ def OutputFile(folderName, outputDict):
 
         
         for x in range(len(paramHeaders)):
-            currentValues = currentDict[paramHeaders[x]]#Gets list of header values
+            currentValues = currentDict[paramHeaders[x]] #Gets list of header values
                #Turns list into numpy array
 
             if np.ndim(currentValues) > 1:
@@ -159,50 +156,6 @@ def OutputFile(folderName, outputDict):
         print("Data transfer to " + fileName + " complete")
         logging.info("Data converted and saved to %s", fileName)
 
-def SaveInput(folderName, outputDict):
-    
-    logging.info("STARTING FUNCTION OutputFile")        
-    fileNames = np.array(outputDict.keys())
-    
-    for key in fileNames:
-        
-        logging.info("Converting dictionary %s to file",key)
-        fileName = folderName + "\\" + key
-        logging.debug("File will be saved at %s", fileName)
-        currentDict = outputDict[key]
-        
-        print currentDict.keys()
-        paramHeaders = np.array(currentDict.keys())  #Turns headers into numpy array
-
-        maxColumnLength = 0 #Find maximum number of rows
-        for x in paramHeaders:
-            if maxColumnLength < np.size(currentDict[x]):
-                maxColumnLength = np.size(currentDict[x])
-
-        values = np.zeros((maxColumnLength,len(paramHeaders)), dtype = '|S50')
-                #Creates an "empty" array with the total number of data points
-
-        
-        for x in range(len(paramHeaders)):
-            currentValues = str(currentDict[paramHeaders[x]][0]) #Gets list of header values
-               #Turns list into numpy array
-            
-
-            values[0,x] = currentValues       
-        
-        data = np.vstack((paramHeaders, values))    #Combines headers with values
-        try:
-            np.savetxt(fileName, data, delimiter=",", fmt="%s")
-        except IOError:
-            logging.critical("Unable to save %s",fileName)
-            GUIdialog = wx.MessageDialog(None, "Unable to save file to " + fileName +". Make sure "+ fileName + " is closed, specify a new file to save to, or pick a save directory that's writable.", "Error", wx.OK)
-            GUIdialog.ShowModal()
-            GUIdialog.Destroy()            
-            raise Exception("Unable to save file")
-            
-        print("Data transfer to " + fileName + " complete")
-        logging.info("Data converted and saved to %s", fileName)
-    
     
 def WriteFolder(optionsFile, folderName):
     
@@ -281,7 +234,9 @@ class MainWindow(wx.Frame):
         self.Show(True)
 
     def OnAbout(self,e) :
-        pass
+        dialogBox = wx.MessageDialog(self, "A simulation", "About BCS")
+        dialogBox.ShowModal() # Show it
+        dialogBox.Destroy() #Destroy it when finished
         
     def OnExit(self,e):
         logging.info("ENDING automation.py" + os.linesep + os.linesep)
@@ -312,10 +267,12 @@ class IOSplitterPanel(wx.Panel):
         """Constructor"""
         wx.Panel.__init__(self, parent)
         splitter = wx.SplitterWindow(self, style = wx.SP_3D| wx.SP_LIVE_UPDATE)
-        splitter.SetSashGravity(0.2)
+        splitter.SetSashGravity(0.5)
         splitter.SetMinimumPaneSize(20)        
-        leftPanel = InputPanel(splitter, style = wx.BORDER_SIMPLE)
-        rightPanel = OutputPanel(splitter, style = wx.BORDER_SIMPLE)        
+        leftPanel = InputPanel(splitter)
+        rightPanel = OutputPanel(splitter)
+        leftPanel.SetBackgroundColour('SEA GREEN')
+        
 
         splitter.SplitVertically(leftPanel, rightPanel) 
         PanelSizer=wx.BoxSizer(wx.VERTICAL)
@@ -328,11 +285,8 @@ class MainFrame(wx.Frame):
     """Constructor"""
     #----------------------------------------------------------------------
     def __init__(self, parent, id):
-        wx.Frame.__init__(self, None, title="SIMBA",size=(1000,1000))
+        wx.Frame.__init__(self, None, title="NEW GUI LAYOUT",size=(1800,1600))
         
-        pub.subscribe(self.FindCurrentParamFile, ("CurrentFile")) 
-        pub.subscribe(self.SetDictionary, ("DictFromInput"))
-        self.currentFile = dict()        
         # Load icon
         if hasattr(sys, 'frozen'):
             iconLoc = os.path.join(os.path.dirname(sys.executable),"SIMBA.exe")
@@ -341,77 +295,22 @@ class MainFrame(wx.Frame):
         #else:
          #   iconLoc = os.path.join(os.path.dirname(__file__),__file__)
 
-        # Setting up toolbar
-        self.toolbar = self.CreateToolBar()
-        #self.toolbar2 = self.CreateToolBar()
-        self.toolbar.SetToolBitmapSize((20,20))  # sets icon size
-        
-        newProject_ico = wx.ArtProvider.GetBitmap(wx.ART_NORMAL_FILE)  
-        newProjectTool = self.toolbar.AddSimpleTool(wx.ID_ANY, newProject_ico, "New Project", "Create a new project")
-        self.Bind(wx.EVT_MENU, self.OnNewProject, newProjectTool)              
-        
-        openProject_ico = wx.ArtProvider.GetBitmap(wx.ART_FILE_OPEN, wx.ART_TOOLBAR, (20,20))
-        openProjectTool = self.toolbar.AddSimpleTool(wx.ID_ANY, openProject_ico, "Open Project", "Open a past project")
-        self.Bind(wx.EVT_MENU, self.OnOpen, openProjectTool)        
-        
-        save_ico = wx.ArtProvider.GetBitmap(wx.ART_FILE_SAVE, wx.ART_TOOLBAR, (20,20))
-        saveTool = self.toolbar.AddSimpleTool(wx.ID_ANY, save_ico, "Save", "Saves the current parameter file")
-        self.Bind(wx.EVT_MENU, self.OnSave, saveTool)
- 
-        save_all_ico = wx.ArtProvider.GetBitmap(wx.ART_FILE_SAVE_AS, wx.ART_TOOLBAR, (20,20))
-        saveAllTool = self.toolbar.AddSimpleTool(wx.ID_ANY, save_all_ico, "Save All Files", "Saves all parameters files")
-        self.Bind(wx.EVT_MENU, self.OnSaveAll, saveAllTool)
-        
-        self.toolbar.AddSeparator()
-        
-        addParamFile_ico = wx.ArtProvider.GetBitmap(wx.ART_NEW, wx.ART_TOOLBAR, (20,20))
-        addNewParamTool = self.toolbar.AddSimpleTool(wx.ID_ANY, addParamFile_ico, "New Parameter File", "Add new paramter file to project")
-        self.Bind(wx.EVT_MENU, self.OnNewParamFile, addNewParamTool)
-        
-        removeParamFile_ico = wx.ArtProvider.GetBitmap(wx.ART_DELETE, wx.ART_TOOLBAR, (20,20))
-        removeNewParamTool = self.toolbar.AddSimpleTool(wx.ID_ANY, removeParamFile_ico, "Remove Parameter File", "Remove parameter file from project")
-        self.Bind(wx.EVT_MENU, self.OnRemoveParamFile, removeNewParamTool)
-        
-        run_ico = wx.ArtProvider.GetBitmap(wx.ART_GO_FORWARD, wx.ART_TOOLBAR, (20,20))
-        runTool = self.toolbar.AddSimpleTool(wx.ID_ANY, run_ico, "Run Simulation", "Runs the simulation with the opened project")
-        self.Bind(wx.EVT_MENU, self.OnRun, runTool)
-        
-        self.folderControl = wx.TextCtrl(self.toolbar, size = (300,-1))
-        self.toolbar.AddControl(self.folderControl) 
-        
-        
         # Setting up menu
         filemenu = wx.Menu()
-        self.menuNewFile = filemenu.Append(wx.ID_NEW, "New Parameter File", "Create a new parameter file for the current project")
-        self.menuNewProject = filemenu.Append(wx.ID_ANY, "New Project", "Create a new project")
-        self.menuOpenProject = filemenu.Append(wx.ID_OPEN, "Open Project", "Open a project")
-        self.menuSave = filemenu.Append(wx.ID_SAVE, "Save file", "Save a parameter file")
-        self.menuSaveAll = filemenu.Append(wx.ID_ANY, "Save all", "Save all parameter files")
-        self.menuSaveProject = filemenu.Append(wx.ID_ANY, "Save Project", "Save project with all parameter files")
+        self.menuAbout = filemenu.Append(wx.ID_ABOUT, "&About"," Information about this program")
         self.menuExit = filemenu.Append(wx.ID_EXIT, "&Exit"," Terminate the program")
         
-        runmenu = wx.Menu()
-        self.menuRun = runmenu.Append(wx.ID_ANY, "Run simulation", "Runs the simulation with the opened project")
+        toolsmenu = wx.Menu()
+        self.menuNewProject = toolsmenu.Append(wx.ID_ANY, "Create New Project", " Create new project including parameter files and necessary components")
+        self.menuNewParamFile = toolsmenu.Append(wx.ID_ANY, "New &Parameters File"," Create new parameter file to add to current options file")
         
-        aboutmenu = wx.Menu()
-        self.menuAbout = aboutmenu.Append(wx.ID_ABOUT, "About"," Information about this program")
-
         
         # Creating menubar
         menuBar = wx.MenuBar()
         menuBar.Append(filemenu, "&File") #Adds "filemenu" to the MenuBar
-        menuBar.Append(runmenu, "&Run")
-        menuBar.Append(aboutmenu, "&About")
+        menuBar.Append(toolsmenu, "&Tools")
         
         self.SetMenuBar(menuBar)        
-        
-        
-        # Setting events
-        self.Bind(wx.EVT_MENU, self.OnAbout, self.menuAbout)
-        self.Bind(wx.EVT_MENU, self.OnExit, self.menuExit)
-        self.Bind(wx.EVT_MENU, self.OnNewProject, self.menuNewProject)
-#        self.Bind(wx.EVT_MENU, self.OnNewFile, self.menuNewFile)
-        self.Bind(wx.EVT_MENU, self.OnSaveAll, self.menuSaveAll)        
         
         ################################################################
         # Define mainsplitter as child of Frame and add IOSplitterPanel and StatusPanel as children
@@ -420,155 +319,16 @@ class MainFrame(wx.Frame):
         mainsplitter.SetMinimumPaneSize(20)
 
         splitterpanel = IOSplitterPanel(mainsplitter)
-        statusPanel = StatusPanel(mainsplitter, style = wx.BORDER_SIMPLE)
+        statusPanel = StatusPanel(mainsplitter)
+        statusPanel.SetBackgroundColour("RED")
 
         mainsplitter.SplitHorizontally(splitterpanel, statusPanel)
-        windowW, windowH = wx.DisplaySize()
-        newH = windowH/3.5
-        mainsplitter.SetSashPosition(windowH - newH, True)
         MainSizer = wx.BoxSizer(wx.VERTICAL)
         MainSizer.Add(mainsplitter, 1, wx.EXPAND | wx.ALL)
         self.SetSizer(MainSizer)
         #################################################################
-        self.toolbar.Realize()
         self.Refresh()
         self.Show()
-        self.Maximize(True)
-        
-        self.dictionary = dict()
-        self.project = ""
-    
-    def FindCurrentParamFile(self, msg):
-        self.currentFile = msg.data
-        
-    def SetDictionary(self, msg):
-        self.dictionary = msg.data
-        pub.sendMessage(("UpdateInput"), self.dictionary)
-    
-    def OnNewProject(self,e):
-        #Ask user if they want to save current project
-        dlg = wx.MessageDialog(self, "Do you want to save the current project before creating a new one?", style = wx.YES_NO)
-        if dlg.ShowModal() == wx.ID_YES:
-            savedlg = wx.FileDialog(self, "Save project", "", "", ".csv|*.csv", style = wx.FD_SAVE)
-            if savedlg.ShowModal() == wx.ID_OK:
-                self.filename = savedlg.GetFilename()
-                self.dirname = savedlg.GetDirectory()
-            #OutputFile(self.optionsControl.GetValue(), self.dictionary)
-            
-            
-        self.dictionary = dict()
-        pub.sendMessage(("UpdateInput"), self.dictionary)
-    
-    def OnOpen(self,e):
-        
-        self.dirname = ''
-        dlg = wx.FileDialog(self, "Choose a file", self.dirname, "", "Comma Seperated Value (.csv)|*.csv|Text file (.txt)|*.txt")
-        if dlg.ShowModal() == wx.ID_OK:
-            self.filename = dlg.GetFilename()
-            self.dirname = dlg.GetDirectory()
-            self.project = (os.path.join(self.dirname, self.filename))
-            
-            if os.path.exists(self.project) and self.folderControl.IsEmpty():
-                try:
-                    data = np.loadtxt(open(self.project, "rb"), dtype = 'string', delimiter=',')
-                    self.folderControl.SetValue(data[1,3])
-                    
-                #Extracts all data from file into variable data
-                except:
-                    pass
-                
-        dlg.Destroy()
-        self.dictionary = FileToParams(self.project)
-        pub.sendMessage(("UpdateInput"), self.dictionary)
-        msg = datetime.now().strftime('%H:%M:%S') + ": " + "Opened project " + self.project
-        pub.sendMessage(("AddStatus"), msg)  
-        
-    
-    def OnSave(self, e):
-        """Saves the current parameter file open in input panel"""
-        SaveInput(os.path.dirname(os.path.realpath(self.project)), self.currentFile)
-        msg = datetime.now().strftime('%H:%M:%S') + ": " + "Successfully saved " + self.currentFile
-        pub.sendMessage(("AddStatus"), msg)  
-    
-    def OnSaveAll(self,e):
-        """Saves all parameters file in the current project"""
-        SaveInput(os.path.dirname(os.path.realpath(self.project)), self.dictionary)
-        msg = datetime.now().strftime('%H:%M:%S') + ": " + "Successfully saved all parameter files"
-        pub.sendMessage(("AddStatus"), msg)  
-    
-    def OnNewParamFile(self, e):
-        #Get file name from input field
-        #create new entry in dictionary with that name
-        pass
-    
-    def OnRemoveParamFile(self, e):
-        #If project has a parameter file remove the opened param file in the input panel from the dict
-        pass
-    
-    def OnRun(self, e):
-        """Runs the simulation and opens files if needed"""
-        pub.sendMessage(("ClearTabs"), "True")
-        options = self.project
-        logging.debug("Entered path: %s", options)
-        
-        dictionary = FileToParams(options)
-        
-        # Sensitivity Analysis Function calls
-        #percentChange = 15
-        #senseAnalysis = AdjustParams(dictionary, percentChange)
-        #senseAnalysisDict = sim.Simulation(senseAnalysis)
-        outputDict = sim.Simulation(dictionary)
-        
-        outputDirectory = self.folderControl.GetValue()
-        logging.debug("Entered out path: %s",outputDirectory)
-        OutputFile(outputDirectory, outputDict)
-        #OutputFile(outputDirectory, senseAnalysisDict)
-        WriteFolder(options,outputDirectory)
-        
-        # Gather filenames and value for quick values
-        fileNames = np.array(outputDict.keys())
-        #fileNames = np.append(outputDict.keys(), senseAnalysisDict.keys())
-        #resultsWindow = QuickResultsWindow(None, "Quick Results")
-        
-        for key in fileNames:
-            msg = key
-            pub.sendMessage(("fileNames.key"), msg)      
-            
-            if outputDict.has_key(key):
-                currentDict = outputDict[key]
-            #else:         # Used to make quick value tabs for senseAnalysis files
-            #    currentDict = senseAnalysisDict[key]
-            msg = currentDict
-            pub.sendMessage(("fileName.data"), msg)            
-            
-        
-        path = os.path.dirname(os.path.realpath("OPTIONS.csv"))
-        path = os.path.join(path, "SimOutputMacro0904.xlsm")        
-        
-        excel = win32com.client.DispatchEx("Excel.Application")
-        workbook = excel.workbooks.open(path)
-        excel.run("ConsolidateData")
-        excel.Visible = True
-        workbook.Close(SaveChanges=1)
-        excel.Quit
-        
-    
-    def OnAbout(self, e):
-        message = "A motorcycle simulation tool used to give users data about motorcycles with user specified parameters."
-        message = message + os.linesep + os.linesep + "Created by: Nathan Lord, Sean Harrington, Ishmeet Grewal, Anil Ozyalcin"
-        dialogBox = wx.MessageDialog(self, message, "About SIMBA")
-        dialogBox.ShowModal() # Show it
-        dialogBox.Destroy() #Destroy it when finished
-        
-    def OnExit(self, e):
-        logging.info("ENDING automation.py" + os.linesep + os.linesep)
-        logging.shutdown()
-        self.Close(True)
-    
-
-    
-    
-        
 
 
 
@@ -578,431 +338,16 @@ class InputPanel(wx.Panel):
     def __init__(self, parent, *args, **kwargs):
         wx.Panel.__init__(self, parent, *args, **kwargs)
         self.parent = parent
-
-
-        self.dictionary = dict()
-        self.fileToFile = dict()
-        self.fileNames = []
-        pub.subscribe(self.SetDictionary, ("UpdateInput"))
-        pub.subscribe(self.Update, ("InputFiles"))
         
-        
-        self.toolbar = wx.ToolBar(self, wx.ID_ANY, size = (2000, 32))
-        self.toolbar.SetToolBitmapSize( ( 21, 21 ) )
-        self.dropDownList = wx.ComboBox(self.toolbar, -1, style = wx.CB_READONLY)
-        self.Bind(wx.EVT_COMBOBOX, self.UpdateFields)
-        self.toolbar.AddControl(wx.StaticText(self.toolbar, wx.ID_ANY, "      Parameter File     "))
-        self.toolbar.AddControl(self.dropDownList)
-
-                
-        self.values=[]
-        self.keys=[]
-        
-        
-        #Create Sizers    
-        self.vSizer = wx.BoxSizer(wx.VERTICAL)
-        self.hSizer= wx.BoxSizer(wx.HORIZONTAL)
-        self.vSizer1 = wx.BoxSizer(wx.VERTICAL)
-        
-        self.vSizer1.Add(wx.StaticText(self, wx.ID_ANY, "Gearing" ,size=(180,25)))        
-        self.vSizer1.Add(wx.StaticText(self, wx.ID_ANY, "Distance to Altitude Lookup",size=(180,25)))
-        self.vSizer1.Add(wx.StaticText(self, wx.ID_ANY, "Step" ,size=(180,25)))
-        self.vSizer1.Add(wx.StaticText(self, wx.ID_ANY, "Total Time" ,size=(180,25)))
-        self.vSizer1.Add(wx.StaticText(self, wx.ID_ANY, "Wheel Radius" ,size=(180,25)))
-        self.vSizer1.Add(wx.StaticText(self, wx.ID_ANY, "Rolling Resistance" ,size=(180,25)))      
-        self.vSizer1.Add(wx.StaticText(self, wx.ID_ANY, "Rider Mass",size=(180,25)))
-        self.vSizer1.Add(wx.StaticText(self, wx.ID_ANY, "Bike Mass",size=(180,25)))
-        self.vSizer1.Add(wx.StaticText(self, wx.ID_ANY, "Distance to Speed Lookup",size=(180,25)))
-        self.vSizer1.Add(wx.StaticText(self, wx.ID_ANY, "Air Resistance" ,size=(180,25)))
-        self.vSizer1.Add(wx.StaticText(self, wx.ID_ANY, "Air Density" ,size=(180,25)))
-        self.vSizer1.Add(wx.StaticText(self, wx.ID_ANY, "Gravity" ,size=(180,25)))
-        self.vSizer1.Add(wx.StaticText(self, wx.ID_ANY, "Frontal Area" ,size=(180,25)))
-        self.vSizer1.Add(wx.StaticText(self, wx.ID_ANY, "Top Torque" ,size=(180,25)))
-        self.vSizer1.Add(wx.StaticText(self, wx.ID_ANY, "Top RPM" ,size=(180,25)))
-        self.vSizer1.Add(wx.StaticText(self, wx.ID_ANY, "Efficiency" ,size=(180,25)))
-        self.vSizer1.Add(wx.StaticText(self, wx.ID_ANY, "Max Distance Travel" ,size=(180,25)))
-        self.vSizer1.Add(wx.StaticText(self, wx.ID_ANY, "Chain Efficiency" ,size=(180,25)))
-        self.vSizer1.Add(wx.StaticText(self, wx.ID_ANY, "Battery Efficiency" ,size=(180,25)))
-        self.vSizer1.Add(wx.StaticText(self, wx.ID_ANY, "Motor Torque Constant" ,size=(180,25)))
-        self.vSizer1.Add(wx.StaticText(self, wx.ID_ANY, "Motor RPM Constant" ,size=(180,25)))
-        self.vSizer1.Add(wx.StaticText(self, wx.ID_ANY, "Motor Controller Efficiency Lookup" ,size=(180,25)))
-        self.vSizer1.Add(wx.StaticText(self, wx.ID_ANY, "Motor Efficiency Lookup" ,size=(180,25)))
-        self.vSizer1.Add(wx.StaticText(self, wx.ID_ANY, "Top Power" ,size=(180,25)))
- 
-        
-        self.vSizer2 = wx.BoxSizer(wx.VERTICAL)
-        
-        self.p0 = wx.TextCtrl(self, size=(150,25), style = wx.TE_PROCESS_ENTER)
-        self.p1 = wx.TextCtrl(self, size=(150,25))
-        self.p2 = wx.TextCtrl(self, size=(150,25))
-        self.p3 = wx.TextCtrl(self, size=(150,25))
-        self.p4 = wx.TextCtrl(self, size=(150,25))
-        self.p5 = wx.TextCtrl(self, size=(150,25))
-        self.p6 = wx.TextCtrl(self, size=(150,25))
-        self.p7 = wx.TextCtrl(self, size=(150,25))
-        self.p8 = wx.TextCtrl(self, size=(150,25))
-        self.p9 = wx.TextCtrl(self, size=(150,25))
-        self.p10 = wx.TextCtrl(self, size=(150,25))
-        self.p11 = wx.TextCtrl(self, size=(150,25))
-        self.p12 = wx.TextCtrl(self, size=(150,25))
-        self.p13 = wx.TextCtrl(self, size=(150,25))
-        self.p14 = wx.TextCtrl(self, size=(150,25))
-        self.p15 = wx.TextCtrl(self, size=(150,25))
-        self.p16 = wx.TextCtrl(self, size=(150,25))
-        self.p17 = wx.TextCtrl(self, size=(150,25))
-        self.p18 = wx.TextCtrl(self, size=(150,25))
-        self.p19 = wx.TextCtrl(self, size=(150,25))
-        self.p20 = wx.TextCtrl(self, size=(150,25))
-        self.p21 = wx.TextCtrl(self, size=(150,25))
-        self.p22 = wx.TextCtrl(self, size=(150,25))
-        self.p23 = wx.TextCtrl(self, size=(150,25))
-
-        self.p0.Bind(wx.EVT_TEXT, self.UpdateP0)
-        self.p1.Bind(wx.EVT_TEXT, self.UpdateP1)
-        self.p2.Bind(wx.EVT_TEXT, self.UpdateP2)
-        self.p3.Bind(wx.EVT_TEXT, self.UpdateP3)
-        self.p4.Bind(wx.EVT_TEXT, self.UpdateP4)
-        self.p5.Bind(wx.EVT_TEXT, self.UpdateP5)
-        self.p6.Bind(wx.EVT_TEXT, self.UpdateP6)
-        self.p7.Bind(wx.EVT_TEXT, self.UpdateP7)
-        self.p8.Bind(wx.EVT_TEXT, self.UpdateP8)
-        self.p9.Bind(wx.EVT_TEXT, self.UpdateP9)
-        self.p10.Bind(wx.EVT_TEXT, self.UpdateP10)
-        self.p11.Bind(wx.EVT_TEXT, self.UpdateP11)
-        self.p12.Bind(wx.EVT_TEXT, self.UpdateP12)
-        self.p13.Bind(wx.EVT_TEXT, self.UpdateP13)
-        self.p14.Bind(wx.EVT_TEXT, self.UpdateP14)
-        self.p15.Bind(wx.EVT_TEXT, self.UpdateP15)
-        self.p16.Bind(wx.EVT_TEXT, self.UpdateP16)
-        self.p17.Bind(wx.EVT_TEXT, self.UpdateP17)
-        self.p18.Bind(wx.EVT_TEXT, self.UpdateP18)
-        self.p19.Bind(wx.EVT_TEXT, self.UpdateP19)
-        self.p20.Bind(wx.EVT_TEXT, self.UpdateP20)
-        self.p21.Bind(wx.EVT_TEXT, self.UpdateP21)
-        self.p22.Bind(wx.EVT_TEXT, self.UpdateP22)
-        self.p23.Bind(wx.EVT_TEXT, self.UpdateP23)
-        
-        self.vSizer2.Add(self.p0)
-        self.vSizer2.Add(self.p1)
-        self.vSizer2.Add(self.p2)
-        self.vSizer2.Add(self.p3)
-        self.vSizer2.Add(self.p4)
-        self.vSizer2.Add(self.p5)
-        self.vSizer2.Add(self.p6)
-        self.vSizer2.Add(self.p7)
-        self.vSizer2.Add(self.p8)
-        self.vSizer2.Add(self.p9)
-        self.vSizer2.Add(self.p10)
-        self.vSizer2.Add(self.p11)
-        self.vSizer2.Add(self.p12)
-        self.vSizer2.Add(self.p13)
-        self.vSizer2.Add(self.p14)
-        self.vSizer2.Add(self.p15)
-        self.vSizer2.Add(self.p16)
-        self.vSizer2.Add(self.p17)
-        self.vSizer2.Add(self.p18)
-        self.vSizer2.Add(self.p19)
-        self.vSizer2.Add(self.p20)
-        self.vSizer2.Add(self.p21)
-        self.vSizer2.Add(self.p22)
-        self.vSizer2.Add(self.p23)
-        
-        
-        
-        
-        self.hSizerTopRow = wx.BoxSizer(wx.HORIZONTAL)
-
-        
-        #Add Both columns to Horizontal Sizer
-        self.hSizer.AddSpacer((20,-1))        
-        self.hSizer.Add(self.vSizer1)
-        self.hSizer.AddSpacer((20,-1))
-        self.hSizer.Add(self.vSizer2)
-        
-        #Add Horizontal Sizers to Vertical Sizer
-        self.vSizer.Add(self.toolbar)
-        self.vSizer.AddSpacer((-1,10))        
-        
-        #self.vSizer.Add(self.buttonRun)
-
-        self.vSizer.Add(self.hSizer)
-        
-        self.SetSizer(self.vSizer)
-        
-        self.toolbar.Realize()
-        self.SetAutoLayout(1)
-        self.vSizer.Fit(self)
-        self.Layout()
-    
-        
-        
-        
-    #################################################################
-    def Update(self, msg): 
-        
-        
-        self.fileNames = msg.data
-        for file in self.fileNames:
-            self.dropDownList.Append(file)
-            self.dropDownList.SetSelection(0)
-            
-        
-            
-        
-    def SetDictionary(self, msg):
-        self.dictionary = msg.data
-        index = 0
-        for file in self.dictionary:         
-            self.fileToFile[self.fileNames[index]] = file 
-            index = index + 1
-            
-        if len(self.dictionary) > 0:
-            self.UpdateFields(wx.EVT_COMBOBOX)
-        else:
-            self.p0.SetValue("")        
-            self.p1.SetValue("")
-            self.p2.SetValue("")        
-            self.p3.SetValue("")
-            self.p4.SetValue("")        
-            self.p5.SetValue("")
-            self.p6.SetValue("")        
-            self.p7.SetValue("")
-            self.p8.SetValue("")        
-            self.p9.SetValue("")
-            self.p10.SetValue("")        
-            self.p11.SetValue("")
-            self.p12.SetValue("")        
-            self.p13.SetValue("")
-            self.p14.SetValue("")        
-            self.p15.SetValue("")
-            self.p16.SetValue("")
-            self.p17.SetValue("")        
-            self.p18.SetValue("")
-            self.p19.SetValue("")
-            self.p20.SetValue("")        
-            self.p21.SetValue("")
-            self.p22.SetValue("")
-            self.p23.SetValue("")
-            self.dropDownList.Clear()
-
-        
-    
-    """Button Run Function"""
-    def UpdateFields(self,event):
-        
-        self.values = []
-
-        currentFile = self.dictionary[self.fileToFile[self.dropDownList.GetValue()]]
-        fileDict = dict()
-        fileDict[self.dropDownList.GetValue()] = currentFile
-        pub.sendMessage(("CurrentFile"), fileDict)
-
-        for k,v in currentFile.iteritems():
-            self.values.append(v[0])
-        
-
-        self.p0.ChangeValue(str(self.values[0]))        
-        self.p1.ChangeValue(str(self.values[1]))
-        self.p2.ChangeValue(str(self.values[2]))        
-        self.p3.ChangeValue(str(self.values[3]))
-        self.p4.ChangeValue(str(self.values[4]))        
-        self.p5.ChangeValue(str(self.values[5]))
-        self.p6.ChangeValue(str(self.values[6]))        
-        self.p7.ChangeValue(str(self.values[7]))
-        self.p8.ChangeValue(str(self.values[8]))        
-        self.p9.ChangeValue(str(self.values[9]))
-        self.p10.ChangeValue(str(self.values[10]))        
-        self.p11.ChangeValue(str(self.values[11]))
-        self.p12.ChangeValue(str(self.values[12]))        
-        self.p13.ChangeValue(str(self.values[13]))
-        self.p14.ChangeValue(str(self.values[14]))        
-        self.p15.ChangeValue(str(self.values[15]))
-        self.p16.ChangeValue(str(self.values[16]))
-        self.p17.ChangeValue(str(self.values[17]))        
-        self.p18.ChangeValue(str(self.values[18]))
-        self.p19.ChangeValue(str(self.values[19]))
-        self.p20.ChangeValue(str(self.values[20]))        
-        self.p21.ChangeValue(str(self.values[21]))
-        self.p22.ChangeValue(str(self.values[22]))
-        self.p23.ChangeValue(str(self.values[23]))
-            
-    
-    def UpdateP0 (self, e):
-        previousValue = self.dictionary[self.fileToFile[self.dropDownList.GetValue()]]['gearing'][0]
-        self.dictionary[self.fileToFile[self.dropDownList.GetValue()]]['gearing'] = [self.p0.GetValue()]
-        pub.sendMessage(("DictFromInput"), self.dictionary)
-        msg = datetime.now().strftime('%H:%M:%S') + ": " + "Gearing changed from " + str(previousValue) + " to " + self.p0.GetValue()
-        pub.sendMessage(("AddStatus"), msg)  
-        
-    def UpdateP1 (self, e):
-        previousValue = self.dictionary[self.fileToFile[self.dropDownList.GetValue()]]['dist_to_alt_lookup'][0]
-        self.dictionary[self.fileToFile[self.dropDownList.GetValue()]]['dist_to_alt_lookup'] = [self.p1.GetValue()]
-        pub.sendMessage(("DictFromInput"), self.dictionary)
-        msg = datetime.now().strftime('%H:%M:%S') + ": " + "Distance to Altitude Lookup changed from " + str(previousValue) + " to " + self.p1.GetValue()
-        pub.sendMessage(("AddStatus"), msg)
-        
-    def UpdateP2 (self, e):
-        previousValue = self.dictionary[self.fileToFile[self.dropDownList.GetValue()]]['step'][0]
-        self.dictionary[self.fileToFile[self.dropDownList.GetValue()]]['step'] = [self.p2.GetValue()]
-        pub.sendMessage(("DictFromInput"), self.dictionary)
-        msg = datetime.now().strftime('%H:%M:%S') + ": " + "Step changed from " + str(previousValue) + " to " + self.p2.GetValue()
-        pub.sendMessage(("AddStatus"), msg)
-        
-    def UpdateP3 (self, e):
-        previousValue = self.dictionary[self.fileToFile[self.dropDownList.GetValue()]]['total_time'][0]
-        self.dictionary[self.fileToFile[self.dropDownList.GetValue()]]['total_time'] = [self.p3.GetValue()]
-        pub.sendMessage(("DictFromInput"), self.dictionary)
-        msg = datetime.now().strftime('%H:%M:%S') + ": " + "Total Time changed from " + str(previousValue) + " to " + self.p3.GetValue()
-        pub.sendMessage(("AddStatus"), msg)
-        
-    def UpdateP4 (self, e):
-        previousValue = self.dictionary[self.fileToFile[self.dropDownList.GetValue()]]['wheel_radius'][0]
-        self.dictionary[self.fileToFile[self.dropDownList.GetValue()]]['wheel_radius'] = [self.p4.GetValue()]
-        pub.sendMessage(("DictFromInput"), self.dictionary)
-        msg = datetime.now().strftime('%H:%M:%S') + ": " + "Wheel Radius changed from " + str(previousValue) + " to " + str(self.p4.GetValue())
-        pub.sendMessage(("AddStatus"), msg)
-        
-    def UpdateP5 (self, e):
-        previousValue = self.dictionary[self.fileToFile[self.dropDownList.GetValue()]]['rolling_resistance'][0]
-        self.dictionary[self.fileToFile[self.dropDownList.GetValue()]]['rolling_resistance'] = [self.p5.GetValue()]
-        pub.sendMessage(("DictFromInput"), self.dictionary)
-        msg = datetime.now().strftime('%H:%M:%S') + ": " + "Rolling Resistance changed from " + str(previousValue) + " to " + str(self.p5.GetValue())
-        pub.sendMessage(("AddStatus"), msg)
-        
-    def UpdateP6 (self, e):
-        previousValue = self.dictionary[self.fileToFile[self.dropDownList.GetValue()]]['rider_mass'][0]
-        self.dictionary[self.fileToFile[self.dropDownList.GetValue()]]['rider_mass'] = [self.p6.GetValue()]
-        pub.sendMessage(("DictFromInput"), self.dictionary)
-        msg = datetime.now().strftime('%H:%M:%S') + ": " + "Rider Mass changed from " + str(previousValue) + " to " + str(self.p6.GetValue())
-        pub.sendMessage(("AddStatus"), msg)
-        
-    def UpdateP7 (self, e):
-        previousValue = self.dictionary[self.fileToFile[self.dropDownList.GetValue()]]['bike_mass'][0]
-        self.dictionary[self.fileToFile[self.dropDownList.GetValue()]]['bike_mass'] = [self.p7.GetValue()]
-        pub.sendMessage(("DictFromInput"), self.dictionary)
-        msg = datetime.now().strftime('%H:%M:%S') + ": " + "Bike mass changed from " + str(previousValue) + " to " + self.p7.GetValue()
-        pub.sendMessage(("AddStatus"), msg)
-        
-    def UpdateP8 (self, e):
-        previousValue = self.dictionary[self.fileToFile[self.dropDownList.GetValue()]]['dist_to_speed_lookup'][0]
-        self.dictionary[self.fileToFile[self.dropDownList.GetValue()]]['dist_to_speed_lookup'] = [self.p8.GetValue()]
-        pub.sendMessage(("DictFromInput"), self.dictionary)
-        msg = datetime.now().strftime('%H:%M:%S') + ": " + "Distance to Speed Lookup changed from " + str(previousValue) + " to " + self.p8.GetValue()
-        pub.sendMessage(("AddStatus"), msg)
-        
-    def UpdateP9 (self, e):
-        previousValue = self.dictionary[self.fileToFile[self.dropDownList.GetValue()]]['air_resistance'][0]
-        self.dictionary[self.fileToFile[self.dropDownList.GetValue()]]['air_resistance'] = [self.p9.GetValue()]
-        pub.sendMessage(("DictFromInput"), self.dictionary)
-        msg = datetime.now().strftime('%H:%M:%S') + ": " + "Air Resistance changed from " + str(previousValue) + " to " + self.p9.GetValue()
-        pub.sendMessage(("AddStatus"), msg)
-        
-    def UpdateP10 (self, e):
-        previousValue = self.dictionary[self.fileToFile[self.dropDownList.GetValue()]]['air_density'][0]
-        self.dictionary[self.fileToFile[self.dropDownList.GetValue()]]['air_density'] = [self.p10.GetValue()]
-        pub.sendMessage(("DictFromInput"), self.dictionary)
-        msg = datetime.now().strftime('%H:%M:%S') + ": " + "Air Density changed from " + str(previousValue) + " to " + self.p10.GetValue()
-        pub.sendMessage(("AddStatus"), msg)
-        
-    def UpdateP11 (self, e):
-        previousValue = self.dictionary[self.fileToFile[self.dropDownList.GetValue()]]['gravity'][0]
-        self.dictionary[self.fileToFile[self.dropDownList.GetValue()]]['gravity'] = [self.p11.GetValue()]
-        pub.sendMessage(("DictFromInput"), self.dictionary)
-        msg = datetime.now().strftime('%H:%M:%S') + ": " + "Gravity changed from " + str(previousValue) + " to " + self.p11.GetValue()
-        pub.sendMessage(("AddStatus"), msg)
-        
-    def UpdateP12 (self, e):
-        previousValue = self.dictionary[self.fileToFile[self.dropDownList.GetValue()]]['frontal_area'][0]
-        self.dictionary[self.fileToFile[self.dropDownList.GetValue()]]['frontal_area'] = [self.p12.GetValue()]
-        pub.sendMessage(("DictFromInput"), self.dictionary)
-        msg = datetime.now().strftime('%H:%M:%S') + ": " + "Frontal Area changed from " + str(previousValue) + " to " + self.p12.GetValue()
-        pub.sendMessage(("AddStatus"), msg)
-        
-    def UpdateP13 (self, e):
-        previousValue = self.dictionary[self.fileToFile[self.dropDownList.GetValue()]]['top_torque'][0]
-        self.dictionary[self.fileToFile[self.dropDownList.GetValue()]]['top_torque'] = [self.p13.GetValue()]
-        pub.sendMessage(("DictFromInput"), self.dictionary)
-        msg = datetime.now().strftime('%H:%M:%S') + ": " + "Top Torque changed from " + str(previousValue) + " to " + self.p13.GetValue()
-        pub.sendMessage(("AddStatus"), msg)
-        
-    def UpdateP14 (self, e):
-        previousValue = self.dictionary[self.fileToFile[self.dropDownList.GetValue()]]['top_rpm'][0]
-        self.dictionary[self.fileToFile[self.dropDownList.GetValue()]]['top_rpm'] = [self.p14.GetValue()]
-        pub.sendMessage(("DictFromInput"), self.dictionary)
-        msg = datetime.now().strftime('%H:%M:%S') + ": " + "Top RPM changed from " + str(previousValue) + " to " + self.p14.GetValue()
-        pub.sendMessage(("AddStatus"), msg)
-        
-    def UpdateP15 (self, e):
-        previousValue = self.dictionary[self.fileToFile[self.dropDownList.GetValue()]]['efficiency'][0]
-        self.dictionary[self.fileToFile[self.dropDownList.GetValue()]]['efficiency'] = [self.p15.GetValue()]
-        pub.sendMessage(("DictFromInput"), self.dictionary)
-        msg = datetime.now().strftime('%H:%M:%S') + ": " + "Efficiency changed from " + str(previousValue) + " to " + self.p15.GetValue()
-        pub.sendMessage(("AddStatus"), msg)        
-        
-    def UpdateP16 (self, e):
-        previousValue = self.dictionary[self.fileToFile[self.dropDownList.GetValue()]]['max_distance_travel'][0]
-        self.dictionary[self.fileToFile[self.dropDownList.GetValue()]]['max_distance_travel'] = [self.p16.GetValue()]
-        pub.sendMessage(("DictFromInput"), self.dictionary)
-        msg = datetime.now().strftime('%H:%M:%S') + ": " + "Max Distance Travel changed from " + str(previousValue) + " to " + self.p16.GetValue()
-        pub.sendMessage(("AddStatus"), msg)
-        
-    def UpdateP17 (self, e):
-        previousValue = self.dictionary[self.fileToFile[self.dropDownList.GetValue()]]['chain_efficiency'][0]
-        self.dictionary[self.fileToFile[self.dropDownList.GetValue()]]['chain_efficiency'] = [self.p17.GetValue()]
-        pub.sendMessage(("DictFromInput"), self.dictionary)
-        msg = datetime.now().strftime('%H:%M:%S') + ": " + "Chain Efficiency changed from " + str(previousValue) + " to " + self.p17.GetValue()
-        pub.sendMessage(("AddStatus"), msg)
-        
-    def UpdateP18 (self, e):
-        previousValue = self.dictionary[self.fileToFile[self.dropDownList.GetValue()]]['battery_efficiency'][0]
-        self.dictionary[self.fileToFile[self.dropDownList.GetValue()]]['battery_efficiency'] = [self.p18.GetValue()]
-        pub.sendMessage(("DictFromInput"), self.dictionary)
-        msg = datetime.now().strftime('%H:%M:%S') + ": " + "Battery Efficiency changed from " + str(previousValue) + " to " + self.p18.GetValue()
-        pub.sendMessage(("AddStatus"), msg)
-        
-    def UpdateP19 (self, e):
-        previousValue = self.dictionary[self.fileToFile[self.dropDownList.GetValue()]]['motor_torque_constant'][0]
-        self.dictionary[self.fileToFile[self.dropDownList.GetValue()]]['motor_torque_constant'] = [self.p19.GetValue()]
-        pub.sendMessage(("DictFromInput"), self.dictionary)
-        msg = datetime.now().strftime('%H:%M:%S') + ": " + "Motor Torque Constant changed from " + str(previousValue) + " to " + self.p19.GetValue()
-        pub.sendMessage(("AddStatus"), msg)
-        
-    def UpdateP20 (self, e):
-        previousValue = self.dictionary[self.fileToFile[self.dropDownList.GetValue()]]['motor_rpm_constant'][0]
-        self.dictionary[self.fileToFile[self.dropDownList.GetValue()]]['motor_rpm_constant'] = [self.p20.GetValue()]
-        pub.sendMessage(("DictFromInput"), self.dictionary)
-        msg = datetime.now().strftime('%H:%M:%S') + ": " + "Motor RPM Constant changed from " + str(previousValue) + " to " + self.p20.GetValue()
-        pub.sendMessage(("AddStatus"), msg)
-        
-    def UpdateP21 (self, e):
-        previousValue = self.dictionary[self.fileToFile[self.dropDownList.GetValue()]]['motor_controller_eff_lookup'][0]
-        self.dictionary[self.fileToFile[self.dropDownList.GetValue()]]['motor_controller_eff_lookup'] = [self.p21.GetValue()]
-        pub.sendMessage(("DictFromInput"), self.dictionary)
-        msg = datetime.now().strftime('%H:%M:%S') + ": " + "Motor Controller Efficiency Lookup changed from " + str(previousValue) + " to " + self.p21.GetValue()
-        pub.sendMessage(("AddStatus"), msg)
-        
-    def UpdateP22 (self, e):
-        previousValue = self.dictionary[self.fileToFile[self.dropDownList.GetValue()]]['motor_eff_lookup'][0]
-        self.dictionary[self.fileToFile[self.dropDownList.GetValue()]]['motor_eff_lookup'] = [self.p22.GetValue()]
-        pub.sendMessage(("DictFromInput"), self.dictionary)
-        msg = datetime.now().strftime('%H:%M:%S') + ": " + "Motor Efficiency Lookup changed from " + str(previousValue) + " to " + self.p22.GetValue()
-        pub.sendMessage(("AddStatus"), msg)
-        
-    def UpdateP23 (self, e):
-        previousValue = self.dictionary[self.fileToFile[self.dropDownList.GetValue()]]['top_power'][0]
-        self.dictionary[self.fileToFile[self.dropDownList.GetValue()]]['top_power'] = [self.p23.GetValue()]
-        pub.sendMessage(("DictFromInput"), self.dictionary)
-        msg = datetime.now().strftime('%H:%M:%S') + ": " + "Top Power changed from " + str(previousValue) + " to " + self.p23.GetValue()
-        pub.sendMessage(("AddStatus"), msg)
-        
-     
+        ## Insert components in the panel after here
         
 
 class OutputPanel(wx.Panel):
     """Right panel in WIP GUI window that shows all the results after running the simulation"""
     def __init__(self, parent, *args, **kwargs):
         wx.Panel.__init__(self, parent, *args, **kwargs)
-        self.parent = parent        
+        self.parent = parent
+        
         
         ## Insert components in the panel after here
         pub.subscribe(self.CreateTab, ("fileNames.key"))
@@ -1012,7 +357,7 @@ class OutputPanel(wx.Panel):
         
         self.notebook = wx.Notebook(self)
         sizer = wx.BoxSizer(wx.VERTICAL)
-        sizer.Add(self.notebook, 1, wx.ALL|wx.EXPAND)
+        sizer.Add(self.notebook, 1, wx.ALL|wx.EXPAND, 5)
         self.SetSizer(sizer)
         self.Layout()
 
@@ -1073,27 +418,9 @@ class StatusPanel(wx.Panel):
     def __init__(self, parent, *args, **kwargs):
         wx.Panel.__init__(self, parent, *args, **kwargs)
         self.parent = parent
-
-        pub.subscribe(self.AddStatus, ("AddStatus"))
-
-        self.panelLabel = wx.StaticText(self, wx.ID_ANY, "Status Messages",size=(-1,-1))
-        self.statusTextCtrl = wx.TextCtrl(self, -1,size=(200, 100), style=wx.TE_MULTILINE ^ wx.TE_READONLY)
-        font = wx.Font(10, wx.DEFAULT, wx.NORMAL, wx.BOLD)
-        self.panelLabel.SetFont(font)
-        
-        sizer = wx.BoxSizer(wx.VERTICAL)
-        sizer.Add(self.panelLabel, 0, wx.ALL, 5)
-        sizer.Add(self.statusTextCtrl, 1, wx.ALL|wx.EXPAND)
-        self.SetSizer(sizer)
-        self.Layout()
-        
-    def AddStatus(self, msg):
-        currentTextCtrl = self.statusTextCtrl.GetValue()
-        newTextCtrl = currentTextCtrl + msg.data + os.linesep
-        self.statusTextCtrl.SetValue(newTextCtrl)
         
         
-'''
+        
 class QuickResultsWindow(wx.Frame):
     """Displays quick results in new window"""
     def __init__(self, parent, title):
@@ -1142,7 +469,7 @@ class QuickResultsWindow(wx.Frame):
             self.Close(True)
         
 
-'''
+
 ##############################################################################
 
 class NewParamsWindow(wx.Frame):
@@ -1303,7 +630,7 @@ class Panel1(wx.Panel):
         # Gather filenames and value for quick values
         fileNames = np.array(dictionary.keys())
         #fileNames = np.append(dictionary.keys(), senseAnalysisDict.keys())
-        #resultsWindow = QuickResultsWindow(None, "Quick Results")
+        resultsWindow = QuickResultsWindow(None, "Quick Results")
         
         for key in fileNames:
             msg = key
@@ -1454,9 +781,5 @@ app = wx.App(False)
 mainWindow = MainWindow(None, "SIMBA")
 testWindow = MainFrame(None, "TEST")
 #quickWindow = QuickResultsWindow(None, "Quick Results")
-
-msg = datetime.now().strftime('%H:%M:%S') + ": " + "Welcome to SIMBA! Start by creating a new project or opening one that has already been generated"
-pub.sendMessage(("AddStatus"), msg)  
-
 app.MainLoop()
 
