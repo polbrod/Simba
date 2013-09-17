@@ -15,6 +15,10 @@ import logging
 import wx
 from os import linesep
 
+from wx.lib.pubsub import setuparg1
+from wx.lib.pubsub import pub
+from datetime import datetime
+
 def dependencies_for_simulation(): #missing imports needs to convert to .exe
     from scipy.sparse.csgraph import _validation
 
@@ -29,9 +33,8 @@ def Simulation(dict_in):
         for key in currentData:
             if np.size(currentData[key]) > 1:
                 logging.critical("Parameter %s in %s has more than 1 value",key,file)
-                GUIdialog = wx.MessageDialog(None, "Parameter " + key +" in " + file + " has more than 1 value", "Error", wx.OK)
-                GUIdialog.ShowModal()
-                GUIdialog.Destroy()
+                msg = datetime.now().strftime('%H:%M:%S') + ": " + "Parameter " + key + " in " + file + " has more than 1 value! Each parameter may only have 1 value"
+                pub.sendMessage(("AddStatus"), msg)
                 raise Exception("One or more params in " + file + " have two or more values. Each param can only have one value")
 
         tests = 1
@@ -175,9 +178,15 @@ def Simulation(dict_in):
         try:
             n = np.loadtxt(dist_to_speed_lookup,dtype = 'string',delimiter = ',', skiprows = 1)
             logging.info("%s loaded", dist_to_speed_lookup)
+            msg = datetime.now().strftime('%H:%M:%S') + ": " + dist_to_speed_lookup + " loaded"
+            pub.sendMessage(("AddStatus"), msg)             
+            
         except IOError:
             logging.critical("Unable to load %s", dist_to_speed_lookup)
-            raise Exception("Unable to load \'" + dist_to_speed_lookup + "\'")
+            msg = datetime.now().strftime('%H:%M:%S') + ": " + "Unable to load " + dist_to_speed_lookup + ". Make sure the file exists and is not open."
+            pub.sendMessage(("AddStatus"), msg)
+            raise Exception("Unable to load \'" + dist_to_speed_lookup + "\'")                        
+            
         x = n[:,0].astype(np.float)
         y = n[:,1].astype(np.float)
 	  #x = np.array([0,3220])
@@ -188,8 +197,13 @@ def Simulation(dict_in):
         try:
             n = np.loadtxt(dist_to_alt_lookup,dtype = 'string',delimiter = ',', skiprows = 1)
             logging.info("%s loaded", dist_to_alt_lookup)
+            msg = datetime.now().strftime('%H:%M:%S') + ": " + dist_to_alt_lookup + " loaded"
+            pub.sendMessage(("AddStatus"), msg) 
+            
         except IOError:
             logging.critical("Unable to load %s", dist_to_alt_lookup)
+            msg = datetime.now().strftime('%H:%M:%S') + ": " + "Unable to load " + dist_to_alt_lookup + ". Make sure the file exists and is not open."
+            pub.sendMessage(("AddStatus"), msg)
             raise Exception("Unable to load \'" + dist_to_alt_lookup + "\'")
         x = n[:,0].astype(np.float)
         y = n[:,1].astype(np.float)
@@ -201,9 +215,15 @@ def Simulation(dict_in):
         try:
             n = np.loadtxt(motor_controller_eff_lookup,dtype = 'string',delimiter = ',', skiprows = 1)
             logging.info("%s loaded", motor_controller_eff_lookup)
+            msg = datetime.now().strftime('%H:%M:%S') + ": " + motor_controller_eff_lookup + " loaded"
+            pub.sendMessage(("AddStatus"), msg) 
+            
         except IOError:
             logging.critical("Unable to load %s", motor_controller_eff_lookup)
+            msg = datetime.now().strftime('%H:%M:%S') + ": " + "Unable to load " + motor_controller_eff_lookup + ". Make sure the file exists and is not open."
+            pub.sendMessage(("AddStatus"), msg)
             raise Exception("Unable to load \'" + motor_controller_eff_lookup + "\'")
+            
         x = n[:,0].astype(np.float)
         y = n[:,1].astype(np.float)
         z = n[:,2].astype(np.float)
@@ -217,9 +237,15 @@ def Simulation(dict_in):
         try:
             n = np.loadtxt(motor_eff_lookup,dtype = 'string',delimiter = ',', skiprows = 1)
             logging.info("%s loaded", motor_eff_lookup)
+            msg = datetime.now().strftime('%H:%M:%S') + ": " + motor_eff_lookup + " loaded"
+            pub.sendMessage(("AddStatus"), msg) 
+            
         except IOError:
             logging.critical("Unable to load %s", motor_eff_lookup)
+            msg = datetime.now().strftime('%H:%M:%S') + ": " + "Unable to load " + motor_eff_lookup + ". Make sure the file exists and is not open."
+            pub.sendMessage(("AddStatus"), msg) 
             raise Exception("Unable to load \'" + motor_eff_lookup + "\'")
+
         x = n[:,0].astype(np.float)
         y = n[:,1].astype(np.float)
         z = n[:,2].astype(np.float)
@@ -379,6 +405,9 @@ def Simulation(dict_in):
         
         newData = collections.OrderedDict()
         
+        msg = datetime.now().strftime('%H:%M:%S') + ": " + "Storing calculated simulation data"
+        pub.sendMessage(("AddStatus"), msg)         
+        
         newData["Time (Seconds)"] = (time[:end])
         newData["Distance (Meters)"] = (distance[:end])
         newData["L_Speed (M/S)"] = (l_speed[:end])
@@ -412,6 +441,9 @@ def Simulation(dict_in):
         newData["Average Power (Watts)"] = (round(np.mean(power[:end]),3))
         newData["Max Power (Watts)"] = (round(np.max(power),3))
         newData["Max Energy (Wh)"] = (round(np.max(energy),3))
+        
+        msg = datetime.now().strftime('%H:%M:%S') + ": " + "Finished storing simulation data"
+        pub.sendMessage(("AddStatus"), msg) 
 
 
         dict_in[file] = newData
