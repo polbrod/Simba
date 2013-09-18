@@ -12,6 +12,10 @@ import numpy as np
 import itertools
 
 
+#limit variables NOT PARAMETERS
+is_batt_power = False
+is_motor_power = False
+
 tests = 1
 #parameters
 
@@ -26,10 +30,10 @@ air_resistance = 0.7
 air_density = 1.204
 frontal_area =  0.7 #m^2
 rolling_resistance = 0.0187
-top_torque = 500 #nm
-top_rpm = 6000
+top_torque = 200 #nm
+top_rpm = 5000
 #efficiency = 0.8075
-motor_top_power = 87000
+motor_top_power = 80000
 
 #simulation calcs
 steps = int(math.ceil(total_time/step))
@@ -94,6 +98,12 @@ top_force = np.zeros((steps+1,tests),dtype=float)
 top_speed = np.zeros((steps+1,tests),dtype=float)
 top_power = np.zeros((steps+1,tests),dtype=float)
 amphour = np.zeros((steps+1,tests),dtype=float)
+
+batt_power_limit = np.zeros((steps+1,tests),dtype=float)
+motor_power_limit = np.zeros((steps+1,tests),dtype=float)
+motor_torque_limit = np.zeros((steps+1,tests),dtype=float)
+motor_rpm_limit = np.zeros((steps+1,tests),dtype=float)
+
 
 #Lookups
 n = np.loadtxt(soc_to_voltage_lookup,dtype = 'string',delimiter = ',', skiprows = 1)
@@ -221,10 +231,16 @@ def Top_speed(n):
     return motor_top_speed
     
 def Top_power(n):
+    global is_motor_power
+    global is_batt_power
     batt_top_power = voltage[n+1] * batt_max_current
     if motor_top_power < batt_top_power:
+        is_motor_power = True 
+        is_batt_power = False
         return motor_top_power
     else:
+        is_motor_power = False
+        is_batt_power = True
         return batt_top_power
 
 #parameter calc values
@@ -259,6 +275,7 @@ def loop(n):
         l_speed[n+1] = distancetospeed_lookup(distance[n+1])
         
         if l_speed[n+1] > top_speed[n+1]:
+            motor_rpm_limit[n+1] = 1
             t_speed[n+1] = top_speed[n+1]
         else:
             t_speed[n+1] = l_speed[n+1]
@@ -267,6 +284,7 @@ def loop(n):
         c_force[n+1] = Force(t_speed[n+1],n)
         
         if c_force[n+1] > top_force[n+1]:
+            motor_torque_limit[n+1] = 1
             p_speed[n+1] = (opt.fsolve(force_solve,t_speed[n+1],n))[0]
             p_force[n+1] = Force(p_speed[n+1],n)
         else:
@@ -276,6 +294,10 @@ def loop(n):
         c_power[n+1] = Power(p_speed[n+1],n)
         
         if c_power[n+1] > top_power[n+1]:
+            if is_motor_power:
+                motor_power_limit[n+1] = 1
+            if is_batt_power:
+                batt_power_limit[n+1] = 1
             speed[n+1] = (opt.fsolve(power_solve,p_speed[n+1],n))[0]
             force[n+1] = Force(speed[n+1],n)
             power[n+1] = Power(speed[n+1],n)
@@ -307,6 +329,10 @@ print 'average power = ' + repr(np.mean(power[:end]))
 print 'max power = ' + repr(np.max(power[:end]))
 print 'energy = ' + repr(np.max(energy))
 print 'amphour = ' + repr(np.max(amphour))
+print '% motor rpm limit  = ' + repr(np.mean(motor_rpm_limit[:end])*100)
+print '% motor torque limit  = ' + repr(np.mean(motor_torque_limit[:end])*100)
+print '% motor power limit  = ' + repr(np.mean(motor_power_limit[:end])*100)
+print '% battery power limit  = ' + repr(np.mean(batt_power_limit[:end])*100)
 
 #finish plot
 
