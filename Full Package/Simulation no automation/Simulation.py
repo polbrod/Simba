@@ -47,7 +47,7 @@ battery_efficiency = .98
 motor_torque_constant = 1   #torque to current constant of motor. torque/amp
 motor_rpm_constant = 12     #rpm to voltage dc constant of motor. rpm/volt
 
-soc_to_voltage_lookup = 'simple_bat.csv'
+soc_to_voltage_lookup = 'aee.csv'
 series_cells = 108
 max_amphour = 40
 batt_max_current = 200
@@ -239,6 +239,7 @@ mass = rider_mass + bike_mass
 distance[0] = .1
 speed[0] = .1
 altitude[0] = distancetoaltitude_lookup(1)
+voltage[0] = soctovoltage_lookup(0) * series_cells
 
 #simulation and plot loop
 #(iteration,test conditions..) 
