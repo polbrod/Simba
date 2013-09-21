@@ -1,0 +1,2 @@
+gearing,dist_to_alt_lookup,step,total_time,wheel_radius,rolling_resistance,rider_mass,bike_mass,dist_to_speed_lookup,air_resistance,air_density,gravity,frontal_area,top_torque,top_rpm,efficiency,max_distance_travel,chain_efficiency,battery_efficiency,motor_torque_constant,motor_rpm_constant,motor_controller_eff_lookup,motor_eff_lookup,top_power
+,,,,,,,,,,,,,,,,,,,,,,,

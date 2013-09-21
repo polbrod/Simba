@@ -52,7 +52,7 @@ def AdjustParams(dictionary, percentChange):
             
     return resultDict
     
-def FileToParams(inFiles):
+def ProjectToParams(inFiles):
     
     optionsFile = inFiles
     logging.info("STARTING FUNCTIONS FileToParams")
@@ -68,9 +68,13 @@ def FileToParams(inFiles):
         
         logging.info("Current file to search for data: %s",file)
         fileName = file
+        emptyFile = False #Initalize for possible of empty file
         
         try:
             data = np.loadtxt(open(fileName, "rb"), dtype = 'string', delimiter=',')
+            print np.shape(data)
+            if np.shape(data) == (0,):
+                emptyFile = True
             logging.info("Data extraction from %s complete", file)
                 #Extracts all data from file into variable data
         except IOError:
@@ -80,29 +84,32 @@ def FileToParams(inFiles):
             GUIdialog.Destroy()
             raise Exception("File " + fileName + " not found.  Please remove entry or place file in same folder")
             
-        fileName = inFiles[completedTransfers,1]      
-        params = data[0]    #Creates array of params and inputs
-        data = data[1:]     #Creates array of data without headers        
+            
         fileDict = collections.OrderedDict()
+        if not emptyFile:
+            fileName = inFiles[completedTransfers,1]      
+            params = data[0]    #Creates array of params and inputs
+            data = data[1:]     #Creates array of data without headers        
+        
+            for index in range(len(params)):
+                fileDict[params[index]] = data[:,index]    #Assigns data in same column as header
+                                          #to dict where key is header and data
+                                                            #is the value linked to key
+            for category in params: #Removes all missing data from dict values
+                elementIndex = 0;
     
-        for index in range(len(params)):
-            fileDict[params[index]] = data[:,index]    #Assigns data in same column as header
-                                                        #to dict where key is header and data
-                                                        #is the value linked to key
-        for category in params: #Removes all missing data from dict values
-            elementIndex = 0;
-
-            for element in (fileDict[category]):
-                if (not element):       
-                    fileDict[category] = np.delete(fileDict[category], elementIndex)
-                else:
-                    elementIndex += 1
-                    
-            try: #Try to convert to float, otherwise don't change
-                fileDict[category] = fileDict[category].astype(np.float) 
-            except:
-                pass
-
+                for element in (fileDict[category]):
+                    if (not element):       
+                        fileDict[category] = np.delete(fileDict[category], elementIndex)
+                    else:
+                        elementIndex += 1
+                        
+                try: #Try to convert to float, otherwise don't change
+                    fileDict[category] = fileDict[category].astype(np.float) 
+                except:
+                    pass
+    
+            
         inputDict[fileName] = fileDict
         completedTransfers += 1
     
@@ -110,7 +117,7 @@ def FileToParams(inFiles):
     return inputDict
     
     
-       
+    
 def OutputFile(folderName, outputDict):
     
 
@@ -160,6 +167,7 @@ def OutputFile(folderName, outputDict):
         print("Data transfer to " + fileName + " complete")
         logging.info("Data converted and saved to %s", fileName)
 
+
 def SaveInput(folderName, outputDict):
     
     logging.info("STARTING FUNCTION OutputFile")        
@@ -172,7 +180,6 @@ def SaveInput(folderName, outputDict):
         logging.debug("File will be saved at %s", fileName)
         currentDict = outputDict[key]
         
-        print currentDict.keys()
         paramHeaders = np.array(currentDict.keys())  #Turns headers into numpy array
 
         maxColumnLength = 0 #Find maximum number of rows
@@ -185,12 +192,14 @@ def SaveInput(folderName, outputDict):
 
         
         for x in range(len(paramHeaders)):
-            currentValues = str(currentDict[paramHeaders[x]][0]) #Gets list of header values
-               #Turns list into numpy array
-            
-
-            values[0,x] = currentValues       
-        
+            try:
+                currentValues = str(currentDict[paramHeaders[x]][0]) #Gets list of header values
+                   #Turns list into numpy array
+                
+    
+                values[0,x] = currentValues       
+            except:
+                pass            
         data = np.vstack((paramHeaders, values))    #Combines headers with values
         try:
             np.savetxt(fileName, data, delimiter=",", fmt="%s")
@@ -283,7 +292,7 @@ class IOSplitterPanel(wx.Panel):
         splitter = wx.SplitterWindow(self, style = wx.SP_3D| wx.SP_LIVE_UPDATE)
         splitter.SetSashGravity(0.2)
         splitter.SetMinimumPaneSize(20)
-        leftPanel = InputPanel(splitter, style = wx.BORDER_SIMPLE)
+        leftPanel = InputPanel(splitter, style = wx.BORDER_SIMPLE | wx.TAB_TRAVERSAL)
         rightPanel = OutputPanel(splitter, style = wx.BORDER_SIMPLE)        
 
         splitter.SplitVertically(leftPanel, rightPanel) 
@@ -306,7 +315,7 @@ class MainFrame(wx.Frame):
         pub.subscribe(self.DisableDelete, ("DisableDelete"))        
 
         
-        self.currentFiles = np.empty(shape=(10,1))
+        self.currentFiles = np.empty(shape=(0,0))
         self.currentFile = dict()        
         # Load icon
         if hasattr(sys, 'frozen'):
@@ -347,6 +356,10 @@ class MainFrame(wx.Frame):
         addParamFile_ico = wx.ArtProvider.GetBitmap(wx.ART_NEW, wx.ART_TOOLBAR, (20,20))
         addNewParamTool = self.toolbar.AddSimpleTool(wx.ID_FILE, addParamFile_ico, "New Parameter File", "Add new paramter file to project")
         self.Bind(wx.EVT_MENU, self.OnNewParamFile, addNewParamTool)
+        
+        copyParamFile_ico = wx.ArtProvider.GetBitmap(wx.ART_COPY, wx.ART_TOOLBAR, (20,20))
+        copyParamTool = self.toolbar.AddSimpleTool(wx.ID_COPY, copyParamFile_ico, "Copy Parameter File", "Copy the current parameter file to a new parameter file")
+        self.Bind(wx.EVT_MENU, self.OnCopyParamFile, copyParamTool)
         
         removeParamFile_ico = wx.ArtProvider.GetBitmap(wx.ART_DELETE, wx.ART_TOOLBAR, (20,20))
         removeNewParamTool = self.toolbar.AddSimpleTool(wx.ID_DELETE, removeParamFile_ico, "Remove Parameter File", "Remove parameter file from project")
@@ -481,25 +494,46 @@ class MainFrame(wx.Frame):
         self.dirname = ''
         dlg = wx.FileDialog(self, "Choose a file", self.dirname, "", "Comma Seperated Value (.csv)|*.csv|Text file (.txt)|*.txt")
         if dlg.ShowModal() == wx.ID_OK:
+            
+            hasParamFile = False
             self.filename = dlg.GetFilename()
             self.dirname = dlg.GetDirectory()
             self.project = (os.path.join(self.dirname, self.filename))
             
-            if os.path.exists(self.project) and self.folderControl.IsEmpty():
+            if os.path.exists(self.project):
                 try:
                     data = np.loadtxt(open(self.project, "rb"), dtype = 'string', delimiter=',')
-                    self.folderControl.SetValue(data[1,3])
+                    
+                    if not np.shape(data) == (5,):
+                        print "Has param file"
+                        hasParamFile = True
+                        fileIndex = 1
+                        print np.shape(data)
+                        while fileIndex < np.shape(data)[1]:
+
+                            fileIndex = fileIndex+1
+                            
+                    if self.folderControl.IsEmpty():
+                        self.folderControl.SetValue(data[1,3])
                     
                 #Extracts all data from file into variable data
                 except:
-                    pass
+                    print "failed opening file"
+            
           
-          
-            self.dictionary = FileToParams(self.project)
-            #print self.dictionary
+            if hasParamFile:
+                self.dictionary = ProjectToParams(self.project)
+                print self.dictionary
+
+            else:
+                self.dictionary.clear()
+                msg = datetime.now().strftime('%H:%M:%S') + ": " + self.project + " has no parameter files"
+                pub.sendMessage(("AddStatus"), msg)  
+                #print self.dictionary
             pub.sendMessage(("UpdateInput"), self.dictionary)
             msg = datetime.now().strftime('%H:%M:%S') + ": " + "Opened project " + self.project
             pub.sendMessage(("AddStatus"), msg)    
+              
             
             
         dlg.Destroy()
@@ -508,6 +542,7 @@ class MainFrame(wx.Frame):
     
     def OnSave(self, e):
         """Saves the current parameter file open in input panel"""
+        print self.currentFile
         SaveInput(os.path.dirname(os.path.realpath(self.project)), self.currentFile)
         msg = datetime.now().strftime('%H:%M:%S') + ": " + "Successfully saved " + self.currentFile.keys()[0]
         pub.sendMessage(("AddStatus"), msg)  
@@ -516,15 +551,30 @@ class MainFrame(wx.Frame):
     
     def OnSaveAll(self,e):
         """Saves all parameters file in the current project"""
-        SaveInput(os.path.dirname(os.path.realpath(self.project)), self.dictionary)
-        msg = datetime.now().strftime('%H:%M:%S') + ": " + "Successfully saved all parameter files"
-        pub.sendMessage(("AddStatus"), msg)  
+        for key in self.dictionary.keys():
+            saveDict = dict()
+            saveDict[key] = self.dictionary[key]
+            SaveInput(os.path.dirname(os.path.realpath(self.project)), saveDict)
+            msg = datetime.now().strftime('%H:%M:%S') + ": " + "Successfully saved " + key
+            pub.sendMessage(("AddStatus"), msg)  
     
     def OnNewParamFile(self, e):
         #Get file name from input field
         #create new entry in dictionary with that name
         if len(self.newParamName.GetValue()) > 0:
             
+            inFiles = np.loadtxt(open(self.project, "rb"), dtype = 'string', delimiter = ',')
+            if not self.currentFile.keys()[0] in inFiles:        
+                files = inFiles
+                newline = np.array([self.currentFile.keys()[0], self.currentFile.keys()[0], '', '', ''])
+                newProject = np.vstack((files, newline))
+                
+                if np.shape(newProject)[0] > 1:
+                    newProject[1,3] = self.folderControl.GetValue()
+            
+                np.savetxt(self.project, newProject, delimiter=",", fmt="%s")
+                
+             
             self.dictionary[self.newParamName.GetValue()] = collections.OrderedDict()
             self.dictionary[self.newParamName.GetValue()]["gearing"] = np.array([""])
             self.dictionary[self.newParamName.GetValue()]["dist_to_alt_lookup"] = np.array([""])
@@ -552,23 +602,68 @@ class MainFrame(wx.Frame):
             self.dictionary[self.newParamName.GetValue()]["top_power"] = np.array([""])
             
             self.currentFiles = np.append(self.currentFiles, self.newParamName.GetValue())
+            print str(self.currentFiles)
             pub.sendMessage(("InputFiles"), self.currentFiles)
             #print self.dictionary
             pub.sendMessage(("ChangeSelection"), self.newParamName.GetValue())
+            print self.dictionary
             pub.sendMessage(("UpdateInput"), self.dictionary)
+            
+            '''
+            inFiles = np.loadtxt(open(self.project, "rb"), dtype = 'string', delimiter = ',')
+            if not self.currentFile.keys()[0] in inFiles:        
+                files = inFiles
+                newline = np.array([self.currentFile.keys()[0], self.currentFile.keys()[0], '', '', ''])
+                newProject = np.vstack((files, newline))
+                
+                if np.shape(newProject)[0] > 1:
+                    newProject[1,3] = self.folderControl.GetValue()
+            
+                np.savetxt(self.project, newProject, delimiter=",", fmt="%s")            
+            '''
+        else:
+            msg = datetime.now().strftime('%H:%M:%S') + ": " + "Must enter parameter filename before creating a new file"
+            pub.sendMessage(("AddStatus"), msg)  
+        pass
+    
+    def OnCopyParamFile(self, e):
+        if len(self.newParamName.GetValue()) > 0:
             
             inFiles = np.loadtxt(open(self.project, "rb"), dtype = 'string', delimiter = ',')
             if not self.currentFile.keys()[0] in inFiles:        
                 files = inFiles
                 newline = np.array([self.currentFile.keys()[0], self.currentFile.keys()[0], '', '', ''])
                 newProject = np.vstack((files, newline))
+                
+                if np.shape(newProject)[0] > 1:
+                    newProject[1,3] = self.folderControl.GetValue()
             
-                np.savetxt(self.project, newProject, delimiter=",", fmt="%s")            
+                np.savetxt(self.project, newProject, delimiter=",", fmt="%s")
+             
+            print "PRINTING CURRENT FILE ############################"
+            print self.currentFile
+            self.dictionary[self.newParamName.GetValue()] = deepcopy(self.currentFile[self.currentFile.keys()[0]])
+
             
-        else:
-            msg = datetime.now().strftime('%H:%M:%S') + ": " + "Must enter parameter filename before creating a new file"
-            pub.sendMessage(("AddStatus"), msg)  
-        pass
+            self.currentFiles = np.append(self.currentFiles, self.newParamName.GetValue())
+            print str(self.currentFiles)
+            pub.sendMessage(("InputFiles"), self.currentFiles)
+            #print self.dictionary
+            pub.sendMessage(("ChangeSelection"), self.newParamName.GetValue())
+            print self.dictionary
+            pub.sendMessage(("UpdateInput"), self.dictionary)
+            
+            #SaveInput(os.path.dirname(self.project), self.dictionary)
+            inFiles = np.loadtxt(open(self.project, "rb"), dtype = 'string', delimiter = ',')
+            if not self.currentFile.keys()[0] in inFiles:        
+                files = inFiles
+                newline = np.array([self.currentFile.keys()[0], self.currentFile.keys()[0], '', '', ''])
+                newProject = np.vstack((files, newline))
+                
+                if np.shape(newProject)[0] > 1:
+                    newProject[1,3] = self.folderControl.GetValue()
+            
+                np.savetxt(self.project, newProject, delimiter=",", fmt="%s")    
     
     def OnRemoveParamFile(self, e):
         
@@ -576,7 +671,8 @@ class MainFrame(wx.Frame):
         inFiles = np.loadtxt(open(self.project, "rb"), dtype = 'string', delimiter = ',')
         if self.currentFile.keys()[0] in inFiles[1:,0]:        
             files = inFiles[inFiles[:,0] != self.currentFile.keys()[0]]
-            print files
+            if np.shape(files)[0] > 1:
+                files[1,3] = self.folderControl.GetValue()
             np.savetxt(self.project, files, delimiter=",", fmt="%s")        
         
         #If project has a parameter file remove the opened param file in the input panel from the dict\
@@ -610,7 +706,7 @@ class MainFrame(wx.Frame):
         pub.sendMessage(("ClearTabs"), "True")
         logging.debug("Entered path: %s", self.project)
         
-        dictionary = FileToParams(self.project)
+        dictionary = ProjectToParams(self.project)
         
         # Sensitivity Analysis Function calls
         #percentChange = 15
@@ -642,6 +738,8 @@ class MainFrame(wx.Frame):
             
         
         path = os.path.dirname(os.path.realpath("OPTIONS.csv"))
+        
+        '''
         path = os.path.join(path, "SimOutputMacro0904.xlsm")        
         
         excel = win32com.client.DispatchEx("Excel.Application")
@@ -650,7 +748,7 @@ class MainFrame(wx.Frame):
         excel.Visible = True
         workbook.Close(SaveChanges=1)
         excel.Quit
-        
+        '''
     
     def OnAbout(self, e):
         message = "A motorcycle simulation tool used to give users data about motorcycles with user specified parameters."
@@ -734,7 +832,7 @@ class InputPanel(scrolled.ScrolledPanel):
         
         self.vSizer2 = wx.BoxSizer(wx.VERTICAL)
         
-        self.p0 = wx.TextCtrl(self, size=(150,25), style = wx.TE_PROCESS_ENTER)
+        self.p0 = wx.TextCtrl(self, size=(150,25))
         self.p1 = wx.TextCtrl(self, size=(150,25))
         self.p2 = wx.TextCtrl(self, size=(150,25))
         self.p3 = wx.TextCtrl(self, size=(150,25))
@@ -758,6 +856,15 @@ class InputPanel(scrolled.ScrolledPanel):
         self.p21 = wx.TextCtrl(self, size=(150,25))
         self.p22 = wx.TextCtrl(self, size=(150,25))
         self.p23 = wx.TextCtrl(self, size=(150,25))
+        
+        self.textCtrlList = (self.p0, self.p1, self.p2, self.p3, self.p4, self.p5,
+                        self.p6, self.p7, self.p8, self.p9, self.p10, self.p11,
+                        self.p12, self.p13, self.p14, self.p15, self.p16,
+                        self.p17, self.p18, self.p19, self.p20, self.p21,
+                        self.p22, self.p23)
+        
+        for i in xrange(len(self.textCtrlList) - 1):
+            self.textCtrlList[i+1].MoveAfterInTabOrder(self.textCtrlList[i])
 
         self.p0.Bind(wx.EVT_TEXT, self.UpdateP0)
         self.p1.Bind(wx.EVT_TEXT, self.UpdateP1)
@@ -784,34 +891,13 @@ class InputPanel(scrolled.ScrolledPanel):
         self.p22.Bind(wx.EVT_TEXT, self.UpdateP22)
         self.p23.Bind(wx.EVT_TEXT, self.UpdateP23)
         
-        self.vSizer2.Add(self.p0)
-        self.vSizer2.Add(self.p1)
-        self.vSizer2.Add(self.p2)
-        self.vSizer2.Add(self.p3)
-        self.vSizer2.Add(self.p4)
-        self.vSizer2.Add(self.p5)
-        self.vSizer2.Add(self.p6)
-        self.vSizer2.Add(self.p7)
-        self.vSizer2.Add(self.p8)
-        self.vSizer2.Add(self.p9)
-        self.vSizer2.Add(self.p10)
-        self.vSizer2.Add(self.p11)
-        self.vSizer2.Add(self.p12)
-        self.vSizer2.Add(self.p13)
-        self.vSizer2.Add(self.p14)
-        self.vSizer2.Add(self.p15)
-        self.vSizer2.Add(self.p16)
-        self.vSizer2.Add(self.p17)
-        self.vSizer2.Add(self.p18)
-        self.vSizer2.Add(self.p19)
-        self.vSizer2.Add(self.p20)
-        self.vSizer2.Add(self.p21)
-        self.vSizer2.Add(self.p22)
-        self.vSizer2.Add(self.p23)
+
         
         
-        
-        
+            
+        for i in xrange(len(self.textCtrlList)):
+            self.vSizer2.Add(self.textCtrlList[i])
+            
         self.hSizerTopRow = wx.BoxSizer(wx.HORIZONTAL)
 
         
@@ -859,11 +945,15 @@ class InputPanel(scrolled.ScrolledPanel):
         
     def SetDictionary(self, msg):
         self.dictionary = msg.data
+        self
         index = 0
         for file in self.dictionary:   
+            print self.fileToFile
+            print self.fileNames
             self.fileToFile[self.fileNames[index]] = file 
             index = index + 1
-            
+          
+        self.fileToFile
         if len(self.dictionary) > 0:
             
             self.UpdateFields(wx.EVT_COMBOBOX)
@@ -871,30 +961,9 @@ class InputPanel(scrolled.ScrolledPanel):
             #pub.sendMessage(("DictFromInput"), self.dictionary)
 
         else:
-            self.p0.SetValue("")        
-            self.p1.SetValue("")
-            self.p2.SetValue("")        
-            self.p3.SetValue("")
-            self.p4.SetValue("")        
-            self.p5.SetValue("")
-            self.p6.SetValue("")        
-            self.p7.SetValue("")
-            self.p8.SetValue("")        
-            self.p9.SetValue("")
-            self.p10.SetValue("")        
-            self.p11.SetValue("")
-            self.p12.SetValue("")        
-            self.p13.SetValue("")
-            self.p14.SetValue("")        
-            self.p15.SetValue("")
-            self.p16.SetValue("")
-            self.p17.SetValue("")        
-            self.p18.SetValue("")
-            self.p19.SetValue("")
-            self.p20.SetValue("")        
-            self.p21.SetValue("")
-            self.p22.SetValue("")
-            self.p23.SetValue("")
+            for i in xrange(len(self.textCtrlList)):
+                self.textCtrlList[i].SetValue("")            
+            
             self.dropDownList.Clear()
             pub.sendMessage(("DisableDelete"), True)
             
@@ -921,9 +990,13 @@ class InputPanel(scrolled.ScrolledPanel):
         fileDict = dict()
         fileDict[self.fileToFile[self.dropDownList.GetValue()]] = currentFile
         pub.sendMessage(("CurrentFile"), fileDict)
-
+        
+        
         for k,v in currentFile.iteritems():
-            self.values.append(v[0])
+            try:
+                self.values.append(v[0])
+            except:
+                self.values.append("")
         
 
         self.p0.ChangeValue(str(self.values[0]))        
@@ -950,7 +1023,7 @@ class InputPanel(scrolled.ScrolledPanel):
         self.p21.ChangeValue(str(self.values[21]))
         self.p22.ChangeValue(str(self.values[22]))
         self.p23.ChangeValue(str(self.values[23]))
-            
+
     
     def UpdateP0 (self, e):
         try:
