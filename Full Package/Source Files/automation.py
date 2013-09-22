@@ -574,6 +574,7 @@ class MainFrame(wx.Frame):
                 
                 if np.shape(newProject)[0] > 1:
                     newProject[1,3] = self.folderControl.GetValue()
+                    newProject[1,4] = self.newParamName.GetValue() + " Report"
             
                 np.savetxt(self.project, newProject, delimiter=",", fmt="%s")
                 
@@ -594,7 +595,6 @@ class MainFrame(wx.Frame):
             self.dictionary[self.newParamName.GetValue()]["frontal_area"] = np.array([""])
             self.dictionary[self.newParamName.GetValue()]["top_torque"] = np.array([""])
             self.dictionary[self.newParamName.GetValue()]["top_rpm"] = np.array([""])
-            self.dictionary[self.newParamName.GetValue()]["efficiency"] = np.array([""])
             self.dictionary[self.newParamName.GetValue()]["max_distance_travel"] = np.array([""])
             self.dictionary[self.newParamName.GetValue()]["chain_efficiency"] = np.array([""])
             self.dictionary[self.newParamName.GetValue()]["battery_efficiency"] = np.array([""])
@@ -602,8 +602,12 @@ class MainFrame(wx.Frame):
             self.dictionary[self.newParamName.GetValue()]["motor_rpm_constant"] = np.array([""])
             self.dictionary[self.newParamName.GetValue()]["motor_controller_eff_lookup"] = np.array([""])
             self.dictionary[self.newParamName.GetValue()]["motor_eff_lookup"] = np.array([""])
-            self.dictionary[self.newParamName.GetValue()]["top_power"] = np.array([""])
             self.dictionary[self.newParamName.GetValue()]["comments"] = np.array([""])
+            self.dictionary[self.newParamName.GetValue()]["motor_top_power"] = np.array([""])
+            self.dictionary[self.newParamName.GetValue()]["batt_max_current"] = np.array([""])
+            self.dictionary[self.newParamName.GetValue()]["max_amphour"] = np.array([""])
+            self.dictionary[self.newParamName.GetValue()]["series_cells"] = np.array([""])
+            self.dictionary[self.newParamName.GetValue()]["soc_to_voltage_lookup"] = np.array([""])
              
             self.currentFiles = np.append(self.currentFiles, self.newParamName.GetValue())
             print str(self.currentFiles)
@@ -644,6 +648,8 @@ class MainFrame(wx.Frame):
                 
                 if np.shape(newProject)[0] > 1:
                     newProject[1,3] = self.folderControl.GetValue()
+                    newProject[1,4] = self.newParamName.GetValue() + " Report"
+
             
                 np.savetxt(self.project, newProject, delimiter=",", fmt="%s")
              
@@ -746,7 +752,7 @@ class MainFrame(wx.Frame):
         
         path = os.path.dirname(os.path.realpath("OPTIONS.csv"))
         
-        '''
+        
         path = os.path.join(path, "SimOutputMacro0904.xlsm")        
         
         excel = win32com.client.DispatchEx("Excel.Application")
@@ -755,7 +761,7 @@ class MainFrame(wx.Frame):
         excel.Visible = True
         workbook.Close(SaveChanges=1)
         excel.Quit
-        '''
+        
     
     def OnAbout(self, e):
         message = "A motorcycle simulation tool used to give users data about motorcycles with user specified parameters."
@@ -811,30 +817,33 @@ class InputPanel(scrolled.ScrolledPanel):
         self.hSizer= wx.BoxSizer(wx.HORIZONTAL)
         self.vSizer1 = wx.BoxSizer(wx.VERTICAL)
         
-        self.vSizer1.Add(wx.StaticText(self, wx.ID_ANY, "Gearing" ,size=(180,25)))        
+        self.vSizer1.Add(wx.StaticText(self, wx.ID_ANY, "Gearing (ratio)" ,size=(180,25)))        
         self.vSizer1.Add(wx.StaticText(self, wx.ID_ANY, "Distance to Altitude Lookup",size=(180,25)))
-        self.vSizer1.Add(wx.StaticText(self, wx.ID_ANY, "Step" ,size=(180,25)))
-        self.vSizer1.Add(wx.StaticText(self, wx.ID_ANY, "Total Time" ,size=(180,25)))
-        self.vSizer1.Add(wx.StaticText(self, wx.ID_ANY, "Wheel Radius" ,size=(180,25)))
+        self.vSizer1.Add(wx.StaticText(self, wx.ID_ANY, "Step (seconds)" ,size=(180,25)))
+        self.vSizer1.Add(wx.StaticText(self, wx.ID_ANY, "Total Time (seconds)" ,size=(180,25)))
+        self.vSizer1.Add(wx.StaticText(self, wx.ID_ANY, "Wheel Radius (meters)" ,size=(180,25)))
         self.vSizer1.Add(wx.StaticText(self, wx.ID_ANY, "Rolling Resistance" ,size=(180,25)))      
-        self.vSizer1.Add(wx.StaticText(self, wx.ID_ANY, "Rider Mass",size=(180,25)))
-        self.vSizer1.Add(wx.StaticText(self, wx.ID_ANY, "Bike Mass",size=(180,25)))
+        self.vSizer1.Add(wx.StaticText(self, wx.ID_ANY, "Rider Mass (kg)",size=(180,25)))
+        self.vSizer1.Add(wx.StaticText(self, wx.ID_ANY, "Bike Mass (kg)",size=(180,25)))
         self.vSizer1.Add(wx.StaticText(self, wx.ID_ANY, "Distance to Speed Lookup",size=(180,25)))
         self.vSizer1.Add(wx.StaticText(self, wx.ID_ANY, "Air Resistance" ,size=(180,25)))
-        self.vSizer1.Add(wx.StaticText(self, wx.ID_ANY, "Air Density" ,size=(180,25)))
-        self.vSizer1.Add(wx.StaticText(self, wx.ID_ANY, "Gravity" ,size=(180,25)))
-        self.vSizer1.Add(wx.StaticText(self, wx.ID_ANY, "Frontal Area" ,size=(180,25)))
-        self.vSizer1.Add(wx.StaticText(self, wx.ID_ANY, "Top Torque" ,size=(180,25)))
-        self.vSizer1.Add(wx.StaticText(self, wx.ID_ANY, "Top RPM" ,size=(180,25)))
-        self.vSizer1.Add(wx.StaticText(self, wx.ID_ANY, "Efficiency" ,size=(180,25)))
-        self.vSizer1.Add(wx.StaticText(self, wx.ID_ANY, "Max Distance Travel" ,size=(180,25)))
+        self.vSizer1.Add(wx.StaticText(self, wx.ID_ANY, "Air Density (kg/m^2)" ,size=(180,25)))
+        self.vSizer1.Add(wx.StaticText(self, wx.ID_ANY, "Gravity (m/s^2)" ,size=(180,25)))
+        self.vSizer1.Add(wx.StaticText(self, wx.ID_ANY, "Frontal Area (m^2)" ,size=(180,25)))
+        self.vSizer1.Add(wx.StaticText(self, wx.ID_ANY, "Top Torque (Nm)" ,size=(180,25)))
+        self.vSizer1.Add(wx.StaticText(self, wx.ID_ANY, "Top RPM (RPM)" ,size=(180,25)))
+        self.vSizer1.Add(wx.StaticText(self, wx.ID_ANY, "Max Distance Travel (meters)" ,size=(180,25)))
         self.vSizer1.Add(wx.StaticText(self, wx.ID_ANY, "Chain Efficiency" ,size=(180,25)))
         self.vSizer1.Add(wx.StaticText(self, wx.ID_ANY, "Battery Efficiency" ,size=(180,25)))
-        self.vSizer1.Add(wx.StaticText(self, wx.ID_ANY, "Motor Torque Constant" ,size=(180,25)))
-        self.vSizer1.Add(wx.StaticText(self, wx.ID_ANY, "Motor RPM Constant" ,size=(180,25)))
+        self.vSizer1.Add(wx.StaticText(self, wx.ID_ANY, "Motor Torque Constant (Nm/amps rms)" ,size=(180,25)))
+        self.vSizer1.Add(wx.StaticText(self, wx.ID_ANY, "Motor RPM Constant (RPM/Voltage)" ,size=(180,25)))
         self.vSizer1.Add(wx.StaticText(self, wx.ID_ANY, "Motor Controller Efficiency Lookup" ,size=(180,25)))
         self.vSizer1.Add(wx.StaticText(self, wx.ID_ANY, "Motor Efficiency Lookup" ,size=(180,25)))
-        self.vSizer1.Add(wx.StaticText(self, wx.ID_ANY, "Top Power" ,size=(180,25)))
+        self.vSizer1.Add(wx.StaticText(self, wx.ID_ANY, "Motor Top Power (watts)" ,size=(180,25)))
+        self.vSizer1.Add(wx.StaticText(self, wx.ID_ANY, "Battery Max Current (I)" ,size=(180,25)))
+        self.vSizer1.Add(wx.StaticText(self, wx.ID_ANY, "Max Amphours (Amphours)" ,size=(180,25)))
+        self.vSizer1.Add(wx.StaticText(self, wx.ID_ANY, "Cell Amount in Series" ,size=(180,25)))
+        self.vSizer1.Add(wx.StaticText(self, wx.ID_ANY, "Soc To Voltage Lookup" ,size=(180,25)))
         self.vSizer1.AddSpacer(3)
         self.vSizer1.Add(wx.StaticText(self, wx.ID_ANY, "Comments", size=(180,25)))
  
@@ -856,22 +865,26 @@ class InputPanel(scrolled.ScrolledPanel):
         self.p12 = wx.TextCtrl(self, size=(150,25))
         self.p13 = wx.TextCtrl(self, size=(150,25))
         self.p14 = wx.TextCtrl(self, size=(150,25))
-        self.p15 = wx.TextCtrl(self, size=(150,25))
         self.p16 = wx.TextCtrl(self, size=(150,25))
         self.p17 = wx.TextCtrl(self, size=(150,25))
         self.p18 = wx.TextCtrl(self, size=(150,25))
-        self.p19 = wx.TextCtrl(self, size=(150,25))
         self.p20 = wx.TextCtrl(self, size=(150,25))
         self.p21 = wx.TextCtrl(self, size=(150,25))
         self.p22 = wx.TextCtrl(self, size=(150,25))
         self.p23 = wx.TextCtrl(self, size=(150,25))
+        self.p24 = wx.TextCtrl(self, size=(150,25))
+        self.p25 = wx.TextCtrl(self, size=(150,25))
+        self.p26 = wx.TextCtrl(self, size=(150,25))
+        self.p27 = wx.TextCtrl(self, size=(150,25))
+        self.p28 = wx.TextCtrl(self, size=(150,25))
         self.comments = wx.TextCtrl(self, size = (355,160), style = wx.TE_MULTILINE)
         
         self.textCtrlList = (self.p0, self.p1, self.p2, self.p3, self.p4, self.p5,
                         self.p6, self.p7, self.p8, self.p9, self.p10, self.p11,
-                        self.p12, self.p13, self.p14, self.p15, self.p16,
-                        self.p17, self.p18, self.p19, self.p20, self.p21,
-                        self.p22, self.p23, self.comments)
+                        self.p12, self.p13, self.p14, self.p16,
+                        self.p17, self.p18, self.p20, self.p21,
+                        self.p22, self.p23, self.p24, self.p25, self.p26,
+                        self.p27, self.p28, self.comments)
         
         for i in xrange(len(self.textCtrlList) - 1):
             self.textCtrlList[i+1].MoveAfterInTabOrder(self.textCtrlList[i])
@@ -891,15 +904,18 @@ class InputPanel(scrolled.ScrolledPanel):
         self.p12.Bind(wx.EVT_TEXT, self.UpdateP12)
         self.p13.Bind(wx.EVT_TEXT, self.UpdateP13)
         self.p14.Bind(wx.EVT_TEXT, self.UpdateP14)
-        self.p15.Bind(wx.EVT_TEXT, self.UpdateP15)
         self.p16.Bind(wx.EVT_TEXT, self.UpdateP16)
         self.p17.Bind(wx.EVT_TEXT, self.UpdateP17)
         self.p18.Bind(wx.EVT_TEXT, self.UpdateP18)
-        self.p19.Bind(wx.EVT_TEXT, self.UpdateP19)
         self.p20.Bind(wx.EVT_TEXT, self.UpdateP20)
         self.p21.Bind(wx.EVT_TEXT, self.UpdateP21)
         self.p22.Bind(wx.EVT_TEXT, self.UpdateP22)
         self.p23.Bind(wx.EVT_TEXT, self.UpdateP23)
+        self.p24.Bind(wx.EVT_TEXT, self.UpdateP24)
+        self.p25.Bind(wx.EVT_TEXT, self.UpdateP25)
+        self.p26.Bind(wx.EVT_TEXT, self.UpdateP26)
+        self.p27.Bind(wx.EVT_TEXT, self.UpdateP27)
+        self.p28.Bind(wx.EVT_TEXT, self.UpdateP28)
         self.comments.Bind(wx.EVT_TEXT, self.UpdateComments)
         
 
@@ -1015,31 +1031,34 @@ class InputPanel(scrolled.ScrolledPanel):
                 self.values.append("")
         
 
-        self.p0.ChangeValue(str(self.values[0]))        
-        self.p1.ChangeValue(str(self.values[1]))
-        self.p2.ChangeValue(str(self.values[2]))        
-        self.p3.ChangeValue(str(self.values[3]))
-        self.p4.ChangeValue(str(self.values[4]))        
-        self.p5.ChangeValue(str(self.values[5]))
-        self.p6.ChangeValue(str(self.values[6]))        
-        self.p7.ChangeValue(str(self.values[7]))
-        self.p8.ChangeValue(str(self.values[8]))        
-        self.p9.ChangeValue(str(self.values[9]))
-        self.p10.ChangeValue(str(self.values[10]))        
-        self.p11.ChangeValue(str(self.values[11]))
-        self.p12.ChangeValue(str(self.values[12]))        
-        self.p13.ChangeValue(str(self.values[13]))
-        self.p14.ChangeValue(str(self.values[14]))        
-        self.p15.ChangeValue(str(self.values[15]))
-        self.p16.ChangeValue(str(self.values[16]))
-        self.p17.ChangeValue(str(self.values[17]))        
-        self.p18.ChangeValue(str(self.values[18]))
-        self.p19.ChangeValue(str(self.values[19]))
-        self.p20.ChangeValue(str(self.values[20]))        
-        self.p21.ChangeValue(str(self.values[21]))
-        self.p22.ChangeValue(str(self.values[22]))
-        self.p23.ChangeValue(str(self.values[23]))
-        self.comments.ChangeValue(str(self.values[24]))
+        self.p0.ChangeValue(str(currentFile["gearing"][0]))        
+        self.p1.ChangeValue(str(currentFile["dist_to_alt_lookup"][0]))
+        self.p2.ChangeValue(str(currentFile["step"][0]))        
+        self.p3.ChangeValue(str(currentFile["total_time"][0]))
+        self.p4.ChangeValue(str(currentFile["wheel_radius"][0]))        
+        self.p5.ChangeValue(str(currentFile["rolling_resistance"][0]))
+        self.p6.ChangeValue(str(currentFile["rider_mass"][0]))        
+        self.p7.ChangeValue(str(currentFile["bike_mass"][0]))
+        self.p8.ChangeValue(str(currentFile["dist_to_speed_lookup"][0]))        
+        self.p9.ChangeValue(str(currentFile["air_resistance"][0]))
+        self.p10.ChangeValue(str(currentFile["air_density"][0]))        
+        self.p11.ChangeValue(str(currentFile["gravity"][0]))
+        self.p12.ChangeValue(str(currentFile["frontal_area"][0]))        
+        self.p13.ChangeValue(str(currentFile["top_torque"][0]))
+        self.p14.ChangeValue(str(currentFile["top_rpm"][0]))        
+        self.p16.ChangeValue(str(currentFile["max_distance_travel"][0]))
+        self.p17.ChangeValue(str(currentFile["chain_efficiency"][0]))
+        self.p18.ChangeValue(str(currentFile["battery_efficiency"][0]))        
+        self.p20.ChangeValue(str(currentFile["motor_torque_constant"][0]))
+        self.p21.ChangeValue(str(currentFile["motor_rpm_constant"][0]))        
+        self.p22.ChangeValue(str(currentFile["motor_controller_eff_lookup"][0]))
+        self.p23.ChangeValue(str(currentFile["motor_eff_lookup"][0]))
+        self.p24.ChangeValue(str(currentFile["motor_top_power"][0]))
+        self.p25.ChangeValue(str(currentFile["batt_max_current"][0]))
+        self.p26.ChangeValue(str(currentFile["max_amphour"][0]))
+        self.p27.ChangeValue(str(currentFile["series_cells"][0]))
+        self.p28.ChangeValue(str(currentFile["soc_to_voltage_lookup"][0]))
+        self.comments.ChangeValue(str(currentFile["comments"][0]))
 
     
     def UpdateP0 (self, e):
@@ -1192,15 +1211,6 @@ class InputPanel(scrolled.ScrolledPanel):
         except:
             pass
         
-    def UpdateP15 (self, e):
-        try:
-            previousValue = self.dictionary[self.fileToFile[self.dropDownList.GetValue()]]['efficiency'][0]
-            self.dictionary[self.fileToFile[self.dropDownList.GetValue()]]['efficiency'] = [self.p15.GetValue()]
-            pub.sendMessage(("DictFromInput"), self.dictionary)
-            msg = datetime.now().strftime('%H:%M:%S') + ": " + "Efficiency changed from " + str(previousValue) + " to " + self.p15.GetValue()
-            pub.sendMessage(("AddStatus"), msg)   
-        except:
-            pass
         
     def UpdateP16 (self, e):
         try:
@@ -1232,7 +1242,7 @@ class InputPanel(scrolled.ScrolledPanel):
         except:
             pass
         
-    def UpdateP19 (self, e):
+    def UpdateP20 (self, e):
         try:
             previousValue = self.dictionary[self.fileToFile[self.dropDownList.GetValue()]]['motor_torque_constant'][0]
             self.dictionary[self.fileToFile[self.dropDownList.GetValue()]]['motor_torque_constant'] = [self.p19.GetValue()]
@@ -1242,7 +1252,7 @@ class InputPanel(scrolled.ScrolledPanel):
         except:
             pass
         
-    def UpdateP20 (self, e):
+    def UpdateP21 (self, e):
         try:
             previousValue = self.dictionary[self.fileToFile[self.dropDownList.GetValue()]]['motor_rpm_constant'][0]
             self.dictionary[self.fileToFile[self.dropDownList.GetValue()]]['motor_rpm_constant'] = [self.p20.GetValue()]
@@ -1252,7 +1262,7 @@ class InputPanel(scrolled.ScrolledPanel):
         except:
             pass
         
-    def UpdateP21 (self, e):
+    def UpdateP22 (self, e):
         try:
             previousValue = self.dictionary[self.fileToFile[self.dropDownList.GetValue()]]['motor_controller_eff_lookup'][0]
             self.dictionary[self.fileToFile[self.dropDownList.GetValue()]]['motor_controller_eff_lookup'] = [self.p21.GetValue()]
@@ -1262,7 +1272,7 @@ class InputPanel(scrolled.ScrolledPanel):
         except:
             pass
         
-    def UpdateP22 (self, e):
+    def UpdateP23 (self, e):
         try:
             previousValue = self.dictionary[self.fileToFile[self.dropDownList.GetValue()]]['motor_eff_lookup'][0]
             self.dictionary[self.fileToFile[self.dropDownList.GetValue()]]['motor_eff_lookup'] = [self.p22.GetValue()]
@@ -1272,16 +1282,57 @@ class InputPanel(scrolled.ScrolledPanel):
         except:
             pass
         
-    def UpdateP23 (self, e):
+        
+    def UpdateP24 (self, e):
         try:
-            previousValue = self.dictionary[self.fileToFile[self.dropDownList.GetValue()]]['top_power'][0]
-            self.dictionary[self.fileToFile[self.dropDownList.GetValue()]]['top_power'] = [self.p23.GetValue()]
+            previousValue = self.dictionary[self.fileToFile[self.dropDownList.GetValue()]]['motor_top_power'][0]
+            self.dictionary[self.fileToFile[self.dropDownList.GetValue()]]['motor_top_power'] = [self.p24.GetValue()]
             pub.sendMessage(("DictFromInput"), self.dictionary)
-            msg = datetime.now().strftime('%H:%M:%S') + ": " + "Top Power changed from " + str(previousValue) + " to " + self.p23.GetValue()
+            msg = datetime.now().strftime('%H:%M:%S') + ": " + "Motor Top Power changed from " + str(previousValue) + " to " + self.p24.GetValue()
             pub.sendMessage(("AddStatus"), msg)
         except:
             pass
         
+    def UpdateP25 (self, e):
+        try:
+            previousValue = self.dictionary[self.fileToFile[self.dropDownList.GetValue()]]['batt_max_current'][0]
+            self.dictionary[self.fileToFile[self.dropDownList.GetValue()]]['batt_max_current'] = [self.p25.GetValue()]
+            pub.sendMessage(("DictFromInput"), self.dictionary)
+            msg = datetime.now().strftime('%H:%M:%S') + ": " + "Battery Max Current changed from " + str(previousValue) + " to " + self.p25.GetValue()
+            pub.sendMessage(("AddStatus"), msg)
+        except:
+            pass
+    
+    def UpdateP26 (self, e):
+        try:
+            previousValue = self.dictionary[self.fileToFile[self.dropDownList.GetValue()]]['max_amphour'][0]
+            self.dictionary[self.fileToFile[self.dropDownList.GetValue()]]['max_amphour'] = [self.p26.GetValue()]
+            pub.sendMessage(("DictFromInput"), self.dictionary)
+            msg = datetime.now().strftime('%H:%M:%S') + ": " + "Max Amphours changed from " + str(previousValue) + " to " + self.p26.GetValue()
+            pub.sendMessage(("AddStatus"), msg)
+        except:
+            pass
+
+    def UpdateP27 (self, e):
+        try:
+            previousValue = self.dictionary[self.fileToFile[self.dropDownList.GetValue()]]['series_cells'][0]
+            self.dictionary[self.fileToFile[self.dropDownList.GetValue()]]['series_cells'] = [self.p27.GetValue()]
+            pub.sendMessage(("DictFromInput"), self.dictionary)
+            msg = datetime.now().strftime('%H:%M:%S') + ": " + "Cell Amount in Series changed from " + str(previousValue) + " to " + self.p27.GetValue()
+            pub.sendMessage(("AddStatus"), msg)
+        except:
+            pass    
+
+    def UpdateP28 (self, e):
+        try:
+            previousValue = self.dictionary[self.fileToFile[self.dropDownList.GetValue()]]['soc_to_voltage_lookup'][0]
+            self.dictionary[self.fileToFile[self.dropDownList.GetValue()]]['soc_to_voltage_lookup'] = [self.p28.GetValue()]
+            pub.sendMessage(("DictFromInput"), self.dictionary)
+            msg = datetime.now().strftime('%H:%M:%S') + ": " + "Soc to Voltage Lookup changed from " + str(previousValue) + " to " + self.p28.GetValue()
+            pub.sendMessage(("AddStatus"), msg)
+        except:
+            pass    
+    
     def UpdateComments (self, e):
         try:
             previousValue = self.dictionary[self.fileToFile[self.dropDownList.GetValue()]]['comments'][0]
@@ -1391,7 +1442,7 @@ class StatusPanel(wx.Panel):
         currentTextCtrl = self.statusTextCtrl.GetValue()
         newTextCtrl = currentTextCtrl + msg.data + os.linesep
         self.statusTextCtrl.SetValue(newTextCtrl)
-        self.statusTextCtrl.ScrollPages(1)
+        self.statusTextCtrl.ShowPosition(self.statusTextCtrl.GetLastPosition())
         
 ##############################################################################        
         

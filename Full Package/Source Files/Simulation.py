@@ -6,7 +6,7 @@ Created on Fri Jun 28 22:43:03 2013
 """
 
 from scipy import optimize as opt
-from scipy.interpolate import UnivariateSpline,interp1d,griddata
+from scipy.interpolate import griddata,interp1d
 import math 
 import numpy as np
 import itertools
@@ -23,7 +23,12 @@ def dependencies_for_simulation(): #missing imports needs to convert to .exe
     from scipy.sparse.csgraph import _validation
 
 
+
 def Simulation(dict_in):
+
+    #limit variables NOT PARAMETERS
+    is_batt_power = False
+    is_motor_power = False
 
     logging.info("STARTING Simulation.py")
     for file in dict_in:
@@ -93,6 +98,10 @@ def Simulation(dict_in):
         logging.info("top_rpm found")
         top_rpm = currentData["top_rpm"]
         
+        assert "motor_top_power" in currentData, logging.critical("%s is missing data: motor_top_power" % file)
+        logging.info("motor_top_power found")
+        motor_top_power = currentData["motor_top_power"]
+        
         assert "chain_efficiency" in currentData, logging.critical("%s is missing data: chain_efficiency" % file)
         logging.info("chain_efficiency found")
         chain_efficiency = currentData["chain_efficiency"]
@@ -113,6 +122,18 @@ def Simulation(dict_in):
         logging.info("top_power found")
         top_power = currentData["top_power"]
         
+        assert "series_cells" in currentData, logging.critical("%s is missing data: series_cells" % file)
+        logging.info("series_cells found")
+        series_cells = currentData["series_cells"]
+        
+        assert "max_amphour" in currentData, logging.critical("%s is missing data: max_amphour" % file)
+        logging.info("max_amphour")
+        max_amphour = currentData["max_amphour"]
+        
+        assert "batt_max_current" in currentData, logging.critical("%s is missing data: batt_max_current" % file)
+        logging.info("batt_max_current")
+        batt_max_current = currentData["batt_max_current"]
+        
         assert "max_distance_travel" in currentData, logging.critical("%s is missing data: max_distance_travel" % file)
         logging.info("max_distance_travel found")
         max_distance_travel = currentData["max_distance_travel"]  
@@ -132,6 +153,12 @@ def Simulation(dict_in):
         assert "motor_eff_lookup" in currentData, logging.critical("%s is missing data: motor_eff_lookup" % file)
         logging.info("motor_eff_lookup found")
         motor_eff_lookup = currentData["motor_eff_lookup"][0]
+        
+        assert "soc_to_voltage_lookup" in currentData, logging.critical("%s is missing data: soc_to_voltage_lookup" % file)
+        logging.info("soc_to_voltage_lookup found")
+        soc_to_voltage_lookup = currentData["soc_to_voltage_lookup"][0]
+        
+        
 
     
         
@@ -142,15 +169,15 @@ def Simulation(dict_in):
         mass = rider_mass + bike_mass
         steps = int(math.ceil(total_time/step))
         sqrt2 = np.sqrt(2)     
-        
-        #Arrays (output)
+
+#Arrays (output)
         time = np.zeros((steps+1,tests),dtype=float)
         distance = np.zeros((steps+1,tests),dtype=float)
         l_speed = np.zeros((steps+1,tests),dtype=float) #look up speed
         t_speed = np.zeros((steps+1,tests),dtype=float) #speed after compare to top
         c_force = np.zeros((steps+1,tests),dtype=float) #force before compare
         p_force = np.zeros((steps+1,tests),dtype=float) #force before power compare	  p_speed = np.zeros((steps+1,tests),dtype=float) #speed before power compare
-        p_speed = np.zeros((steps+1,tests),dtype=float) #speed before power compare        
+        p_speed = np.zeros((steps+1,tests),dtype=float) #speed before power compare
         speed = np.zeros((steps+1,tests),dtype=float)   #speed after compare (actual)
         force = np.zeros((steps+1,tests),dtype=float)   #force after compare (actual)
         c_power = np.zeros((steps+1,tests),dtype=float) #power before compare
@@ -173,6 +200,23 @@ def Simulation(dict_in):
         arms = np.zeros((steps+1,tests),dtype=float)    #amps rms out from motor controller
         vrms = np.zeros((steps+1,tests),dtype=float)    #voltage rms out from motor controller
         
+        motor_efficiency = np.zeros((steps+1,tests),dtype=float)
+        motor_controller_efficiency = np.zeros((steps+1,tests),dtype=float)
+        chain_power = np.zeros((steps+1,tests),dtype=float)
+        motor_power = np.zeros((steps+1,tests),dtype=float)
+        motor_controller_power = np.zeros((steps+1,tests),dtype=float)
+        battery_power = np.zeros((steps+1,tests),dtype=float)
+        
+        voltage = np.zeros((steps+1,tests),dtype=float)
+        top_force = np.zeros((steps+1,tests),dtype=float)
+        top_speed = np.zeros((steps+1,tests),dtype=float)
+        top_power = np.zeros((steps+1,tests),dtype=float)
+        amphour = np.zeros((steps+1,tests),dtype=float)
+
+        batt_power_limit = np.zeros((steps+1,tests),dtype=float)
+        motor_power_limit = np.zeros((steps+1,tests),dtype=float)
+        motor_torque_limit = np.zeros((steps+1,tests),dtype=float)
+        motor_rpm_limit = np.zeros((steps+1,tests),dtype=float)
         #Lookups
         dist_to_speed_lookup = "Lookup Files\\" + dist_to_speed_lookup
         try:
@@ -185,13 +229,33 @@ def Simulation(dict_in):
             logging.critical("Unable to load %s", dist_to_speed_lookup)
             msg = datetime.now().strftime('%H:%M:%S') + ": " + "Unable to load " + dist_to_speed_lookup + ". Make sure the file exists and is not open."
             pub.sendMessage(("AddStatus"), msg)
-            raise Exception("Unable to load \'" + dist_to_speed_lookup + "\'")                        
+            raise Exception("Unable to load \'" + dist_to_speed_lookup + "\'")
+        x = n[:,0].astype(np.float)
+        y = n[:,1].astype(np.float)
+        #x = np.array([0,3220])
+	   #y = np.array([1000,1000])
+        distancetospeed_lookup = interp1d(x,y)
+          
+            
+        #Lookups
+        soc_to_voltage_lookup = "Lookup Files\\" + soc_to_voltage_lookup
+        try:
+            n = np.loadtxt(soc_to_voltage_lookup,dtype = 'string',delimiter = ',', skiprows = 1)
+            logging.info("%s loaded", soc_to_voltage_lookup)
+            msg = datetime.now().strftime('%H:%M:%S') + ": " + soc_to_voltage_lookup + " loaded"
+            pub.sendMessage(("AddStatus"), msg) 
+        except IOError:
+            logging.critical("Unable to load %s", soc_to_voltage_lookup)
+            msg = datetime.now().strftime('%H:%M:%S') + ": " + "Unable to load " + soc_to_voltage_lookup + ". Make sure the file exists and is not open."
+            pub.sendMessage(("AddStatus"), msg)
+            raise Exception("Unable to load \'" + soc_to_voltage_lookup + "\'")
             
         x = n[:,0].astype(np.float)
         y = n[:,1].astype(np.float)
-	  #x = np.array([0,3220])
-	  #y = np.array([1000,1000])
-        distancetospeed_lookup = interp1d(x,y)
+        #x = np.array([0,3220])
+        #y = np.array([1000,1000])
+        soctovoltage_lookup = interp1d(x,y)
+       
         
         dist_to_alt_lookup = "Lookup Files\\" + dist_to_alt_lookup
         try:
@@ -308,10 +372,10 @@ def Simulation(dict_in):
             return Force(s,n) * s
 
         def power_solve(s,n):
-            return Power(s,n) - top_power
+            return Power(s,n) - top_power[n+1]
     
         def force_solve(s,n):
-            return Force(s,n) - top_force
+            return Force(s,n) - top_force[n+1]
         
         def Force(s,n):
             acceleration[n+1] = mass*((s - speed[n])/step)
@@ -320,7 +384,7 @@ def Simulation(dict_in):
             slope[n+1] = (altitude[n+1] - altitude[n])/(distance[n+1] - distance[n])    
             incline[n+1] = mass*gravity*slope[n+1]
             rolling[n+1] = mass*gravity*rolling_resistance
-    	    return np.max([0,(acceleration[n+1] + drag[n+1] + incline[n+1] + rolling[n+1])])
+            return np.max([0,(acceleration[n+1] + drag[n+1] + incline[n+1] + rolling[n+1])])
         
         def Efficiency(n):
             motor_rpm[n+1] = ((speed[n+1])/(wheel_radius*2*np.pi)) * gearing * 60
@@ -328,16 +392,45 @@ def Simulation(dict_in):
             arms[n+1] = motor_torque[n+1]/motor_torque_constant
             vrms[n+1] = motor_rpm[n+1]/(motor_rpm_constant)*(1/(sqrt2))           
             
-            motor_loss[n+1] = power[n+1]*(1-motor_eff_grid[np.int(np.around(motor_rpm[n+1]))][np.int(np.around(motor_torque[n+1]))])
-            motor_controller_loss[n+1] = power[n+1]*(1-motor_controller_eff_grid[np.int(np.around(vrms[n+1]))][np.int(np.around(arms[n+1]))])
-            chain_loss[n+1] = power[n+1]*(1-chain_efficiency)
-            battery_loss[n+1] = power[n+1]*(1-battery_efficiency)
-            return motor_loss[n+1] + motor_controller_loss[n+1] + chain_loss[n+1] + battery_loss[n+1]
+            motor_efficiency[n+1] = motor_eff_grid[np.int(np.around(motor_rpm[n+1]))][np.int(np.around(motor_torque[n+1]))]
+            motor_controller_efficiency[n+1] = motor_controller_eff_grid[np.int(np.around(vrms[n+1]))][np.int(np.around(arms[n+1]))]
+    
+            chain_power[n+1] = (power[n+1]/(chain_efficiency))
+            motor_power[n+1] = (chain_power[n+1]/(motor_efficiency[n+1]))
+            motor_controller_power[n+1] = (motor_power[n+1]/(motor_controller_efficiency[n+1]))
+            battery_power[n+1] = (motor_controller_power[n+1]/(battery_efficiency))
+       
+            motor_loss[n+1] = motor_power[n+1]*(1-motor_efficiency[n+1])
+            motor_controller_loss[n+1] = motor_controller_power[n+1]*(1-motor_controller_efficiency[n+1])
+            chain_loss[n+1] = chain_power[n+1]*(1-chain_efficiency)
+            battery_loss[n+1] = battery_power[n+1]*(1-battery_efficiency)
+            return battery_power[n+1]
+       
+        def Battery_Voltage(n):
+            return series_cells*soctovoltage_lookup(max([0,1-(amphour[n]/max_amphour)]))
+     
+        def Top_force(n):
+            return motor_top_force
+        
+        def Top_speed(n):
+            return motor_top_speed
             
+        def Top_power(n):
+            global is_motor_power
+            global is_batt_power
+            batt_top_power = voltage[n+1] * batt_max_current
+            if motor_top_power < batt_top_power:
+                is_motor_power = True 
+                is_batt_power = False
+                return motor_top_power
+            else:
+                is_motor_power = False
+                is_batt_power = True
+                return batt_top_power
       
         #parameter calc values
-        top_speed = ((wheel_radius*2*np.pi* (top_rpm) / (gearing))/60)
-        top_force = (top_torque * gearing) / wheel_radius
+        motor_top_speed = ((wheel_radius*2*np.pi* (top_rpm) / (gearing))/60)
+        motor_top_force = (top_torque * gearing) / wheel_radius
         drag_area = frontal_area * air_resistance
         mass = rider_mass + bike_mass
 
@@ -347,6 +440,7 @@ def Simulation(dict_in):
         distance[0] = .1
         speed[0] = .1
         altitude[0] = distancetoaltitude_lookup(1)
+        voltage[0] = soctovoltage_lookup(0) * series_cells
         
         #simulation and plot loop
         #(iteration,test conditions..) 
@@ -357,17 +451,24 @@ def Simulation(dict_in):
                 distance[n+1] = distance[n] + speed[n]*step
                 if (distance[n+1] > max_distance_travel):
                     return n
+            
+                voltage[n+1] = Battery_Voltage(n)
+                top_force[n+1] = Top_force(n)
+                top_speed[n+1] = Top_speed(n)
+                top_power[n+1] = Top_power(n)
                 l_speed[n+1] = distancetospeed_lookup(distance[n+1])
                 
-                if l_speed[n+1] > top_speed:
-                    t_speed[n+1] = top_speed
+                if l_speed[n+1] > top_speed[n+1]:
+                    motor_rpm_limit[n+1] = 1
+                    t_speed[n+1] = top_speed[n+1]
                 else:
                     t_speed[n+1] = l_speed[n+1]
                     
                 
                 c_force[n+1] = Force(t_speed[n+1],n)
                 
-                if c_force[n+1] > top_force:
+                if c_force[n+1] > top_force[n+1]:
+                    motor_torque_limit[n+1] = 1
                     p_speed[n+1] = (opt.fsolve(force_solve,t_speed[n+1],n))[0]
                     p_force[n+1] = Force(p_speed[n+1],n)
                 else:
@@ -376,7 +477,11 @@ def Simulation(dict_in):
         
                 c_power[n+1] = Power(p_speed[n+1],n)
         
-                if c_power[n+1] > top_power:
+                if c_power[n+1] > top_power[n+1]:
+                    if is_motor_power:
+                        motor_power_limit[n+1] = 1
+                    if is_batt_power:
+                        batt_power_limit[n+1] = 1
                     speed[n+1] = (opt.fsolve(power_solve,p_speed[n+1],n))[0]
                     force[n+1] = Force(speed[n+1],n)
                     power[n+1] = Power(speed[n+1],n)
@@ -386,9 +491,8 @@ def Simulation(dict_in):
             	   power[n+1] = c_power[n+1]
             
                     
-                force[n+1] = np.max([0,force[n+1]])
-                power[n+1] = (force[n+1] * speed[n+1])
-                total_power[n+1] = Efficiency(n) + power[n+1]
+                total_power[n+1] = Efficiency(n)
+                amphour[n+1] = amphour[n] + (total_power[n+1]/voltage[n+1])*(step/(60*60))
                 energy[n+1] = energy[n] + total_power[n+1]*(step/(60*60))
                 
             return steps
@@ -435,12 +539,17 @@ def Simulation(dict_in):
         newData["Total Power (Watts)"] = (total_power[:end])
         newData["Arms"] = (arms[:end])
         newData["Vrms"] = (vrms[:end])     
-        
+        newData["% Motor RPM Limit"] = (np.mean(motor_rpm_limit[:end])*100)
+        newData["% Motor Torque Limit"] = (np.mean(motor_torque_limit[:end])*100)
+        newData["% Motor Power Limit"] = (np.mean(motor_power_limit[:end])*100)
+        newData["% Battery Power Limit"] = (np.mean(batt_power_limit[:end])*100)
+
         newData["Average MPH"] = (round(np.mean(speed[:end])*2.23,3))
         newData["Max MPH"] = (round(np.max(speed[:end])*2.23,3))
         newData["Average Power (Watts)"] = (round(np.mean(power[:end]),3))
         newData["Max Power (Watts)"] = (round(np.max(power),3))
         newData["Max Energy (Wh)"] = (round(np.max(energy),3))
+        newData["Amphours"] = (round(np.max(amphour),3))
         
         msg = datetime.now().strftime('%H:%M:%S') + ": " + "Finished storing simulation data"
         pub.sendMessage(("AddStatus"), msg) 
@@ -448,6 +557,7 @@ def Simulation(dict_in):
 
         dict_in[file] = newData
         logging.info("Converted %s to a dictionary successfully", file)
+
         
     logging.info("ENDING Simulation.py")
     return dict_in
