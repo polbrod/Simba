@@ -202,6 +202,7 @@ def SaveInput(folderName, outputDict):
                 pass            
         data = np.vstack((paramHeaders, values))    #Combines headers with values
         try:
+            print data
             np.savetxt(fileName, data, delimiter=",", fmt="%s")
         except IOError:
             logging.critical("Unable to save %s",fileName)
@@ -495,6 +496,7 @@ class MainFrame(wx.Frame):
         dlg = wx.FileDialog(self, "Choose a file", self.dirname, "", "Comma Seperated Value (.csv)|*.csv|Text file (.txt)|*.txt")
         if dlg.ShowModal() == wx.ID_OK:
             
+            pub.sendMessage(("RemoveFiles"), True)
             hasParamFile = False
             self.filename = dlg.GetFilename()
             self.dirname = dlg.GetDirectory()
@@ -563,10 +565,11 @@ class MainFrame(wx.Frame):
         #create new entry in dictionary with that name
         if len(self.newParamName.GetValue()) > 0:
             
+                
             inFiles = np.loadtxt(open(self.project, "rb"), dtype = 'string', delimiter = ',')
-            if not self.currentFile.keys()[0] in inFiles:        
+            if not self.newParamName.GetValue() in inFiles:        
                 files = inFiles
-                newline = np.array([self.currentFile.keys()[0], self.currentFile.keys()[0], '', '', ''])
+                newline = np.array([self.newParamName.GetValue(), self.newParamName.GetValue(), '', '', ''])
                 newProject = np.vstack((files, newline))
                 
                 if np.shape(newProject)[0] > 1:
@@ -600,7 +603,8 @@ class MainFrame(wx.Frame):
             self.dictionary[self.newParamName.GetValue()]["motor_controller_eff_lookup"] = np.array([""])
             self.dictionary[self.newParamName.GetValue()]["motor_eff_lookup"] = np.array([""])
             self.dictionary[self.newParamName.GetValue()]["top_power"] = np.array([""])
-            
+            self.dictionary[self.newParamName.GetValue()]["comments"] = np.array([""])
+             
             self.currentFiles = np.append(self.currentFiles, self.newParamName.GetValue())
             print str(self.currentFiles)
             pub.sendMessage(("InputFiles"), self.currentFiles)
@@ -609,6 +613,9 @@ class MainFrame(wx.Frame):
             print self.dictionary
             pub.sendMessage(("UpdateInput"), self.dictionary)
             
+            if not os.path.exists(os.path.join(self.project, self.newParamName.GetValue())):
+                self.OnSave(wx.EVT_ACTIVATE)                
+                
             '''
             inFiles = np.loadtxt(open(self.project, "rb"), dtype = 'string', delimiter = ',')
             if not self.currentFile.keys()[0] in inFiles:        
@@ -828,6 +835,8 @@ class InputPanel(scrolled.ScrolledPanel):
         self.vSizer1.Add(wx.StaticText(self, wx.ID_ANY, "Motor Controller Efficiency Lookup" ,size=(180,25)))
         self.vSizer1.Add(wx.StaticText(self, wx.ID_ANY, "Motor Efficiency Lookup" ,size=(180,25)))
         self.vSizer1.Add(wx.StaticText(self, wx.ID_ANY, "Top Power" ,size=(180,25)))
+        self.vSizer1.AddSpacer(3)
+        self.vSizer1.Add(wx.StaticText(self, wx.ID_ANY, "Comments", size=(180,25)))
  
         
         self.vSizer2 = wx.BoxSizer(wx.VERTICAL)
@@ -856,12 +865,13 @@ class InputPanel(scrolled.ScrolledPanel):
         self.p21 = wx.TextCtrl(self, size=(150,25))
         self.p22 = wx.TextCtrl(self, size=(150,25))
         self.p23 = wx.TextCtrl(self, size=(150,25))
+        self.comments = wx.TextCtrl(self, size = (355,160), style = wx.TE_MULTILINE)
         
         self.textCtrlList = (self.p0, self.p1, self.p2, self.p3, self.p4, self.p5,
                         self.p6, self.p7, self.p8, self.p9, self.p10, self.p11,
                         self.p12, self.p13, self.p14, self.p15, self.p16,
                         self.p17, self.p18, self.p19, self.p20, self.p21,
-                        self.p22, self.p23)
+                        self.p22, self.p23, self.comments)
         
         for i in xrange(len(self.textCtrlList) - 1):
             self.textCtrlList[i+1].MoveAfterInTabOrder(self.textCtrlList[i])
@@ -890,17 +900,21 @@ class InputPanel(scrolled.ScrolledPanel):
         self.p21.Bind(wx.EVT_TEXT, self.UpdateP21)
         self.p22.Bind(wx.EVT_TEXT, self.UpdateP22)
         self.p23.Bind(wx.EVT_TEXT, self.UpdateP23)
+        self.comments.Bind(wx.EVT_TEXT, self.UpdateComments)
         
 
         
         
             
-        for i in xrange(len(self.textCtrlList)):
+        for i in xrange(len(self.textCtrlList)-1):
             self.vSizer2.Add(self.textCtrlList[i])
             
         self.hSizerTopRow = wx.BoxSizer(wx.HORIZONTAL)
-
+        self.commentsSizer = wx.BoxSizer(wx.HORIZONTAL)
         
+        self.commentsSizer.AddSpacer(15)
+        self.commentsSizer.Add(self.comments)
+
         #Add Both columns to Horizontal Sizer
         self.hSizer.AddSpacer((20,-1))        
         self.hSizer.Add(self.vSizer1)
@@ -914,6 +928,7 @@ class InputPanel(scrolled.ScrolledPanel):
         #self.vSizer.Add(self.buttonRun)
 
         self.vSizer.Add(self.hSizer)
+        self.vSizer.Add(self.commentsSizer)
         
         self.SetSizer(self.vSizer)
         
@@ -940,7 +955,8 @@ class InputPanel(scrolled.ScrolledPanel):
     def ClearFiles(self, msg):
         
         msg = msg.data
-        self.dropDownList.Clear()        
+        self.dropDownList.Clear()    
+
             
         
     def SetDictionary(self, msg):
@@ -1023,6 +1039,7 @@ class InputPanel(scrolled.ScrolledPanel):
         self.p21.ChangeValue(str(self.values[21]))
         self.p22.ChangeValue(str(self.values[22]))
         self.p23.ChangeValue(str(self.values[23]))
+        self.comments.ChangeValue(str(self.values[24]))
 
     
     def UpdateP0 (self, e):
@@ -1262,6 +1279,16 @@ class InputPanel(scrolled.ScrolledPanel):
             pub.sendMessage(("DictFromInput"), self.dictionary)
             msg = datetime.now().strftime('%H:%M:%S') + ": " + "Top Power changed from " + str(previousValue) + " to " + self.p23.GetValue()
             pub.sendMessage(("AddStatus"), msg)
+        except:
+            pass
+        
+    def UpdateComments (self, e):
+        try:
+            previousValue = self.dictionary[self.fileToFile[self.dropDownList.GetValue()]]['comments'][0]
+            self.dictionary[self.fileToFile[self.dropDownList.GetValue()]]['comments'] = [self.comments.GetValue()]
+            pub.sendMessage(("DictFromInput"), self.dictionary)
+            #msg = datetime.now().strftime('%H:%M:%S') + ": " + "Top Power changed from " + str(previousValue) + " to " + self.p23.GetValue()
+            #pub.sendMessage(("AddStatus"), msg)
         except:
             pass
         
