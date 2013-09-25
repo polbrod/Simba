@@ -574,7 +574,7 @@ class MainFrame(wx.Frame):
                 
                 if np.shape(newProject)[0] > 1:
                     newProject[1,3] = self.folderControl.GetValue()
-                    newProject[1,4] = self.newParamName.GetValue() + " Report"
+                    newProject[1,4] = "Simulation Report.csv"
             
                 np.savetxt(self.project, newProject, delimiter=",", fmt="%s")
                 
@@ -648,7 +648,7 @@ class MainFrame(wx.Frame):
                 
                 if np.shape(newProject)[0] > 1:
                     newProject[1,3] = self.folderControl.GetValue()
-                    newProject[1,4] = self.newParamName.GetValue() + " Report"
+                    newProject[1,4] = "Simulation Report.csv"
 
             
                 np.savetxt(self.project, newProject, delimiter=",", fmt="%s")
@@ -675,8 +675,12 @@ class MainFrame(wx.Frame):
                 
                 if np.shape(newProject)[0] > 1:
                     newProject[1,3] = self.folderControl.GetValue()
+                    newProject[1,4] = "Simulation Report.csv"
             
                 np.savetxt(self.project, newProject, delimiter=",", fmt="%s")    
+
+            if not os.path.exists(os.path.join(self.project, self.newParamName.GetValue())):
+                self.OnSave(wx.EVT_ACTIVATE)      
     
     def OnRemoveParamFile(self, e):
         
@@ -686,6 +690,7 @@ class MainFrame(wx.Frame):
             files = inFiles[inFiles[:,0] != self.currentFile.keys()[0]]
             if np.shape(files)[0] > 1:
                 files[1,3] = self.folderControl.GetValue()
+                files[1,4] = "Simulation Report.csv"
             np.savetxt(self.project, files, delimiter=",", fmt="%s")        
         
         #If project has a parameter file remove the opened param file in the input panel from the dict\
@@ -721,11 +726,16 @@ class MainFrame(wx.Frame):
         
         dictionary = ProjectToParams(self.project)
         
+        inFiles = np.loadtxt(open(self.project, "rb"), dtype = 'string', delimiter = ',')
+        if not os.path.exists(self.folderControl.GetValue()):
+            os.makedirs(self.folderControl.GetValue())
+        
+        inFiles[1,3] = self.folderControl.GetValue()
         # Sensitivity Analysis Function calls
         #percentChange = 15
         #senseAnalysis = AdjustParams(dictionary, percentChange)
         #senseAnalysisDict = sim.Simulation(senseAnalysis)
-        outputDict = sim.Simulation(dictionary)
+        outputDict = sim.Simulation(deepcopy(dictionary))
         
         outputDirectory = self.folderControl.GetValue()
         logging.debug("Entered out path: %s",outputDirectory)
@@ -737,8 +747,9 @@ class MainFrame(wx.Frame):
         fileNames = np.array(outputDict.keys())
         #fileNames = np.append(outputDict.keys(), senseAnalysisDict.keys())
         #resultsWindow = QuickResultsWindow(None, "Quick Results")
-        
+        index = 1
         for key in fileNames:
+            inFiles[index, 2] = dictionary[key]["comments"][0]
             msg = key
             pub.sendMessage(("fileNames.key"), msg)      
             
@@ -747,9 +758,10 @@ class MainFrame(wx.Frame):
             #else:         # Used to make quick value tabs for senseAnalysis files
             #    currentDict = senseAnalysisDict[key]
             msg = currentDict
-            pub.sendMessage(("fileName.data"), msg)            
+            pub.sendMessage(("fileName.data"), msg)         
+            index = index + 1
             
-        
+        np.savetxt("OPTIONS.csv", inFiles, delimiter=",", fmt="%s")
         path = os.path.dirname(os.path.realpath("OPTIONS.csv"))
         
         
@@ -1328,9 +1340,9 @@ class InputPanel(scrolled.ScrolledPanel):
     def UpdateP20 (self, e):
         try:
             previousValue = self.dictionary[self.fileToFile[self.dropDownList.GetValue()]]['motor_torque_constant'][0]
-            self.dictionary[self.fileToFile[self.dropDownList.GetValue()]]['motor_torque_constant'] = [self.p19.GetValue()]
+            self.dictionary[self.fileToFile[self.dropDownList.GetValue()]]['motor_torque_constant'] = [self.p20.GetValue()]
             pub.sendMessage(("DictFromInput"), self.dictionary)
-            msg = datetime.now().strftime('%H:%M:%S') + ": " + "Motor Torque Constant changed from " + str(previousValue) + " to " + self.p19.GetValue()
+            msg = datetime.now().strftime('%H:%M:%S') + ": " + "Motor Torque Constant changed from " + str(previousValue) + " to " + self.p20.GetValue()
             pub.sendMessage(("AddStatus"), msg)
         except:
             pass
@@ -1338,9 +1350,9 @@ class InputPanel(scrolled.ScrolledPanel):
     def UpdateP21 (self, e):
         try:
             previousValue = self.dictionary[self.fileToFile[self.dropDownList.GetValue()]]['motor_rpm_constant'][0]
-            self.dictionary[self.fileToFile[self.dropDownList.GetValue()]]['motor_rpm_constant'] = [self.p20.GetValue()]
+            self.dictionary[self.fileToFile[self.dropDownList.GetValue()]]['motor_rpm_constant'] = [self.p21.GetValue()]
             pub.sendMessage(("DictFromInput"), self.dictionary)
-            msg = datetime.now().strftime('%H:%M:%S') + ": " + "Motor RPM Constant changed from " + str(previousValue) + " to " + self.p20.GetValue()
+            msg = datetime.now().strftime('%H:%M:%S') + ": " + "Motor RPM Constant changed from " + str(previousValue) + " to " + self.p21.GetValue()
             pub.sendMessage(("AddStatus"), msg)
         except:
             pass
@@ -1348,9 +1360,9 @@ class InputPanel(scrolled.ScrolledPanel):
     def UpdateP22 (self, e):
         try:
             previousValue = self.dictionary[self.fileToFile[self.dropDownList.GetValue()]]['motor_controller_eff_lookup'][0]
-            self.dictionary[self.fileToFile[self.dropDownList.GetValue()]]['motor_controller_eff_lookup'] = [self.p21.GetValue()]
+            self.dictionary[self.fileToFile[self.dropDownList.GetValue()]]['motor_controller_eff_lookup'] = [self.p22.GetValue()]
             pub.sendMessage(("DictFromInput"), self.dictionary)
-            msg = datetime.now().strftime('%H:%M:%S') + ": " + "Motor Controller Efficiency Lookup changed from " + str(previousValue) + " to " + self.p21.GetValue()
+            msg = datetime.now().strftime('%H:%M:%S') + ": " + "Motor Controller Efficiency Lookup changed from " + str(previousValue) + " to " + self.p22.GetValue()
             pub.sendMessage(("AddStatus"), msg)
         except:
             pass
@@ -1358,9 +1370,9 @@ class InputPanel(scrolled.ScrolledPanel):
     def UpdateP23 (self, e):
         try:
             previousValue = self.dictionary[self.fileToFile[self.dropDownList.GetValue()]]['motor_eff_lookup'][0]
-            self.dictionary[self.fileToFile[self.dropDownList.GetValue()]]['motor_eff_lookup'] = [self.p22.GetValue()]
+            self.dictionary[self.fileToFile[self.dropDownList.GetValue()]]['motor_eff_lookup'] = [self.p23.GetValue()]
             pub.sendMessage(("DictFromInput"), self.dictionary)
-            msg = datetime.now().strftime('%H:%M:%S') + ": " + "Motor Efficiency Lookup changed from " + str(previousValue) + " to " + self.p22.GetValue()
+            msg = datetime.now().strftime('%H:%M:%S') + ": " + "Motor Efficiency Lookup changed from " + str(previousValue) + " to " + self.p23.GetValue()
             pub.sendMessage(("AddStatus"), msg)
         except:
             pass

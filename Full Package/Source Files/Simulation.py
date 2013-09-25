@@ -550,6 +550,7 @@ def Simulation(dict_in):
         newData["Max Power (Watts)"] = (round(np.max(power),3))
         newData["Max Energy (Wh)"] = (round(np.max(energy),3))
         newData["Amphours"] = (round(np.max(amphour),3))
+
         
         msg = datetime.now().strftime('%H:%M:%S') + ": " + "Finished storing simulation data"
         pub.sendMessage(("AddStatus"), msg) 
