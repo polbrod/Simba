@@ -14,6 +14,7 @@ import wx
 import wx.grid as gridlib
 import  wx.lib.scrolledpanel as scrolled
 import collections
+import shutil
 
 from wx.lib.pubsub import setuparg1
 from wx.lib.pubsub import pub
@@ -313,7 +314,7 @@ class MainFrame(wx.Frame):
         pub.subscribe(self.SetDictionary, ("DictFromInput"))
         pub.subscribe(self.SetCurrentFiles, ("InputFiles"))
         pub.subscribe(self.ChangeProjectName, ("ProjectName"))        
-        pub.subscribe(self.DisableDelete, ("DisableDelete"))        
+        pub.subscribe(self.DisableDeleteCopy, ("DisableDelete"))        
 
         
         self.currentFiles = np.empty(shape=(0,0))
@@ -361,6 +362,11 @@ class MainFrame(wx.Frame):
         copyParamFile_ico = wx.ArtProvider.GetBitmap(wx.ART_COPY, wx.ART_TOOLBAR, (20,20))
         copyParamTool = self.toolbar.AddSimpleTool(wx.ID_COPY, copyParamFile_ico, "Copy Parameter File", "Copy the current parameter file to a new parameter file")
         self.Bind(wx.EVT_MENU, self.OnCopyParamFile, copyParamTool)
+        self.toolbar.EnableTool(wx.ID_COPY, False)
+        
+        importParamFile_ico = wx.ArtProvider.GetBitmap(wx.ART_EXECUTABLE_FILE, wx.ART_TOOLBAR, (20,20))
+        importParamTool = self.toolbar.AddSimpleTool(wx.ID_FILE2, importParamFile_ico, "Import Parameter File", "Import a parameter file into the project")
+        self.Bind(wx.EVT_MENU, self.OnImportParamFile, importParamTool)        
         
         removeParamFile_ico = wx.ArtProvider.GetBitmap(wx.ART_DELETE, wx.ART_TOOLBAR, (20,20))
         removeNewParamTool = self.toolbar.AddSimpleTool(wx.ID_DELETE, removeParamFile_ico, "Remove Parameter File", "Remove parameter file from project")
@@ -448,12 +454,14 @@ class MainFrame(wx.Frame):
             pub.sendMessage(("UpdateInput"), self.dictionary)
         
 
-    def DisableDelete(self, msg):
+    def DisableDeleteCopy(self, msg):
         
         if msg.data == True:
             self.toolbar.EnableTool(wx.ID_DELETE, False)
+            self.toolbar.EnableTool(wx.ID_COPY, False)
         else:
             self.toolbar.EnableTool(wx.ID_DELETE, True)
+            self.toolbar.EnableTool(wx.ID_COPY, True)
     
     def FindCurrentParamFile(self, msg):
         self.currentFile = msg.data
@@ -470,21 +478,28 @@ class MainFrame(wx.Frame):
         #Ask user if they want to save current project
         dlg = wx.MessageDialog(self, "Do you want to save the current project before creating a new one?", style = wx.YES_NO)
         if dlg.ShowModal() == wx.ID_YES:
+            
+            #Simply saves the current open project as it's current name
+            self.OnSaveAll(wx.EVT_ACTIVATE)
+            
+            # Allows the user to save current project as any name.
+            '''
             savedlg = wx.FileDialog(self, "Save project", "", "", ".csv|*.csv", style = wx.FD_SAVE)
             if savedlg.ShowModal() == wx.ID_OK:
                 self.filename = savedlg.GetFilename()
                 self.dirname = savedlg.GetDirectory()
                 outputFolder = self.folderControl.GetValue()
                 oldProject = os.path.join(self.dirname, self.filename)
-                inFiles = np.array(["Files In", "Files Out", "Comment", "OutputFolder", "Final Report Title"])
+                inFiles = np.array(["Files In", "Files Out", "Comment", "OutputFolder", "Final Report Title"], ['','','','',''])
                 for item in self.currentFiles:    
-                    newline = np.array([item, item, '', '', ''], dtype = "|S50")
+                    newline = np.array([item, item, self.dictionary[item]["comments"][0], '', ''], dtype = "|S50")
                     inFiles = np.vstack((inFiles, newline))
                 
                 inFiles[1,3] = outputFolder
-                inFiles[1,4] = 'test1_report'
+                inFiles[1,4] = 'Simulation Report'
                 np.savetxt(oldProject, inFiles, delimiter=",", fmt="%s")
             #OutputFile(self.optionsControl.GetValue(), self.dictionary)
+            '''
             
         frame = PopupFrame()
         frame.Show()    
@@ -549,16 +564,30 @@ class MainFrame(wx.Frame):
         msg = datetime.now().strftime('%H:%M:%S') + ": " + "Successfully saved " + self.currentFile.keys()[0]
         pub.sendMessage(("AddStatus"), msg)  
         
+        optionsData = np.loadtxt(open(self.project, "rb"), dtype = 'string', delimiter=',')
+        if np.shape(optionsData)[0] > 1:
+            optionsData[np.where(self.currentFiles == self.currentFile.keys()[0])[0][0]+1,2] = self.dictionary[self.currentFile.keys()[0]]["comments"][0]
+            np.savetxt(self.project, optionsData, delimiter=",", fmt="%s")
+
         
     
     def OnSaveAll(self,e):
         """Saves all parameters file in the current project"""
+        
+        optionsData = np.loadtxt(open(self.project, "rb"), dtype = 'string', delimiter=',')
+        
         for key in self.dictionary.keys():
             saveDict = dict()
             saveDict[key] = self.dictionary[key]
             SaveInput(os.path.dirname(os.path.realpath(self.project)), saveDict)
+
+            if np.shape(optionsData)[0] > 1:
+                optionsData[np.where(self.currentFiles == key)[0][0]+1,2] = self.dictionary[key]["comments"][0]
+                             
             msg = datetime.now().strftime('%H:%M:%S') + ": " + "Successfully saved " + key
             pub.sendMessage(("AddStatus"), msg)  
+            
+        np.savetxt(self.project, optionsData, delimiter=",", fmt="%s")
     
     def OnNewParamFile(self, e):
         #Get file name from input field
@@ -620,18 +649,6 @@ class MainFrame(wx.Frame):
             if not os.path.exists(os.path.join(self.project, self.newParamName.GetValue())):
                 self.OnSave(wx.EVT_ACTIVATE)                
                 
-            '''
-            inFiles = np.loadtxt(open(self.project, "rb"), dtype = 'string', delimiter = ',')
-            if not self.currentFile.keys()[0] in inFiles:        
-                files = inFiles
-                newline = np.array([self.currentFile.keys()[0], self.currentFile.keys()[0], '', '', ''])
-                newProject = np.vstack((files, newline))
-                
-                if np.shape(newProject)[0] > 1:
-                    newProject[1,3] = self.folderControl.GetValue()
-            
-                np.savetxt(self.project, newProject, delimiter=",", fmt="%s")            
-            '''
         else:
             msg = datetime.now().strftime('%H:%M:%S') + ": " + "Must enter parameter filename before creating a new file"
             pub.sendMessage(("AddStatus"), msg)  
@@ -648,39 +665,59 @@ class MainFrame(wx.Frame):
                 
                 if np.shape(newProject)[0] > 1:
                     newProject[1,3] = self.folderControl.GetValue()
-                    newProject[1,4] = "Simulation Report.csv"
+                    newProject[1,4] = "Simulation Report"
 
             
                 np.savetxt(self.project, newProject, delimiter=",", fmt="%s")
              
-            print "PRINTING CURRENT FILE ############################"
-            print self.currentFile
             self.dictionary[self.newParamName.GetValue()] = deepcopy(self.currentFile[self.currentFile.keys()[0]])
 
-            
             self.currentFiles = np.append(self.currentFiles, self.newParamName.GetValue())
-            print str(self.currentFiles)
             pub.sendMessage(("InputFiles"), self.currentFiles)
-            #print self.dictionary
             pub.sendMessage(("ChangeSelection"), self.newParamName.GetValue())
-            print self.dictionary
             pub.sendMessage(("UpdateInput"), self.dictionary)
+             
+
+            if not os.path.exists(os.path.join(self.project, self.newParamName.GetValue())):
+                self.OnSave(wx.EVT_ACTIVATE)      
+    
+    def OnImportParamFile(self, e):
+        dlg = wx.FileDialog(self, "Import parameter file", "", "", ".csv|*.csv", style = wx.FD_OPEN)
+        if dlg.ShowModal() == wx.ID_OK:
+
             
-            #SaveInput(os.path.dirname(self.project), self.dictionary)
+            self.filename = dlg.GetFilename()
+            self.dirname = dlg.GetDirectory()
+            self.paramFile = (os.path.join(self.dirname, self.filename))
+            
+            try:
+                shutil.copyfile(self.paramFile, os.path.dirname(self.project) + "\\" + self.filename)   
+            except:
+                pass
+
+            
             inFiles = np.loadtxt(open(self.project, "rb"), dtype = 'string', delimiter = ',')
-            if not self.currentFile.keys()[0] in inFiles:        
+            if not self.paramFile in inFiles:        
                 files = inFiles
-                newline = np.array([self.currentFile.keys()[0], self.currentFile.keys()[0], '', '', ''])
+                newline = np.array([self.filename, self.filename, '', '', ''])
                 newProject = np.vstack((files, newline))
                 
                 if np.shape(newProject)[0] > 1:
                     newProject[1,3] = self.folderControl.GetValue()
-                    newProject[1,4] = "Simulation Report.csv"
-            
-                np.savetxt(self.project, newProject, delimiter=",", fmt="%s")    
+                    newProject[1,4] = "Simulation Report"
+                    
+                np.savetxt(self.project, newProject, delimiter=",", fmt="%s")
 
+            
+            self.dictionary = ProjectToParams(self.project)
+            
+            self.currentFiles = np.append(self.currentFiles, self.filename)
+            pub.sendMessage(("InputFiles"), self.currentFiles)
+            pub.sendMessage(("ChangeSelection"), self.filename)
+            pub.sendMessage(("UpdateInput"), self.dictionary)
+            
             if not os.path.exists(os.path.join(self.project, self.newParamName.GetValue())):
-                self.OnSave(wx.EVT_ACTIVATE)      
+                self.OnSave(wx.EVT_ACTIVATE)  
     
     def OnRemoveParamFile(self, e):
         
@@ -761,7 +798,7 @@ class MainFrame(wx.Frame):
             pub.sendMessage(("fileName.data"), msg)         
             index = index + 1
             
-        np.savetxt("OPTIONS.csv", inFiles, delimiter=",", fmt="%s")
+        np.savetxt(self.project, inFiles, delimiter=",", fmt="%s")
         path = os.path.dirname(os.path.realpath("OPTIONS.csv"))
         
         
