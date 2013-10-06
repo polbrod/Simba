@@ -73,7 +73,6 @@ def ProjectToParams(inFiles):
         
         try:
             data = np.loadtxt(open(fileName, "rb"), dtype = 'string', delimiter=',')
-            print np.shape(data)
             if np.shape(data) == (0,):
                 emptyFile = True
             logging.info("Data extraction from %s complete", file)
@@ -203,7 +202,6 @@ def SaveInput(folderName, outputDict):
                 pass            
         data = np.vstack((paramHeaders, values))    #Combines headers with values
         try:
-            print data
             np.savetxt(fileName, data, delimiter=",", fmt="%s")
         except IOError:
             logging.critical("Unable to save %s",fileName)
@@ -256,7 +254,7 @@ class PopupFrame(wx.Frame):
            
          panel = wx.Panel(self)
            
-         text = wx.StaticText(panel, label="Enter the new project file name")
+         text = wx.StaticText(panel, label="Enter the new project name")
          self.projectName = wx.TextCtrl(panel, size = (280, -1))
          OKButton = wx.Button(panel, label = "OK")
          CancelButton = wx.Button(panel, label = "Cancel")
@@ -335,7 +333,7 @@ class MainFrame(wx.Frame):
         newProject_ico = wx.ArtProvider.GetBitmap(wx.ART_NORMAL_FILE)  
         newProjectTool = self.toolbar.AddSimpleTool(wx.ID_NEW, newProject_ico, "New Project", "Create a new project")
         self.Bind(wx.EVT_MENU, self.OnNewProject, newProjectTool)    
-        self.toolbar.EnableTool(wx.ID_NEW, False)
+        #self.toolbar.EnableTool(wx.ID_NEW, False)
         
         openProject_ico = wx.ArtProvider.GetBitmap(wx.ART_FILE_OPEN, wx.ART_TOOLBAR, (20,20))
         openProjectTool = self.toolbar.AddSimpleTool(wx.ID_ANY, openProject_ico, "Open Project", "Open a past project")
@@ -447,11 +445,25 @@ class MainFrame(wx.Frame):
 
     def ChangeProjectName(self, msg):
         
-        if not msg == "Cancel":
-            self.project = os.path.join(self.dirname, msg.data)
-            print self.project
+        if not msg.data == "Cancel":
+            if hasattr(sys, 'frozen'):
+                test_in = os.path.join(os.path.dirname(sys.executable),"test_in")
+            else:
+                test_in = os.path.normpath("C:/Users/Sean/Desktop/Buckeye Current/Simulation Local/Deployment Package/test_in/")
+            newDirectory = os.path.join(test_in, msg.data)
+            
+            if not os.path.exists(newDirectory):
+                os.makedirs(newDirectory)
+            
+            self.project = os.path.join(newDirectory, "OPTIONS.csv")
             self.dictionary = dict()
+            projectArray = np.array(["Files In", "Files Out", "Comments", "Output Folder", "Final Report Title"])
+            np.savetxt(self.project, projectArray.reshape(1, projectArray.shape[0]), delimiter=",", fmt="%s")
+            
             pub.sendMessage(("UpdateInput"), self.dictionary)
+            
+            msg = datetime.now().strftime('%H:%M:%S') + ": " + "Successfully created new project: " + newDirectory
+            pub.sendMessage(("AddStatus"), msg)    
         
 
     def DisableDeleteCopy(self, msg):
@@ -478,9 +490,9 @@ class MainFrame(wx.Frame):
         #Ask user if they want to save current project
         dlg = wx.MessageDialog(self, "Do you want to save the current project before creating a new one?", style = wx.YES_NO)
         if dlg.ShowModal() == wx.ID_YES:
-            
             #Simply saves the current open project as it's current name
-            self.OnSaveAll(wx.EVT_ACTIVATE)
+            if not self.project == "":
+                self.OnSaveAll(wx.EVT_ACTIVATE)
             
             # Allows the user to save current project as any name.
             '''
@@ -522,10 +534,8 @@ class MainFrame(wx.Frame):
                     data = np.loadtxt(open(self.project, "rb"), dtype = 'string', delimiter=',')
                     
                     if not np.shape(data) == (5,):
-                        print "Has param file"
                         hasParamFile = True
                         fileIndex = 1
-                        print np.shape(data)
                         while fileIndex < np.shape(data)[1]:
 
                             fileIndex = fileIndex+1
@@ -540,13 +550,12 @@ class MainFrame(wx.Frame):
           
             if hasParamFile:
                 self.dictionary = ProjectToParams(self.project)
-                print self.dictionary
 
             else:
                 self.dictionary.clear()
                 msg = datetime.now().strftime('%H:%M:%S') + ": " + self.project + " has no parameter files"
                 pub.sendMessage(("AddStatus"), msg)  
-                #print self.dictionary
+                
             pub.sendMessage(("UpdateInput"), self.dictionary)
             msg = datetime.now().strftime('%H:%M:%S') + ": " + "Opened project " + self.project
             pub.sendMessage(("AddStatus"), msg)    
@@ -559,7 +568,6 @@ class MainFrame(wx.Frame):
     
     def OnSave(self, e):
         """Saves the current parameter file open in input panel"""
-        print self.currentFile
         SaveInput(os.path.dirname(os.path.realpath(self.project)), self.currentFile)
         msg = datetime.now().strftime('%H:%M:%S') + ": " + "Successfully saved " + self.currentFile.keys()[0]
         pub.sendMessage(("AddStatus"), msg)  
@@ -592,6 +600,7 @@ class MainFrame(wx.Frame):
     def OnNewParamFile(self, e):
         #Get file name from input field
         #create new entry in dictionary with that name
+        newParamName = self.newParamName.GetValue() + ".csv"
         if len(self.newParamName.GetValue()) > 0:
             
                 
@@ -639,11 +648,8 @@ class MainFrame(wx.Frame):
             self.dictionary[self.newParamName.GetValue()]["soc_to_voltage_lookup"] = np.array([""])
              
             self.currentFiles = np.append(self.currentFiles, self.newParamName.GetValue())
-            print str(self.currentFiles)
             pub.sendMessage(("InputFiles"), self.currentFiles)
-            #print self.dictionary
             pub.sendMessage(("ChangeSelection"), self.newParamName.GetValue())
-            print self.dictionary
             pub.sendMessage(("UpdateInput"), self.dictionary)
             
             if not os.path.exists(os.path.join(self.project, self.newParamName.GetValue())):
@@ -658,7 +664,12 @@ class MainFrame(wx.Frame):
         if len(self.newParamName.GetValue()) > 0:
             
             inFiles = np.loadtxt(open(self.project, "rb"), dtype = 'string', delimiter = ',')
-            if not self.currentFile.keys()[0] in inFiles:        
+            print "In Files"
+            print inFiles
+            print "Current File"
+            print self.currentFile.keys()[0]
+            if not self.currentFile.keys()[0] in inFiles:    
+                print "Adding in current file"
                 files = inFiles
                 newline = np.array([self.currentFile.keys()[0], self.currentFile.keys()[0], '', '', ''])
                 newProject = np.vstack((files, newline))
@@ -797,7 +808,8 @@ class MainFrame(wx.Frame):
             msg = currentDict
             pub.sendMessage(("fileName.data"), msg)         
             index = index + 1
-            
+        
+  
         np.savetxt(self.project, inFiles, delimiter=",", fmt="%s")
         path = os.path.dirname(os.path.realpath("OPTIONS.csv"))
         
@@ -1010,7 +1022,6 @@ class InputPanel(scrolled.ScrolledPanel):
         
 
         self.fileNames = msg.data
-        #print self.fileNames
         for file in self.fileNames:
             if file not in self.dropDownList.GetItems():
                 self.dropDownList.Append(file)
@@ -1029,8 +1040,6 @@ class InputPanel(scrolled.ScrolledPanel):
         self
         index = 0
         for file in self.dictionary:   
-            print self.fileToFile
-            print self.fileNames
             self.fileToFile[self.fileNames[index]] = file 
             index = index + 1
           
@@ -1053,8 +1062,6 @@ class InputPanel(scrolled.ScrolledPanel):
         
     def SetComboFile(self, msg):
         msg = msg.data
-        #print msg
-        #print self.dropDownList.GetItems()
         #if self.dropDownList.GetCount() < 2:
         try:
             self.dropDownList.SetSelection(self.dropDownList.GetItems().index(msg))
@@ -1066,7 +1073,6 @@ class InputPanel(scrolled.ScrolledPanel):
     def UpdateFields(self,event):
         
         self.values = []
-        #print self.dictionary
         currentFile = self.dictionary[self.fileToFile[self.dropDownList.GetValue()]]
         fileDict = dict()
         fileDict[self.fileToFile[self.dropDownList.GetValue()]] = currentFile
