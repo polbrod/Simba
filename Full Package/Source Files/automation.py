@@ -814,7 +814,7 @@ class MainFrame(wx.Frame):
         path = os.path.dirname(os.path.realpath("OPTIONS.csv"))
         
         
-        path = os.path.join(path, "SimOutputMacro0904.xlsm")        
+        path = os.path.join(path, "SimOutputMacro1013.xlsm")        
         
         excel = win32com.client.DispatchEx("Excel.Application")
         workbook = excel.workbooks.open(path)
