@@ -19,7 +19,7 @@ is_motor_power = False
 tests = 1
 #parameters
 
-step = .1       #time step in seconds
+step = 1       #time step in seconds
 total_time = 60*30
 wheel_radius = 0.323596 #meters
 gearing = 2.1
@@ -55,6 +55,11 @@ soc_to_voltage_lookup = 'aee.csv'
 series_cells = 108
 max_amphour = 40
 batt_max_current = 200
+
+motor_thermal_resistance = .5
+motor_heat_capacity = 10000
+coolent_temp = 20
+max_motor_temp = 100
 
 #Arrays (output)
 time = np.zeros((steps+1,tests),dtype=float)
@@ -104,6 +109,14 @@ motor_power_limit = np.zeros((steps+1,tests),dtype=float)
 motor_torque_limit = np.zeros((steps+1,tests),dtype=float)
 motor_rpm_limit = np.zeros((steps+1,tests),dtype=float)
 
+motor_energy_in = np.zeros((steps+1,tests),dtype=float)
+motor_energy_out = np.zeros((steps+1,tests),dtype=float)
+motor_energy = np.zeros((steps+1,tests),dtype=float)
+motor_temp = np.zeros((steps+1,tests),dtype=float)
+mt_speed = np.zeros((steps+1,tests),dtype=float)
+mt_force = np.zeros((steps+1,tests),dtype=float)
+mt_power = np.zeros((steps+1,tests),dtype=float)
+mt_total_power = np.zeros((steps+1,tests),dtype=float)
 
 #Lookups
 n = np.loadtxt(soc_to_voltage_lookup,dtype = 'string',delimiter = ',', skiprows = 1)
@@ -201,16 +214,16 @@ def Force(s,n):
     rolling[n+1] = mass*gravity*rolling_resistance
     return np.max([0,(acceleration[n+1] + drag[n+1] + incline[n+1] + rolling[n+1])])
 
-def Efficiency(n):
-    motor_rpm[n+1] = ((speed[n+1])/(wheel_radius*2*np.pi)) * gearing * 60
-    motor_torque[n+1] = (force[n+1] * wheel_radius)/gearing
+def Efficiency(s,f,p,n):
+    motor_rpm[n+1] = ((s)/(wheel_radius*2*np.pi)) * gearing * 60
+    motor_torque[n+1] = (f * wheel_radius)/gearing
     arms[n+1] = motor_torque[n+1]/motor_torque_constant
     vrms[n+1] = motor_rpm[n+1]/(motor_rpm_constant)*(1/(sqrt2))  
 
     motor_efficiency[n+1] = motor_eff_grid[np.int(np.around(motor_rpm[n+1]))][np.int(np.around(motor_torque[n+1]))]
     motor_controller_efficiency[n+1] = motor_controller_eff_grid[np.int(np.around(vrms[n+1]))][np.int(np.around(arms[n+1]))]
     
-    chain_power[n+1] = (power[n+1]/(chain_efficiency))
+    chain_power[n+1] = (p/(chain_efficiency))
     motor_power[n+1] = (chain_power[n+1]/(motor_efficiency[n+1]))
     motor_controller_power[n+1] = (motor_power[n+1]/(motor_controller_efficiency[n+1]))
     battery_power[n+1] = (motor_controller_power[n+1]/(battery_efficiency))
@@ -243,6 +256,18 @@ def Top_power(n):
         is_batt_power = True
         return batt_top_power
 
+def Motor_Thermal(n):
+    motor_energy_in[n+1] = motor_loss[n] * step
+    motor_energy_out[n+1] = motor_thermal_resistance*(motor_temp[n]-coolent_temp)
+    motor_energy[n+1] = motor_energy_in[n+1] - motor_energy_out[n+1]
+    motor_temp[n+1] = motor_temp[n] + motor_energy[n+1]/motor_heat_capacity 
+
+def Motor_Thermal_solve(s,n):
+    f = Force(s,n)    
+    p = Power(s,n)
+    Efficiency(s,f,p,n)
+    Motor_Thermal(n)
+    return max_motor_temp - motor_temp[n+1]
 #parameter calc values
 motor_top_speed = ((wheel_radius*2*np.pi* (top_rpm) / (gearing))/60)
 motor_top_force = (top_torque * gearing) / wheel_radius
@@ -298,16 +323,29 @@ def loop(n):
                 motor_power_limit[n+1] = 1
             if is_batt_power:
                 batt_power_limit[n+1] = 1
-            speed[n+1] = (opt.fsolve(power_solve,p_speed[n+1],n))[0]
-            force[n+1] = Force(speed[n+1],n)
-            power[n+1] = Power(speed[n+1],n)
+            mt_speed[n+1] = (opt.fsolve(power_solve,p_speed[n+1],n))[0]
+            mt_force[n+1] = Force(mt_speed[n+1],n)
+            mt_power[n+1] = Power(mt_speed[n+1],n)
         else:
-            speed[n+1] = p_speed[n+1]
-            force[n+1] = p_force[n+1]
-            power[n+1] = c_power[n+1]
+            mt_speed[n+1] = p_speed[n+1]
+            mt_force[n+1] = p_force[n+1]
+            mt_power[n+1] = c_power[n+1]
             
-    
-        total_power[n+1] = Efficiency(n)
+        mt_total_power[n+1] = Efficiency(mt_speed[n+1],mt_force[n+1],mt_power[n+1],n)
+        #thermal 
+        #Motor
+        Motor_Thermal(n)
+        if motor_temp[n+1] > max_motor_temp:
+            speed[n+1] = (opt.fsolve(Motor_Thermal_solve,mt_speed[n+1],n))[0]
+            force[n+1] = Force(speed[n+1],n)
+            power[n+1] = Power(speed[n+1],n)   
+            total_power[n+1] = Efficiency(speed[n+1],force[n+1],power[n+1],n)
+        else:
+            speed[n+1] = mt_speed[n+1]
+            force[n+1] = mt_force[n+1]
+            power[n+1] =  mt_power[n+1]   
+            total_power[n+1] = mt_total_power[n+1]
+            
         amphour[n+1] = amphour[n] + (total_power[n+1]/voltage[n+1])*(step/(60*60))
         energy[n+1] = energy[n] + total_power[n+1]*(step/(60*60))
         
