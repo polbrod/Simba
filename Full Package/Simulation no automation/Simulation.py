@@ -19,7 +19,7 @@ is_motor_power = False
 tests = 1
 #parameters
 
-step = 1       #time step in seconds
+step = 1.0       #time step in seconds
 total_time = 60*30
 wheel_radius = 0.323596 #meters
 gearing = 2.1
@@ -56,9 +56,9 @@ series_cells = 108
 max_amphour = 40
 batt_max_current = 200
 
-motor_thermal_resistance = .5
-motor_heat_capacity = 10000
-coolent_temp = 20
+motor_thermal_conductivity = 20
+motor_heat_capacity = 4000
+coolant_temp = 0
 max_motor_temp = 100
 
 #Arrays (output)
@@ -117,7 +117,7 @@ mt_speed = np.zeros((steps+1,tests),dtype=float)
 mt_force = np.zeros((steps+1,tests),dtype=float)
 mt_power = np.zeros((steps+1,tests),dtype=float)
 mt_total_power = np.zeros((steps+1,tests),dtype=float)
-
+motor_thermal_limit = np.zeros((steps+1,tests),dtype=float)
 #Lookups
 n = np.loadtxt(soc_to_voltage_lookup,dtype = 'string',delimiter = ',', skiprows = 1)
 x = n[:,0].astype(np.float)
@@ -258,7 +258,7 @@ def Top_power(n):
 
 def Motor_Thermal(n):
     motor_energy_in[n+1] = motor_loss[n] * step
-    motor_energy_out[n+1] = motor_thermal_resistance*(motor_temp[n]-coolent_temp)
+    motor_energy_out[n+1] = motor_thermal_conductivity*(motor_temp[n]-coolant_temp)
     motor_energy[n+1] = motor_energy_in[n+1] - motor_energy_out[n+1]
     motor_temp[n+1] = motor_temp[n] + motor_energy[n+1]/motor_heat_capacity 
 
@@ -267,7 +267,7 @@ def Motor_Thermal_solve(s,n):
     p = Power(s,n)
     Efficiency(s,f,p,n)
     Motor_Thermal(n)
-    return max_motor_temp - motor_temp[n+1]
+    return max([0,motor_loss[n+1] - motor_energy_out[n+1]])
 #parameter calc values
 motor_top_speed = ((wheel_radius*2*np.pi* (top_rpm) / (gearing))/60)
 motor_top_force = (top_torque * gearing) / wheel_radius
@@ -340,14 +340,16 @@ def loop(n):
             force[n+1] = Force(speed[n+1],n)
             power[n+1] = Power(speed[n+1],n)   
             total_power[n+1] = Efficiency(speed[n+1],force[n+1],power[n+1],n)
+            motor_thermal_limit[n+1] = 1 
         else:
             speed[n+1] = mt_speed[n+1]
             force[n+1] = mt_force[n+1]
-            power[n+1] =  mt_power[n+1]   
+            power[n+1] = mt_power[n+1]   
             total_power[n+1] = mt_total_power[n+1]
-            
-        amphour[n+1] = amphour[n] + (total_power[n+1]/voltage[n+1])*(step/(60*60))
-        energy[n+1] = energy[n] + total_power[n+1]*(step/(60*60))
+        
+       
+        amphour[n+1] = amphour[n] + (total_power[n+1]/voltage[n+1])*(step/(60.0*60.0))
+        energy[n+1] = energy[n] + total_power[n+1]*(step/(60.0*60.0))
         
     return steps
    #plot each loop here
@@ -371,7 +373,7 @@ print '% motor rpm limit  = ' + repr(np.mean(motor_rpm_limit[:end])*100)
 print '% motor torque limit  = ' + repr(np.mean(motor_torque_limit[:end])*100)
 print '% motor power limit  = ' + repr(np.mean(motor_power_limit[:end])*100)
 print '% battery power limit  = ' + repr(np.mean(batt_power_limit[:end])*100)
-
+print '% motor thermal limit = ' + repr(np.mean(motor_thermal_limit[:end])*100)
 #finish plot
 
     
