@@ -237,8 +237,11 @@ def WriteFolder(optionsFile, folderName):
         data[0,3] = "Output Folder"
         data[1,3] = folderName
         
-    np.savetxt(optionsFile, data, delimiter=",", fmt="%s")
-    logging.info("%s successfully edited", optionsFile)
+    try:
+        np.savetxt(optionsFile, data, delimiter=",", fmt="%s")
+        logging.info("%s successfully edited", optionsFile)
+    except:
+        logging.info("%s NOT successfully edited", optionsFile)
     
     
 ##############################################################################
@@ -646,6 +649,11 @@ class MainFrame(wx.Frame):
             self.dictionary[self.newParamName.GetValue()]["max_amphour"] = np.array([""])
             self.dictionary[self.newParamName.GetValue()]["series_cells"] = np.array([""])
             self.dictionary[self.newParamName.GetValue()]["soc_to_voltage_lookup"] = np.array([""])
+            self.dictionary[self.newParamName.GetValue()]["motor_thermal_conductivity"] = np.array([""])
+            self.dictionary[self.newParamName.GetValue()]["motor_heat_capacity"] = np.array([""])
+            self.dictionary[self.newParamName.GetValue()]["coolant_temp"] = np.array([""])
+            self.dictionary[self.newParamName.GetValue()]["max_motor_temp"] = np.array([""])
+
              
             self.currentFiles = np.append(self.currentFiles, self.newParamName.GetValue())
             pub.sendMessage(("InputFiles"), self.currentFiles)
@@ -809,8 +817,11 @@ class MainFrame(wx.Frame):
             pub.sendMessage(("fileName.data"), msg)         
             index = index + 1
         
-  
-        np.savetxt(self.project, inFiles, delimiter=",", fmt="%s")
+        try:
+            np.savetxt(self.project, inFiles, delimiter=",", fmt="%s")
+        except:
+            logging.critical("Could not save project at the end of the simulation")
+            
         path = os.path.dirname(os.path.realpath("OPTIONS.csv"))
         
         
@@ -822,6 +833,7 @@ class MainFrame(wx.Frame):
         excel.Visible = True
         workbook.Close(SaveChanges=1)
         excel.Quit
+        
         
     
     def OnAbout(self, e):
@@ -901,7 +913,11 @@ class InputPanel(scrolled.ScrolledPanel):
         self.vSizer1.Add(wx.StaticText(self, wx.ID_ANY, "Motor Controller Efficiency Lookup" ,size=(180,25)))
         self.vSizer1.Add(wx.StaticText(self, wx.ID_ANY, "Motor Efficiency Lookup" ,size=(180,25)))
         self.vSizer1.Add(wx.StaticText(self, wx.ID_ANY, "Motor Top Power (watts)" ,size=(180,25)))
-        self.vSizer1.Add(wx.StaticText(self, wx.ID_ANY, "Battery Max Current (I)" ,size=(180,25)))
+        self.vSizer1.Add(wx.StaticText(self, wx.ID_ANY, "Motor Thermal Conductivity (W/m*C)" ,size=(180,25)))
+        self.vSizer1.Add(wx.StaticText(self, wx.ID_ANY, "Motor Heat Capacity (J/C)" ,size=(180,25)))
+        self.vSizer1.Add(wx.StaticText(self, wx.ID_ANY, "Max Motor Temp (C)" ,size=(180,25)))
+        self.vSizer1.Add(wx.StaticText(self, wx.ID_ANY, "Coolant Temp (C)" ,size=(180,25)))
+        self.vSizer1.Add(wx.StaticText(self, wx.ID_ANY, "Battery Max Current" ,size=(180,25)))
         self.vSizer1.Add(wx.StaticText(self, wx.ID_ANY, "Max Amphours (Amphours)" ,size=(180,25)))
         self.vSizer1.Add(wx.StaticText(self, wx.ID_ANY, "Cell Amount in Series" ,size=(180,25)))
         self.vSizer1.Add(wx.StaticText(self, wx.ID_ANY, "Soc To Voltage Lookup" ,size=(180,25)))
@@ -938,6 +954,10 @@ class InputPanel(scrolled.ScrolledPanel):
         self.p26 = wx.TextCtrl(self, size=(150,25))
         self.p27 = wx.TextCtrl(self, size=(150,25))
         self.p28 = wx.TextCtrl(self, size=(150,25))
+        self.p29 = wx.TextCtrl(self, size=(150,25))
+        self.p30 = wx.TextCtrl(self, size=(150,25))
+        self.p31 = wx.TextCtrl(self, size=(150,25))
+        self.p32 = wx.TextCtrl(self, size=(150,25))
         self.comments = wx.TextCtrl(self, size = (355,160), style = wx.TE_MULTILINE)
         
         self.textCtrlList = (self.p0, self.p1, self.p2, self.p3, self.p4, self.p5,
@@ -945,7 +965,7 @@ class InputPanel(scrolled.ScrolledPanel):
                         self.p12, self.p13, self.p14, self.p16,
                         self.p17, self.p18, self.p20, self.p21,
                         self.p22, self.p23, self.p24, self.p25, self.p26,
-                        self.p27, self.p28, self.comments)
+                        self.p27, self.p28, self.p29, self.p30, self.p31, self.p32, self.comments)
         
         for i in xrange(len(self.textCtrlList) - 1):
             self.textCtrlList[i+1].MoveAfterInTabOrder(self.textCtrlList[i])
@@ -977,6 +997,10 @@ class InputPanel(scrolled.ScrolledPanel):
         self.p26.Bind(wx.EVT_TEXT, self.UpdateP26)
         self.p27.Bind(wx.EVT_TEXT, self.UpdateP27)
         self.p28.Bind(wx.EVT_TEXT, self.UpdateP28)
+        self.p29.Bind(wx.EVT_TEXT, self.UpdateP29)
+        self.p30.Bind(wx.EVT_TEXT, self.UpdateP30)
+        self.p31.Bind(wx.EVT_TEXT, self.UpdateP31)
+        self.p32.Bind(wx.EVT_TEXT, self.UpdateP32)
         self.comments.Bind(wx.EVT_TEXT, self.UpdateComments)
         
 
@@ -1178,21 +1202,37 @@ class InputPanel(scrolled.ScrolledPanel):
         except:
             self.p24.ChangeValue('')
         try:
-            self.p25.ChangeValue(str(currentFile["batt_max_current"][0]))
+            self.p25.ChangeValue(str(currentFile["motor_thermal_conductivity"][0]))
         except:
             self.p25.ChangeValue('')
         try:
-            self.p26.ChangeValue(str(currentFile["max_amphour"][0]))
+            self.p26.ChangeValue(str(currentFile["motor_heat_capacity"][0]))
         except:
             self.p26.ChangeValue('')
         try:
-            self.p27.ChangeValue(str(currentFile["series_cells"][0]))
+            self.p27.ChangeValue(str(currentFile["max_motor_temp"][0]))
         except:
             self.p27.ChangeValue('')
         try:
-            self.p28.ChangeValue(str(currentFile["soc_to_voltage_lookup"][0]))
+            self.p28.ChangeValue(str(currentFile["coolant_temp"][0]))
         except:
             self.p28.ChangeValue('')
+        try:
+            self.p29.ChangeValue(str(currentFile["batt_max_current"][0]))
+        except:
+            self.p29.ChangeValue('')
+        try:
+            self.p30.ChangeValue(str(currentFile["max_amphour"][0]))
+        except:
+            self.p30.ChangeValue('')
+        try:
+            self.p31.ChangeValue(str(currentFile["series_cells"][0]))
+        except:
+            self.p31.ChangeValue('')
+        try:
+            self.p32.ChangeValue(str(currentFile["soc_to_voltage_lookup"][0]))
+        except:
+            self.p32.ChangeValue('')
         try:
             self.comments.ChangeValue(str(currentFile["comments"][0]))
         except:
@@ -1433,43 +1473,83 @@ class InputPanel(scrolled.ScrolledPanel):
         
     def UpdateP25 (self, e):
         try:
-            previousValue = self.dictionary[self.fileToFile[self.dropDownList.GetValue()]]['batt_max_current'][0]
-            self.dictionary[self.fileToFile[self.dropDownList.GetValue()]]['batt_max_current'] = [self.p25.GetValue()]
+            previousValue = self.dictionary[self.fileToFile[self.dropDownList.GetValue()]]['motor_thermal_conductivity'][0]
+            self.dictionary[self.fileToFile[self.dropDownList.GetValue()]]['motor_thermal_conductivity'] = [self.p25.GetValue()]
             pub.sendMessage(("DictFromInput"), self.dictionary)
-            msg = datetime.now().strftime('%H:%M:%S') + ": " + "Battery Max Current changed from " + str(previousValue) + " to " + self.p25.GetValue()
+            msg = datetime.now().strftime('%H:%M:%S') + ": " + "Motor Thermal Conductivity changed from " + str(previousValue) + " to " + self.p25.GetValue()
             pub.sendMessage(("AddStatus"), msg)
         except:
             pass
     
     def UpdateP26 (self, e):
         try:
-            previousValue = self.dictionary[self.fileToFile[self.dropDownList.GetValue()]]['max_amphour'][0]
-            self.dictionary[self.fileToFile[self.dropDownList.GetValue()]]['max_amphour'] = [self.p26.GetValue()]
+            previousValue = self.dictionary[self.fileToFile[self.dropDownList.GetValue()]]['motor_heat_capacity'][0]
+            self.dictionary[self.fileToFile[self.dropDownList.GetValue()]]['motor_heat_capacity'] = [self.p26.GetValue()]
             pub.sendMessage(("DictFromInput"), self.dictionary)
-            msg = datetime.now().strftime('%H:%M:%S') + ": " + "Max Amphours changed from " + str(previousValue) + " to " + self.p26.GetValue()
+            msg = datetime.now().strftime('%H:%M:%S') + ": " + "Motor Heat Capacity changed from " + str(previousValue) + " to " + self.p26.GetValue()
             pub.sendMessage(("AddStatus"), msg)
         except:
             pass
 
     def UpdateP27 (self, e):
         try:
-            previousValue = self.dictionary[self.fileToFile[self.dropDownList.GetValue()]]['series_cells'][0]
-            self.dictionary[self.fileToFile[self.dropDownList.GetValue()]]['series_cells'] = [self.p27.GetValue()]
+            previousValue = self.dictionary[self.fileToFile[self.dropDownList.GetValue()]]['max_motor_temp'][0]
+            self.dictionary[self.fileToFile[self.dropDownList.GetValue()]]['max_motor_temp'] = [self.p27.GetValue()]
             pub.sendMessage(("DictFromInput"), self.dictionary)
-            msg = datetime.now().strftime('%H:%M:%S') + ": " + "Cell Amount in Series changed from " + str(previousValue) + " to " + self.p27.GetValue()
+            msg = datetime.now().strftime('%H:%M:%S') + ": " + "Max Motor Temp changed from " + str(previousValue) + " to " + self.p27.GetValue()
             pub.sendMessage(("AddStatus"), msg)
         except:
             pass    
 
     def UpdateP28 (self, e):
         try:
-            previousValue = self.dictionary[self.fileToFile[self.dropDownList.GetValue()]]['soc_to_voltage_lookup'][0]
-            self.dictionary[self.fileToFile[self.dropDownList.GetValue()]]['soc_to_voltage_lookup'] = [self.p28.GetValue()]
+            previousValue = self.dictionary[self.fileToFile[self.dropDownList.GetValue()]]['coolant_temp'][0]
+            self.dictionary[self.fileToFile[self.dropDownList.GetValue()]]['coolant_temp'] = [self.p28.GetValue()]
             pub.sendMessage(("DictFromInput"), self.dictionary)
-            msg = datetime.now().strftime('%H:%M:%S') + ": " + "Soc to Voltage Lookup changed from " + str(previousValue) + " to " + self.p28.GetValue()
+            msg = datetime.now().strftime('%H:%M:%S') + ": " + "Coolant Temp changed from " + str(previousValue) + " to " + self.p28.GetValue()
             pub.sendMessage(("AddStatus"), msg)
         except:
             pass    
+        
+    def UpdateP29 (self, e):
+        try:
+            previousValue = self.dictionary[self.fileToFile[self.dropDownList.GetValue()]]['batt_max_current'][0]
+            self.dictionary[self.fileToFile[self.dropDownList.GetValue()]]['batt_max_current'] = [self.p29.GetValue()]
+            pub.sendMessage(("DictFromInput"), self.dictionary)
+            msg = datetime.now().strftime('%H:%M:%S') + ": " + "Battery Max Current changed from " + str(previousValue) + " to " + self.p29.GetValue()
+            pub.sendMessage(("AddStatus"), msg)
+        except:
+            pass
+        
+    def UpdateP30 (self, e):
+        try:
+            previousValue = self.dictionary[self.fileToFile[self.dropDownList.GetValue()]]['max_amphour'][0]
+            self.dictionary[self.fileToFile[self.dropDownList.GetValue()]]['max_amphour'] = [self.p30.GetValue()]
+            pub.sendMessage(("DictFromInput"), self.dictionary)
+            msg = datetime.now().strftime('%H:%M:%S') + ": " + "Max Amphours changed from " + str(previousValue) + " to " + self.p30.GetValue()
+            pub.sendMessage(("AddStatus"), msg)
+        except:
+            pass  
+        
+    def UpdateP31 (self, e):
+        try:
+            previousValue = self.dictionary[self.fileToFile[self.dropDownList.GetValue()]]['series_cells'][0]
+            self.dictionary[self.fileToFile[self.dropDownList.GetValue()]]['series_cells'] = [self.p31.GetValue()]
+            pub.sendMessage(("DictFromInput"), self.dictionary)
+            msg = datetime.now().strftime('%H:%M:%S') + ": " + "Cell Amount in Series changed from " + str(previousValue) + " to " + self.p31.GetValue()
+            pub.sendMessage(("AddStatus"), msg)
+        except:
+            pass  
+        
+    def UpdateP32 (self, e):
+        try:
+            previousValue = self.dictionary[self.fileToFile[self.dropDownList.GetValue()]]['soc_to_voltage_lookup'][0]
+            self.dictionary[self.fileToFile[self.dropDownList.GetValue()]]['soc_to_voltage_lookup'] = [self.p32.GetValue()]
+            pub.sendMessage(("DictFromInput"), self.dictionary)
+            msg = datetime.now().strftime('%H:%M:%S') + ": " + "Soc to Voltage Lookup changed from " + str(previousValue) + " to " + self.p32.GetValue()
+            pub.sendMessage(("AddStatus"), msg)
+        except:
+            pass   
     
     def UpdateComments (self, e):
         try:
