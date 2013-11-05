@@ -824,7 +824,7 @@ class MainFrame(wx.Frame):
             
         path = os.path.dirname(os.path.realpath("OPTIONS.csv"))
         
-        
+        '''
         path = os.path.join(path, "SimOutputMacro1013.xlsm")        
         
         excel = win32com.client.DispatchEx("Excel.Application")
@@ -833,6 +833,7 @@ class MainFrame(wx.Frame):
         excel.Visible = True
         workbook.Close(SaveChanges=1)
         excel.Quit
+        '''
         
         
     

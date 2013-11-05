@@ -107,7 +107,7 @@ def Simulation(dict_in):
         logging.info("chain_efficiency found")
         chain_efficiency = currentData["chain_efficiency"]
         
-        assert "battery_efficiency" in currentData, logging.critical("%s is missing data: chain_efficiency" % file)
+        assert "battery_efficiency" in currentData, logging.critical("%s is missing data: battery_efficiency" % file)
         logging.info("battery_efficiency found")
         battery_efficiency = currentData["battery_efficiency"]
         
@@ -176,16 +176,10 @@ def Simulation(dict_in):
         soc_to_voltage_lookup = currentData["soc_to_voltage_lookup"][0]
         
         
-
-    
-        
+   
         
         #calc values
         
-        top_speed = ((wheel_radius*2*np.pi* (top_rpm) / (gearing))/60)
-        top_force = (top_torque * gearing) / wheel_radius
-        drag_area = frontal_area * air_resistance
-        mass = rider_mass + bike_mass
         steps = int(math.ceil(total_time/step))
         sqrt2 = np.sqrt(2)     
         
@@ -196,7 +190,7 @@ def Simulation(dict_in):
         l_speed = np.zeros((steps+1,tests),dtype=float) #look up speed
         t_speed = np.zeros((steps+1,tests),dtype=float) #speed after compare to top
         c_force = np.zeros((steps+1,tests),dtype=float) #force before compare
-        p_force = np.zeros((steps+1,tests),dtype=float) #force before power compare	  p_speed = np.zeros((steps+1,tests),dtype=float) #speed before power compare
+        p_force = np.zeros((steps+1,tests),dtype=float) #force before power compare        
         p_speed = np.zeros((steps+1,tests),dtype=float) #speed before power compare
         speed = np.zeros((steps+1,tests),dtype=float)   #speed after compare (actual)
         force = np.zeros((steps+1,tests),dtype=float)   #force after compare (actual)
@@ -247,7 +241,7 @@ def Simulation(dict_in):
         mt_power = np.zeros((steps+1,tests),dtype=float)
         mt_total_power = np.zeros((steps+1,tests),dtype=float)
         motor_thermal_limit = np.zeros((steps+1,tests),dtype=float)
-
+        motor_thermal_error = np.zeros((steps+1,tests),dtype=float)
         
         #Lookups
         dist_to_speed_lookup = "Lookup Files\\" + dist_to_speed_lookup
@@ -472,8 +466,8 @@ def Simulation(dict_in):
             p = Power(s,n)
             Efficiency(s,f,p,n)
             Motor_Thermal(n)
-            return max([0,motor_loss[n+1] - motor_energy_out[n+1]])
-    
+            motor_thermal_error[n+1] = abs(motor_temp[n+1] - max_motor_temp)
+            return motor_thermal_error[n+1]   
     
         #parameter calc values
         motor_top_speed = ((wheel_radius*2*np.pi* (top_rpm) / (gearing))/60)
@@ -498,11 +492,12 @@ def Simulation(dict_in):
                 distance[n+1] = distance[n] + speed[n]*step
                 if (distance[n+1] > max_distance_travel):
                     return n
-            
+                    
                 voltage[n+1] = Battery_Voltage(n)
                 top_force[n+1] = Top_force(n)
                 top_speed[n+1] = Top_speed(n)
                 top_power[n+1] = Top_power(n)
+                
                 l_speed[n+1] = distancetospeed_lookup(distance[n+1])
                 
                 if l_speed[n+1] > top_speed[n+1]:
@@ -519,11 +514,11 @@ def Simulation(dict_in):
                     p_speed[n+1] = (opt.fsolve(force_solve,t_speed[n+1],n))[0]
                     p_force[n+1] = Force(p_speed[n+1],n)
                 else:
-            	   p_speed[n+1] = t_speed[n+1]
-            	   p_force[n+1] = c_force[n+1]
-        
+                    p_speed[n+1] = t_speed[n+1]
+                    p_force[n+1] = c_force[n+1]
+                
                 c_power[n+1] = Power(p_speed[n+1],n)
-        
+                
                 if c_power[n+1] > top_power[n+1]:
                     if is_motor_power:
                         motor_power_limit[n+1] = 1
@@ -533,26 +528,28 @@ def Simulation(dict_in):
                     mt_force[n+1] = Force(mt_speed[n+1],n)
                     mt_power[n+1] = Power(mt_speed[n+1],n)
                 else:
-            	   mt_speed[n+1] = p_speed[n+1]
-            	   mt_force[n+1] = p_force[n+1]
-            	   mt_power[n+1] = c_power[n+1]
-            
+                    mt_speed[n+1] = p_speed[n+1]
+                    mt_force[n+1] = p_force[n+1]
+                    mt_power[n+1] = c_power[n+1]
+                    
                 mt_total_power[n+1] = Efficiency(mt_speed[n+1],mt_force[n+1],mt_power[n+1],n)
                 #thermal 
                 #Motor
                 Motor_Thermal(n)
                 if motor_temp[n+1] > max_motor_temp:
-                    speed[n+1] = (opt.fsolve(Motor_Thermal_solve,mt_speed[n+1],n))[0]
+                    bnds = [(0,mt_speed[n+1])]
+                    speed[n+1] = (opt.fmin_tnc(Motor_Thermal_solve,mt_speed[n+1]-1,args = (n,),bounds=bnds, approx_grad = True, messages = 0))[0]
                     force[n+1] = Force(speed[n+1],n)
+                    power[n+1] = Power(speed[n+1],n)   
                     total_power[n+1] = Efficiency(speed[n+1],force[n+1],power[n+1],n)
                     motor_thermal_limit[n+1] = 1 
                 else:
-            	   speed[n+1] = mt_speed[n+1]
-            	   force[n+1] = mt_force[n+1]
-            	   power[n+1] = mt_power[n+1]   
-            	   total_power[n+1] = mt_total_power[n+1]
-            
-                    
+                    speed[n+1] = mt_speed[n+1]
+                    force[n+1] = mt_force[n+1]
+                    power[n+1] = mt_power[n+1]   
+                    total_power[n+1] = mt_total_power[n+1]
+                
+               
                 amphour[n+1] = amphour[n] + (total_power[n+1]/voltage[n+1])*(step/(60.0*60.0))
                 energy[n+1] = energy[n] + total_power[n+1]*(step/(60.0*60.0))
                 
@@ -608,6 +605,7 @@ def Simulation(dict_in):
         newData["MT Force (N)"] = (mt_force[:end])
         newData["MT Power (Watts)"] = (mt_power[:end])
         newData["MT Total Power (Watts)"] = (mt_total_power[:end])
+        newData["motor_thermal_error"] = (motor_thermal_error[:end])
         newData["% Motor RPM Limit"] = (np.mean(motor_rpm_limit[:end])*100)
         newData["% Motor Torque Limit"] = (np.mean(motor_torque_limit[:end])*100)
         newData["% Motor Power Limit"] = (np.mean(motor_power_limit[:end])*100)
