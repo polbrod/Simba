@@ -653,6 +653,7 @@ class MainFrame(wx.Frame):
             self.dictionary[self.newParamName.GetValue()]["motor_heat_capacity"] = np.array([""])
             self.dictionary[self.newParamName.GetValue()]["coolant_temp"] = np.array([""])
             self.dictionary[self.newParamName.GetValue()]["max_motor_temp"] = np.array([""])
+            self.dictionary[self.newParamName.GetValue()]["throttlemap_lookup"] = np.array([""])
 
              
             self.currentFiles = np.append(self.currentFiles, self.newParamName.GetValue())
@@ -922,6 +923,7 @@ class InputPanel(scrolled.ScrolledPanel):
         self.vSizer1.Add(wx.StaticText(self, wx.ID_ANY, "Max Amphours (Amphours)" ,size=(180,25)))
         self.vSizer1.Add(wx.StaticText(self, wx.ID_ANY, "Cell Amount in Series" ,size=(180,25)))
         self.vSizer1.Add(wx.StaticText(self, wx.ID_ANY, "Soc To Voltage Lookup" ,size=(180,25)))
+        self.vSizer1.Add(wx.StaticText(self, wx.ID_ANY, "Throttle Map Lookup" ,size=(180,25)))
         self.vSizer1.AddSpacer(3)
         self.vSizer1.Add(wx.StaticText(self, wx.ID_ANY, "Comments", size=(180,25)))
  
@@ -959,6 +961,7 @@ class InputPanel(scrolled.ScrolledPanel):
         self.p30 = wx.TextCtrl(self, size=(150,25))
         self.p31 = wx.TextCtrl(self, size=(150,25))
         self.p32 = wx.TextCtrl(self, size=(150,25))
+        self.p33 = wx.TextCtrl(self, size=(150,25))
         self.comments = wx.TextCtrl(self, size = (355,160), style = wx.TE_MULTILINE)
         
         self.textCtrlList = (self.p0, self.p1, self.p2, self.p3, self.p4, self.p5,
@@ -966,7 +969,8 @@ class InputPanel(scrolled.ScrolledPanel):
                         self.p12, self.p13, self.p14, self.p16,
                         self.p17, self.p18, self.p20, self.p21,
                         self.p22, self.p23, self.p24, self.p25, self.p26,
-                        self.p27, self.p28, self.p29, self.p30, self.p31, self.p32, self.comments)
+                        self.p27, self.p28, self.p29, self.p30, self.p31, self.p32,
+                        self.p33, self.comments)
         
         for i in xrange(len(self.textCtrlList) - 1):
             self.textCtrlList[i+1].MoveAfterInTabOrder(self.textCtrlList[i])
@@ -1002,6 +1006,7 @@ class InputPanel(scrolled.ScrolledPanel):
         self.p30.Bind(wx.EVT_TEXT, self.UpdateP30)
         self.p31.Bind(wx.EVT_TEXT, self.UpdateP31)
         self.p32.Bind(wx.EVT_TEXT, self.UpdateP32)
+        self.p33.Bind(wx.EVT_TEXT, self.UpdateP33)
         self.comments.Bind(wx.EVT_TEXT, self.UpdateComments)
         
 
@@ -1234,6 +1239,10 @@ class InputPanel(scrolled.ScrolledPanel):
             self.p32.ChangeValue(str(currentFile["soc_to_voltage_lookup"][0]))
         except:
             self.p32.ChangeValue('')
+        try:
+            self.p33.ChangeValue(str(currentFile["throttlemap_lookup"][0]))
+        except:
+            self.p33.ChangeValue('')
         try:
             self.comments.ChangeValue(str(currentFile["comments"][0]))
         except:
@@ -1550,7 +1559,17 @@ class InputPanel(scrolled.ScrolledPanel):
             msg = datetime.now().strftime('%H:%M:%S') + ": " + "Soc to Voltage Lookup changed from " + str(previousValue) + " to " + self.p32.GetValue()
             pub.sendMessage(("AddStatus"), msg)
         except:
-            pass   
+            pass
+    
+    def UpdateP33 (self, e):
+        try:
+            previousValue = self.dictionary[self.fileToFile[self.dropDownList.GetValue()]]['throttlemap_lookup'][0]
+            self.dictionary[self.fileToFile[self.dropDownList.GetValue()]]['throttlemap_lookup'] = [self.p33.GetValue()]
+            pub.sendMessage(("DictFromInput"), self.dictionary)
+            msg = datetime.now().strftime('%H:%M:%S') + ": " + "Throttle Map Lookup changed from " + str(previousValue) + " to " + self.p33.GetValue()
+            pub.sendMessage(("AddStatus"), msg)
+        except:
+            pass 
     
     def UpdateComments (self, e):
         try:

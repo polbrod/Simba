@@ -175,14 +175,19 @@ def Simulation(dict_in):
         logging.info("soc_to_voltage_lookup found")
         soc_to_voltage_lookup = currentData["soc_to_voltage_lookup"][0]
         
-        
+        assert "throttlemap_lookup" in currentData, logging.critical("%s is missing data: throttlemap_lookup" % file)
+        logging.info("throttlemap_lookup found")
+        throttlemap_lookup = currentData["throttlemap_lookup"][0]
    
         
         #calc values
         
         steps = int(math.ceil(total_time/step))
         sqrt2 = np.sqrt(2)     
-        
+        motor_top_speed = ((wheel_radius*2*np.pi* (top_rpm) / (gearing))/60)
+        motor_top_force = (top_torque * gearing) / wheel_radius
+        drag_area = frontal_area * air_resistance
+        mass = rider_mass + bike_mass
 
 #Arrays (output)
         time = np.zeros((steps+1,tests),dtype=float)
@@ -302,6 +307,23 @@ def Simulation(dict_in):
 	  #y = np.array([0,0])
         distancetoaltitude_lookup = interp1d(x,y)
         
+        
+        throttlemap_lookup = "Lookup Files\\" + throttlemap_lookup
+        try:
+            n = np.loadtxt(throttlemap_lookup,dtype = 'string',delimiter = ',', skiprows = 1)
+            logging.info("%s loaded", throttlemap_lookup)
+            msg = datetime.now().strftime('%H:%M:%S') + ": " + throttlemap_lookup + " loaded"
+            pub.sendMessage(("AddStatus"), msg) 
+            
+        except IOError:
+            logging.critical("Unable to load %s", throttlemap_lookup)
+            msg = datetime.now().strftime('%H:%M:%S') + ": " + "Unable to load " + throttlemap_lookup + ". Make sure the file exists and is not open."
+            pub.sendMessage(("AddStatus"), msg)
+            raise Exception("Unable to load \'" + throttlemap_lookup + "\'")
+        x = n[:,0].astype(np.float)
+        y = n[:,1].astype(np.float)
+        throttlemap = interp1d(x,y)
+        
         motor_controller_eff_lookup = "Lookup Files\\" + motor_controller_eff_lookup
         try:
             n = np.loadtxt(motor_controller_eff_lookup,dtype = 'string',delimiter = ',', skiprows = 1)
@@ -361,7 +383,12 @@ def Simulation(dict_in):
             message += 'max_distance_travel greater than altitude to distance look up --- '
             message += 'max_distance_travel changed to ' + repr(max_distance_travel) + linesep
             message += linesep
-
+            
+        if np.max(throttlemap.x) < top_rpm:
+            top_rpm = np.max(throttlemap.x)
+            message += 'top rpm is greater than throttle map look up --- '
+            message += 'top rpm changed to ' + repr(top_rpm)
+            
         (x,y) = motor_eff_grid.shape
         if y-1 <  top_torque:
             top_torque = y-1
@@ -468,15 +495,8 @@ def Simulation(dict_in):
             Motor_Thermal(n)
             motor_thermal_error[n+1] = abs(motor_temp[n+1] - max_motor_temp)
             return motor_thermal_error[n+1]   
-    
-        #parameter calc values
-        motor_top_speed = ((wheel_radius*2*np.pi* (top_rpm) / (gearing))/60)
-        motor_top_force = (top_torque * gearing) / wheel_radius
-        drag_area = frontal_area * air_resistance
-        mass = rider_mass + bike_mass
 
 
-      
         #initial condidtions
         distance[0] = .1
         speed[0] = .1
