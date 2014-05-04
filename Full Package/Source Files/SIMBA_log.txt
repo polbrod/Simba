@@ -1,0 +1,459 @@
+2014-03-25 16:55:42,911 - INFO - STARTING automation.py
+2014-03-25 17:17:38,901 - INFO - STARTING automation.py
+2014-03-25 17:21:10,983 - INFO - STARTING FUNCTIONS FileToParams
+2014-03-25 17:21:10,983 - DEBUG - Options file location passed: C:\Users\Sean\Desktop\Buckeye Current\Simulation\Deployment Package\test_in\Project Template\OPTIONS.csv
+2014-03-25 17:21:10,990 - INFO - Current file to search for data: TestTemplate.csv
+2014-03-25 17:21:10,990 - INFO - Data extraction from TestTemplate.csv complete
+2014-03-25 17:21:37,174 - INFO - STARTING FUNCTIONS FileToParams
+2014-03-25 17:21:37,174 - DEBUG - Options file location passed: C:\Users\Sean\Desktop\Buckeye Current\Simulation\Deployment Package\test_in\Project Template\TestTemplate.csv
+2014-03-25 17:21:40,795 - INFO - STARTING FUNCTIONS FileToParams
+2014-03-25 17:21:40,795 - DEBUG - Options file location passed: C:\Users\Sean\Desktop\Buckeye Current\Simulation\Deployment Package\test_in\Project Template\OPTIONS.csv
+2014-03-25 17:21:40,802 - INFO - Current file to search for data: TestTemplate.csv
+2014-03-25 17:21:40,802 - INFO - Data extraction from TestTemplate.csv complete
+2014-03-25 17:29:24,203 - INFO - STARTING automation.py
+2014-03-25 17:30:20,401 - INFO - STARTING automation.py
+2014-03-25 17:30:23,943 - INFO - STARTING FUNCTIONS FileToParams
+2014-03-25 17:30:23,944 - DEBUG - Options file location passed: C:\Users\Sean\Desktop\Buckeye Current\Simulation\Full Package\test_in\Project Test 1\OPTIONS.csv
+2014-03-25 17:30:23,946 - INFO - Current file to search for data: IOM_check.csv
+2014-03-25 17:30:23,947 - INFO - Data extraction from IOM_check.csv complete
+2014-03-25 17:30:23,947 - INFO - Files have been converted to dictionaries
+2014-03-25 17:31:07,707 - DEBUG - Entered path: C:\Users\Sean\Desktop\Buckeye Current\Simulation\Full Package\test_in\Project Test 1\OPTIONS.csv
+2014-03-25 17:31:07,707 - INFO - STARTING FUNCTIONS FileToParams
+2014-03-25 17:31:07,707 - DEBUG - Options file location passed: C:\Users\Sean\Desktop\Buckeye Current\Simulation\Full Package\test_in\Project Test 1\OPTIONS.csv
+2014-03-25 17:31:07,709 - INFO - Current file to search for data: IOM_check.csv
+2014-03-25 17:31:07,709 - INFO - Data extraction from IOM_check.csv complete
+2014-03-25 17:31:07,710 - INFO - Files have been converted to dictionaries
+2014-03-25 17:31:07,727 - INFO - STARTING Simulation.py
+2014-03-25 17:31:07,727 - INFO - Checking to make sure file IOM_check.csv has needed parameters...
+2014-03-25 17:31:07,727 - INFO - Step found
+2014-03-25 17:31:07,727 - INFO - total_time found
+2014-03-25 17:31:07,727 - INFO - wheel_radius found
+2014-03-25 17:31:07,727 - INFO - gearing found
+2014-03-25 17:31:07,727 - INFO - rider_mass found
+2014-03-25 17:31:07,729 - INFO - bike_mass found
+2014-03-25 17:31:07,729 - INFO - gravity found
+2014-03-25 17:31:07,729 - INFO - air_resistance found
+2014-03-25 17:31:07,729 - INFO - air_density found
+2014-03-25 17:31:07,729 - INFO - frontal_area found
+2014-03-25 17:31:07,729 - INFO - rolling_resistance found
+2014-03-25 17:31:07,729 - INFO - top_torque found
+2014-03-25 17:31:07,729 - INFO - top_rpm found
+2014-03-25 17:31:07,729 - INFO - motor_top_power found
+2014-03-25 17:31:07,729 - INFO - chain_efficiency found
+2014-03-25 17:31:07,729 - INFO - battery_efficiency found
+2014-03-25 17:31:07,729 - INFO - motor_torque_constant found
+2014-03-25 17:31:07,729 - INFO - motor_rpm_constant found
+2014-03-25 17:31:07,729 - INFO - motor_thermal_conductivity
+2014-03-25 17:31:07,730 - INFO - motor_heat_capacity
+2014-03-25 17:31:07,730 - INFO - coolant_temp
+2014-03-25 17:31:07,730 - INFO - max_motor_temp
+2014-03-25 17:31:07,730 - INFO - series_cells found
+2014-03-25 17:31:07,730 - INFO - max_amphour
+2014-03-25 17:31:07,730 - INFO - batt_max_current
+2014-03-25 17:31:07,730 - INFO - max_distance_travel found
+2014-03-25 17:31:07,730 - INFO - dist_to_speed_lookup found
+2014-03-25 17:31:07,730 - INFO - dist_to_alt_lookup found
+2014-03-25 17:31:07,730 - INFO - motor_controller_eff_lookup found
+2014-03-25 17:31:07,730 - INFO - motor_eff_lookup found
+2014-03-25 17:31:07,730 - INFO - soc_to_voltage_lookup found
+2014-03-25 17:31:07,730 - INFO - throttlemap_lookup found
+2014-03-25 17:31:08,309 - INFO - Lookup Files\IOM_data.csv loaded
+2014-03-25 17:31:08,395 - INFO - Lookup Files\aee.csv loaded
+2014-03-25 17:31:08,414 - INFO - Lookup Files\disttoalt.csv loaded
+2014-03-25 17:31:08,417 - INFO - Lookup Files\throttle.csv loaded
+2014-03-25 17:31:08,421 - INFO - Lookup Files\Tritium_ws200_eff.csv loaded
+2014-03-25 17:31:08,454 - INFO - Lookup Files\Emrax_eff.csv loaded
+2014-03-25 17:31:13,092 - INFO - Converted IOM_check.csv to a dictionary successfully
+2014-03-25 17:31:13,092 - INFO - ENDING Simulation.py
+2014-03-25 17:31:13,095 - DEBUG - Entered out path: C:\Users\Sean\Desktop\
+2014-03-25 17:31:13,095 - INFO - STARTING FUNCTION OutputFile
+2014-03-25 17:31:13,095 - INFO - Converting dictionary IOM_check.csv to file
+2014-03-25 17:31:13,095 - DEBUG - File will be saved at C:\Users\Sean\Desktop\\IOM_check.csv
+2014-03-25 17:31:13,164 - INFO - Data converted and saved to C:\Users\Sean\Desktop\\IOM_check.csv
+2014-03-25 17:31:13,164 - INFO - Data extraction from <type 'file'> complete
+2014-03-25 17:31:13,165 - INFO - C:\Users\Sean\Desktop\Buckeye Current\Simulation\Full Package\test_in\Project Test 1\OPTIONS.csv NOT successfully edited
+2014-03-25 17:31:14,109 - CRITICAL - Could not save project at the end of the simulation
+2014-03-25 18:10:08,059 - INFO - STARTING automation.py
+2014-03-25 18:25:02,980 - INFO - STARTING automation.py
+2014-04-24 00:17:54,329 - INFO - STARTING automation.py
+2014-04-24 00:18:16,948 - INFO - STARTING FUNCTIONS FileToParams
+2014-04-24 00:18:16,948 - DEBUG - Options file location passed: C:\Users\Sean\Desktop\Buckeye Current\Simulation\Deployment Package\test_in\Project Template\OPTIONS.csv
+2014-04-24 00:18:16,953 - INFO - Current file to search for data: TestTemplate.csv
+2014-04-24 00:18:16,957 - INFO - Data extraction from TestTemplate.csv complete
+2014-04-24 00:18:16,957 - INFO - Current file to search for data: IOM_check.csv
+2014-04-24 00:18:16,960 - INFO - Data extraction from IOM_check.csv complete
+2014-04-24 00:18:16,960 - INFO - Files have been converted to dictionaries
+2014-04-24 00:18:29,403 - DEBUG - Entered path: C:\Users\Sean\Desktop\Buckeye Current\Simulation\Deployment Package\test_in\Project Template\OPTIONS.csv
+2014-04-24 00:18:29,403 - INFO - STARTING FUNCTIONS FileToParams
+2014-04-24 00:18:29,403 - DEBUG - Options file location passed: C:\Users\Sean\Desktop\Buckeye Current\Simulation\Deployment Package\test_in\Project Template\OPTIONS.csv
+2014-04-24 00:18:29,404 - INFO - Current file to search for data: TestTemplate.csv
+2014-04-24 00:18:29,404 - INFO - Data extraction from TestTemplate.csv complete
+2014-04-24 00:18:29,404 - INFO - Current file to search for data: IOM_check.csv
+2014-04-24 00:18:29,404 - INFO - Data extraction from IOM_check.csv complete
+2014-04-24 00:18:29,404 - INFO - Files have been converted to dictionaries
+2014-04-24 00:18:29,421 - INFO - STARTING Simulation.py
+2014-04-24 00:18:29,423 - INFO - Checking to make sure file TestTemplateOutput.csv has needed parameters...
+2014-04-24 00:18:29,423 - INFO - Step found
+2014-04-24 00:18:29,423 - INFO - total_time found
+2014-04-24 00:18:29,423 - INFO - wheel_radius found
+2014-04-24 00:18:29,423 - INFO - gearing found
+2014-04-24 00:18:29,423 - INFO - rider_mass found
+2014-04-24 00:18:29,423 - INFO - bike_mass found
+2014-04-24 00:18:29,423 - INFO - gravity found
+2014-04-24 00:18:29,423 - INFO - air_resistance found
+2014-04-24 00:18:29,423 - INFO - air_density found
+2014-04-24 00:18:29,423 - INFO - frontal_area found
+2014-04-24 00:18:29,424 - INFO - rolling_resistance found
+2014-04-24 00:18:29,424 - INFO - top_torque found
+2014-04-24 00:18:29,424 - INFO - top_rpm found
+2014-04-24 00:18:29,424 - INFO - motor_top_power found
+2014-04-24 00:18:29,424 - INFO - chain_efficiency found
+2014-04-24 00:18:29,424 - INFO - battery_efficiency found
+2014-04-24 00:18:29,424 - INFO - motor_torque_constant found
+2014-04-24 00:18:29,424 - INFO - motor_rpm_constant found
+2014-04-24 00:18:29,424 - INFO - motor_thermal_conductivity
+2014-04-24 00:18:29,424 - INFO - motor_heat_capacity
+2014-04-24 00:18:29,424 - INFO - coolant_temp
+2014-04-24 00:18:29,424 - INFO - max_motor_temp
+2014-04-24 00:18:29,424 - INFO - series_cells found
+2014-04-24 00:18:29,424 - INFO - max_amphour
+2014-04-24 00:18:29,424 - INFO - batt_max_current
+2014-04-24 00:18:29,424 - INFO - max_distance_travel found
+2014-04-24 00:18:29,424 - INFO - dist_to_speed_lookup found
+2014-04-24 00:18:29,424 - INFO - dist_to_alt_lookup found
+2014-04-24 00:18:29,424 - INFO - motor_controller_eff_lookup found
+2014-04-24 00:18:29,424 - INFO - motor_eff_lookup found
+2014-04-24 00:18:29,424 - INFO - soc_to_voltage_lookup found
+2014-04-24 00:18:29,424 - INFO - throttlemap_lookup found
+2014-04-24 00:18:29,645 - INFO - Lookup Files\disttospeed.csv loaded
+2014-04-24 00:18:29,710 - INFO - Lookup Files\aee.csv loaded
+2014-04-24 00:18:29,734 - INFO - Lookup Files\disttoalt.csv loaded
+2014-04-24 00:18:29,740 - INFO - Lookup Files\throttle.csv loaded
+2014-04-24 00:18:29,746 - INFO - Lookup Files\Tritium_ws200_eff.csv loaded
+2014-04-24 00:18:29,780 - INFO - Lookup Files\Emrax_eff.csv loaded
+2014-04-24 00:18:36,502 - INFO - Converted TestTemplateOutput.csv to a dictionary successfully
+2014-04-24 00:18:36,502 - INFO - Checking to make sure file IOM_check_output.csv has needed parameters...
+2014-04-24 00:18:36,502 - INFO - Step found
+2014-04-24 00:18:36,502 - INFO - total_time found
+2014-04-24 00:18:36,502 - INFO - wheel_radius found
+2014-04-24 00:18:36,502 - INFO - gearing found
+2014-04-24 00:18:36,502 - INFO - rider_mass found
+2014-04-24 00:18:36,502 - INFO - bike_mass found
+2014-04-24 00:18:36,502 - INFO - gravity found
+2014-04-24 00:18:36,503 - INFO - air_resistance found
+2014-04-24 00:18:36,503 - INFO - air_density found
+2014-04-24 00:18:36,503 - INFO - frontal_area found
+2014-04-24 00:18:36,503 - INFO - rolling_resistance found
+2014-04-24 00:18:36,503 - INFO - top_torque found
+2014-04-24 00:18:36,503 - INFO - top_rpm found
+2014-04-24 00:18:36,503 - INFO - motor_top_power found
+2014-04-24 00:18:36,503 - INFO - chain_efficiency found
+2014-04-24 00:18:36,503 - INFO - battery_efficiency found
+2014-04-24 00:18:36,503 - INFO - motor_torque_constant found
+2014-04-24 00:18:36,503 - INFO - motor_rpm_constant found
+2014-04-24 00:18:36,503 - INFO - motor_thermal_conductivity
+2014-04-24 00:18:36,503 - INFO - motor_heat_capacity
+2014-04-24 00:18:36,503 - INFO - coolant_temp
+2014-04-24 00:18:36,503 - INFO - max_motor_temp
+2014-04-24 00:18:36,503 - INFO - series_cells found
+2014-04-24 00:18:36,503 - INFO - max_amphour
+2014-04-24 00:18:36,503 - INFO - batt_max_current
+2014-04-24 00:18:36,503 - INFO - max_distance_travel found
+2014-04-24 00:18:36,503 - INFO - dist_to_speed_lookup found
+2014-04-24 00:18:36,503 - INFO - dist_to_alt_lookup found
+2014-04-24 00:18:36,503 - INFO - motor_controller_eff_lookup found
+2014-04-24 00:18:36,503 - INFO - motor_eff_lookup found
+2014-04-24 00:18:36,503 - INFO - soc_to_voltage_lookup found
+2014-04-24 00:18:36,503 - INFO - throttlemap_lookup found
+2014-04-24 00:18:37,039 - INFO - Lookup Files\IOM_data.csv loaded
+2014-04-24 00:18:37,122 - INFO - Lookup Files\aee.csv loaded
+2014-04-24 00:18:37,141 - INFO - Lookup Files\disttoalt.csv loaded
+2014-04-24 00:18:37,145 - INFO - Lookup Files\throttle.csv loaded
+2014-04-24 00:18:37,150 - INFO - Lookup Files\Tritium_ws200_eff.csv loaded
+2014-04-24 00:18:37,181 - INFO - Lookup Files\Emrax_eff.csv loaded
+2014-04-24 00:18:41,026 - INFO - Converted IOM_check_output.csv to a dictionary successfully
+2014-04-24 00:18:41,026 - INFO - ENDING Simulation.py
+2014-04-24 00:18:41,029 - DEBUG - Entered out path: C:\Users\Sean\Desktop
+2014-04-24 00:18:41,029 - INFO - STARTING FUNCTION OutputFile
+2014-04-24 00:18:41,030 - INFO - Converting dictionary TestTemplateOutput.csv to file
+2014-04-24 00:18:41,030 - DEBUG - File will be saved at C:\Users\Sean\Desktop\TestTemplateOutput.csv
+2014-04-24 00:18:41,122 - INFO - Data converted and saved to C:\Users\Sean\Desktop\TestTemplateOutput.csv
+2014-04-24 00:18:41,122 - INFO - Converting dictionary IOM_check_output.csv to file
+2014-04-24 00:18:41,122 - DEBUG - File will be saved at C:\Users\Sean\Desktop\IOM_check_output.csv
+2014-04-24 00:18:41,239 - INFO - Data converted and saved to C:\Users\Sean\Desktop\IOM_check_output.csv
+2014-04-24 00:18:41,240 - INFO - Data extraction from <type 'file'> complete
+2014-04-24 00:18:41,240 - INFO - C:\Users\Sean\Desktop\Buckeye Current\Simulation\Deployment Package\test_in\Project Template\OPTIONS.csv successfully edited
+2014-05-03 16:55:38,585 - INFO - STARTING automation.py
+2014-05-03 16:55:43,720 - INFO - STARTING FUNCTIONS FileToParams
+2014-05-03 16:55:43,720 - DEBUG - Options file location passed: C:\Users\Sean\Desktop\Buckeye Current\Simulation\Deployment Package\test_in\Project Template\OPTIONS.csv
+2014-05-03 16:55:43,726 - INFO - Current file to search for data: TestTemplate.csv
+2014-05-03 16:55:43,726 - INFO - Data extraction from TestTemplate.csv complete
+2014-05-03 16:55:43,727 - INFO - Current file to search for data: IOM_check.csv
+2014-05-03 16:55:43,727 - INFO - Data extraction from IOM_check.csv complete
+2014-05-03 16:55:43,727 - INFO - Files have been converted to dictionaries
+2014-05-03 16:55:56,631 - INFO - STARTING FUNCTION SaveInput
+2014-05-03 16:55:56,631 - INFO - Converting dictionary TestTemplateOutput.csv to file
+2014-05-03 16:55:56,631 - DEBUG - File will be saved at C:\Users\Sean\Desktop\Buckeye Current\Simulation\Deployment Package\test_in\Project Template\TestTemplateOutput.csv
+2014-05-03 16:55:56,634 - INFO - Data converted and saved to C:\Users\Sean\Desktop\Buckeye Current\Simulation\Deployment Package\test_in\Project Template\TestTemplateOutput.csv
+2014-05-03 16:58:18,398 - INFO - STARTING automation.py
+2014-05-03 16:58:22,645 - INFO - STARTING FUNCTIONS FileToParams
+2014-05-03 16:58:22,645 - DEBUG - Options file location passed: C:\Users\Sean\Desktop\Buckeye Current\Simulation\Deployment Package\test_in\Project Template\OPTIONS.csv
+2014-05-03 16:58:22,651 - INFO - Current file to search for data: TestTemplate.csv
+2014-05-03 16:58:22,651 - INFO - Data extraction from TestTemplate.csv complete
+2014-05-03 16:58:22,651 - INFO - Current file to search for data: IOM_check.csv
+2014-05-03 16:58:22,653 - INFO - Data extraction from IOM_check.csv complete
+2014-05-03 16:58:22,653 - INFO - Files have been converted to dictionaries
+2014-05-03 16:58:26,578 - INFO - STARTING FUNCTION SaveInput
+2014-05-03 16:58:26,578 - INFO - Converting dictionary TestTemplateOutput.csv to file
+2014-05-03 16:58:26,578 - DEBUG - File will be saved at C:\Users\Sean\Desktop\Buckeye Current\Simulation\Deployment Package\test_in\Project Template\TestTemplateOutput.csv
+2014-05-03 16:58:26,579 - INFO - Data converted and saved to C:\Users\Sean\Desktop\Buckeye Current\Simulation\Deployment Package\test_in\Project Template\TestTemplateOutput.csv
+2014-05-03 19:38:45,174 - INFO - STARTING automation.py
+2014-05-03 19:41:35,082 - INFO - STARTING automation.py
+2014-05-03 19:41:39,174 - INFO - STARTING FUNCTIONS FileToParams
+2014-05-03 19:41:39,174 - DEBUG - Options file location passed: C:\Users\Sean\Desktop\Buckeye Current\Simulation\Deployment Package\test_in\Project Template\OPTIONS.csv
+2014-05-03 19:41:39,180 - INFO - Current file to search for data: TestTemplate.csv
+2014-05-03 19:41:39,181 - INFO - Data extraction from TestTemplate.csv complete
+2014-05-03 19:41:39,181 - INFO - Current file to search for data: IOM_check.csv
+2014-05-03 19:41:39,183 - INFO - Data extraction from IOM_check.csv complete
+2014-05-03 19:41:39,183 - INFO - Files have been converted to dictionaries
+2014-05-03 19:44:34,671 - INFO - STARTING automation.py
+2014-05-03 19:44:38,374 - INFO - STARTING FUNCTIONS FileToParams
+2014-05-03 19:44:38,374 - DEBUG - Options file location passed: C:\Users\Sean\Desktop\Buckeye Current\Simulation\Deployment Package\test_in\Project Template\OPTIONS.csv
+2014-05-03 19:44:38,378 - INFO - Current file to search for data: TestTemplate.csv
+2014-05-03 19:44:38,380 - INFO - Data extraction from TestTemplate.csv complete
+2014-05-03 19:44:38,380 - INFO - Current file to search for data: IOM_check.csv
+2014-05-03 19:44:38,381 - INFO - Data extraction from IOM_check.csv complete
+2014-05-03 19:44:38,381 - INFO - Files have been converted to dictionaries
+2014-05-03 19:49:22,104 - INFO - STARTING FUNCTION SaveInput
+2014-05-03 19:49:22,104 - INFO - Converting dictionary TestTemplateOutput.csv to file
+2014-05-03 19:49:22,105 - DEBUG - File will be saved at C:\Users\Sean\Desktop\Buckeye Current\Simulation\Deployment Package\test_in\Project Template\TestTemplateOutput.csv
+2014-05-03 19:49:22,108 - INFO - Data converted and saved to C:\Users\Sean\Desktop\Buckeye Current\Simulation\Deployment Package\test_in\Project Template\TestTemplateOutput.csv
+2014-05-03 19:53:17,180 - INFO - STARTING automation.py
+2014-05-03 19:53:21,193 - INFO - STARTING FUNCTIONS FileToParams
+2014-05-03 19:53:21,193 - DEBUG - Options file location passed: C:\Users\Sean\Desktop\Buckeye Current\Simulation\Deployment Package\test_in\Project Template\OPTIONS.csv
+2014-05-03 19:53:21,198 - INFO - Current file to search for data: TestTemplate.csv
+2014-05-03 19:53:21,200 - INFO - Data extraction from TestTemplate.csv complete
+2014-05-03 19:53:21,200 - INFO - Current file to search for data: IOM_check.csv
+2014-05-03 19:53:21,200 - INFO - Data extraction from IOM_check.csv complete
+2014-05-03 19:53:21,200 - INFO - Files have been converted to dictionaries
+2014-05-03 19:54:27,056 - INFO - STARTING automation.py
+2014-05-03 19:54:30,861 - INFO - STARTING FUNCTIONS FileToParams
+2014-05-03 19:54:30,861 - DEBUG - Options file location passed: C:\Users\Sean\Desktop\Buckeye Current\Simulation\Deployment Package\test_in\Project Template\OPTIONS.csv
+2014-05-03 19:54:30,868 - INFO - Current file to search for data: TestTemplate.csv
+2014-05-03 19:54:30,868 - INFO - Data extraction from TestTemplate.csv complete
+2014-05-03 19:54:30,869 - INFO - Current file to search for data: IOM_check.csv
+2014-05-03 19:54:30,869 - INFO - Data extraction from IOM_check.csv complete
+2014-05-03 19:54:30,871 - INFO - Files have been converted to dictionaries
+2014-05-03 19:55:33,740 - INFO - STARTING automation.py
+2014-05-03 19:55:37,378 - INFO - STARTING FUNCTIONS FileToParams
+2014-05-03 19:55:37,378 - DEBUG - Options file location passed: C:\Users\Sean\Desktop\Buckeye Current\Simulation\Deployment Package\test_in\Project Template\OPTIONS.csv
+2014-05-03 19:55:37,384 - INFO - Current file to search for data: TestTemplate.csv
+2014-05-03 19:55:37,384 - INFO - Data extraction from TestTemplate.csv complete
+2014-05-03 19:55:37,385 - INFO - Current file to search for data: IOM_check.csv
+2014-05-03 19:55:37,385 - INFO - Data extraction from IOM_check.csv complete
+2014-05-03 19:55:37,387 - INFO - Files have been converted to dictionaries
+2014-05-03 19:58:25,309 - INFO - STARTING automation.py
+2014-05-03 19:58:28,549 - INFO - STARTING FUNCTIONS FileToParams
+2014-05-03 19:58:28,551 - DEBUG - Options file location passed: C:\Users\Sean\Desktop\Buckeye Current\Simulation\Deployment Package\test_in\Project Template\OPTIONS.csv
+2014-05-03 19:58:28,556 - INFO - Current file to search for data: TestTemplate.csv
+2014-05-03 19:58:28,556 - INFO - Data extraction from TestTemplate.csv complete
+2014-05-03 19:58:28,558 - INFO - Current file to search for data: IOM_check.csv
+2014-05-03 19:58:28,558 - INFO - Data extraction from IOM_check.csv complete
+2014-05-03 19:58:28,559 - INFO - Files have been converted to dictionaries
+2014-05-03 22:42:20,855 - INFO - STARTING automation.py
+2014-05-03 22:43:29,834 - INFO - STARTING FUNCTIONS FileToParams
+2014-05-03 22:43:29,834 - DEBUG - Options file location passed: C:\Users\Sean\Desktop\Buckeye Current\Simulation\Deployment Package\test_in\Project Template\OPTIONS.csv
+2014-05-03 22:43:29,839 - INFO - Current file to search for data: TestTemplate.csv
+2014-05-03 22:43:29,841 - INFO - Data extraction from TestTemplate.csv complete
+2014-05-03 22:43:29,841 - INFO - Current file to search for data: IOM_check.csv
+2014-05-03 22:43:29,842 - INFO - Data extraction from IOM_check.csv complete
+2014-05-03 22:43:29,842 - INFO - Files have been converted to dictionaries
+2014-05-03 22:44:12,354 - INFO - STARTING automation.py
+2014-05-03 22:44:46,680 - INFO - STARTING FUNCTIONS FileToParams
+2014-05-03 22:44:46,680 - DEBUG - Options file location passed: C:\Users\Sean\Desktop\Buckeye Current\Simulation\Deployment Package\test_in\Project Template\OPTIONS.csv
+2014-05-03 22:44:46,687 - INFO - Current file to search for data: TestTemplate.csv
+2014-05-03 22:44:46,687 - INFO - Data extraction from TestTemplate.csv complete
+2014-05-03 22:44:46,707 - INFO - Current file to search for data: IOM_check.csv
+2014-05-03 22:44:46,707 - INFO - Data extraction from IOM_check.csv complete
+2014-05-03 22:44:46,707 - INFO - Files have been converted to dictionaries
+2014-05-03 22:47:33,976 - INFO - STARTING automation.py
+2014-05-03 22:48:04,209 - INFO - STARTING FUNCTIONS FileToParams
+2014-05-03 22:48:04,209 - DEBUG - Options file location passed: C:\Users\Sean\Desktop\Buckeye Current\Simulation\Deployment Package\test_in\Project Template\OPTIONS.csv
+2014-05-03 22:48:04,214 - INFO - Current file to search for data: TestTemplate.csv
+2014-05-03 22:48:04,216 - INFO - Data extraction from TestTemplate.csv complete
+2014-05-03 22:48:04,233 - INFO - Current file to search for data: IOM_check.csv
+2014-05-03 22:48:04,233 - INFO - Data extraction from IOM_check.csv complete
+2014-05-03 22:48:04,233 - INFO - Files have been converted to dictionaries
+2014-05-03 22:54:23,730 - INFO - STARTING automation.py
+2014-05-03 22:54:58,634 - INFO - STARTING FUNCTIONS FileToParams
+2014-05-03 22:54:58,634 - DEBUG - Options file location passed: C:\Users\Sean\Desktop\Buckeye Current\Simulation\Deployment Package\test_in\Project Template\OPTIONS.csv
+2014-05-03 22:54:58,640 - INFO - Current file to search for data: TestTemplate.csv
+2014-05-03 22:54:58,640 - INFO - Data extraction from TestTemplate.csv complete
+2014-05-03 22:54:58,641 - INFO - Current file to search for data: IOM_check.csv
+2014-05-03 22:54:58,641 - INFO - Data extraction from IOM_check.csv complete
+2014-05-03 22:54:58,641 - INFO - Files have been converted to dictionaries
+2014-05-03 22:55:00,299 - INFO - STARTING FUNCTION SaveInput
+2014-05-03 22:55:00,301 - INFO - Converting dictionary TestTemplateOutput.csv to file
+2014-05-03 22:55:00,301 - DEBUG - File will be saved at C:\Users\Sean\Desktop\Buckeye Current\Simulation\Deployment Package\test_in\Project Template\TestTemplateOutput.csv
+2014-05-03 22:55:00,303 - INFO - Data converted and saved to C:\Users\Sean\Desktop\Buckeye Current\Simulation\Deployment Package\test_in\Project Template\TestTemplateOutput.csv
+2014-05-03 22:56:09,575 - INFO - STARTING automation.py
+2014-05-03 22:56:35,328 - INFO - STARTING FUNCTIONS FileToParams
+2014-05-03 22:56:35,328 - DEBUG - Options file location passed: C:\Users\Sean\Desktop\Buckeye Current\Simulation\Deployment Package\test_in\Project Template\OPTIONS.csv
+2014-05-03 22:56:35,335 - INFO - Current file to search for data: TestTemplate.csv
+2014-05-03 22:56:35,351 - INFO - Data extraction from TestTemplate.csv complete
+2014-05-03 22:56:35,352 - INFO - Current file to search for data: IOM_check.csv
+2014-05-03 22:56:35,352 - INFO - Data extraction from IOM_check.csv complete
+2014-05-03 22:56:35,354 - INFO - Files have been converted to dictionaries
+2014-05-03 22:56:43,773 - INFO - STARTING FUNCTION SaveInput
+2014-05-03 22:56:43,773 - INFO - Converting dictionary TestTemplateOutput.csv to file
+2014-05-03 22:56:43,773 - DEBUG - File will be saved at C:\Users\Sean\Desktop\Buckeye Current\Simulation\Deployment Package\test_in\Project Template\TestTemplateOutput.csv
+2014-05-03 22:56:43,775 - INFO - Data converted and saved to C:\Users\Sean\Desktop\Buckeye Current\Simulation\Deployment Package\test_in\Project Template\TestTemplateOutput.csv
+2014-05-03 22:59:12,720 - INFO - STARTING automation.py
+2014-05-03 22:59:41,776 - INFO - STARTING FUNCTIONS FileToParams
+2014-05-03 22:59:41,776 - DEBUG - Options file location passed: C:\Users\Sean\Desktop\Buckeye Current\Simulation\Deployment Package\test_in\Project Template\OPTIONS.csv
+2014-05-03 22:59:41,782 - INFO - Current file to search for data: TestTemplate.csv
+2014-05-03 22:59:41,799 - INFO - Data extraction from TestTemplate.csv complete
+2014-05-03 22:59:41,799 - INFO - Current file to search for data: IOM_check.csv
+2014-05-03 22:59:41,801 - INFO - Data extraction from IOM_check.csv complete
+2014-05-03 22:59:41,801 - INFO - Files have been converted to dictionaries
+2014-05-03 22:59:43,411 - INFO - STARTING FUNCTION SaveInput
+2014-05-03 22:59:43,411 - INFO - Converting dictionary TestTemplateOutput.csv to file
+2014-05-03 22:59:43,411 - DEBUG - File will be saved at C:\Users\Sean\Desktop\Buckeye Current\Simulation\Deployment Package\test_in\Project Template\TestTemplateOutput.csv
+2014-05-03 22:59:43,414 - INFO - Data converted and saved to C:\Users\Sean\Desktop\Buckeye Current\Simulation\Deployment Package\test_in\Project Template\TestTemplateOutput.csv
+2014-05-03 23:02:38,414 - INFO - STARTING automation.py
+2014-05-03 23:04:07,726 - INFO - STARTING FUNCTIONS FileToParams
+2014-05-03 23:04:07,726 - DEBUG - Options file location passed: C:\Users\Sean\Desktop\Buckeye Current\Simulation\Deployment Package\test_in\Project Template\OPTIONS.csv
+2014-05-03 23:04:07,733 - INFO - Current file to search for data: TestTemplate.csv
+2014-05-03 23:04:07,733 - INFO - Data extraction from TestTemplate.csv complete
+2014-05-03 23:04:07,733 - INFO - Current file to search for data: IOM_check.csv
+2014-05-03 23:04:07,733 - INFO - Data extraction from IOM_check.csv complete
+2014-05-03 23:04:07,734 - INFO - Files have been converted to dictionaries
+2014-05-03 23:04:09,726 - INFO - STARTING FUNCTION SaveInput
+2014-05-03 23:04:09,726 - INFO - Converting dictionary TestTemplate.csv to file
+2014-05-03 23:04:09,726 - DEBUG - File will be saved at C:\Users\Sean\Desktop\Buckeye Current\Simulation\Deployment Package\test_in\Project Template\TestTemplate.csv
+2014-05-03 23:04:09,729 - INFO - Data converted and saved to C:\Users\Sean\Desktop\Buckeye Current\Simulation\Deployment Package\test_in\Project Template\TestTemplate.csv
+2014-05-03 23:05:56,364 - INFO - STARTING automation.py
+2014-05-03 23:06:25,443 - INFO - STARTING FUNCTIONS FileToParams
+2014-05-03 23:06:25,443 - DEBUG - Options file location passed: C:\Users\Sean\Desktop\Buckeye Current\Simulation\Deployment Package\test_in\Project Template\OPTIONS.csv
+2014-05-03 23:06:25,447 - INFO - Current file to search for data: TestTemplate.csv
+2014-05-03 23:06:25,448 - INFO - Data extraction from TestTemplate.csv complete
+2014-05-03 23:06:25,448 - INFO - Current file to search for data: IOM_check.csv
+2014-05-03 23:06:25,450 - INFO - Data extraction from IOM_check.csv complete
+2014-05-03 23:06:25,450 - INFO - Files have been converted to dictionaries
+2014-05-03 23:06:29,713 - INFO - STARTING FUNCTION SaveInput
+2014-05-03 23:06:29,713 - INFO - Converting dictionary TestTemplate.csv to file
+2014-05-03 23:06:29,713 - DEBUG - File will be saved at C:\Users\Sean\Desktop\Buckeye Current\Simulation\Deployment Package\test_in\Project Template\TestTemplate.csv
+2014-05-03 23:06:29,714 - INFO - Data converted and saved to C:\Users\Sean\Desktop\Buckeye Current\Simulation\Deployment Package\test_in\Project Template\TestTemplate.csv
+2014-05-03 23:06:51,973 - INFO - STARTING automation.py
+2014-05-03 23:07:19,752 - INFO - STARTING FUNCTIONS FileToParams
+2014-05-03 23:07:19,752 - DEBUG - Options file location passed: C:\Users\Sean\Desktop\Buckeye Current\Simulation\Deployment Package\test_in\Project Template\OPTIONS.csv
+2014-05-03 23:07:19,757 - INFO - Current file to search for data: TestTemplate.csv
+2014-05-03 23:07:19,776 - INFO - Data extraction from TestTemplate.csv complete
+2014-05-03 23:07:19,776 - INFO - Current file to search for data: IOM_check.csv
+2014-05-03 23:07:19,776 - INFO - Data extraction from IOM_check.csv complete
+2014-05-03 23:07:19,778 - INFO - Files have been converted to dictionaries
+2014-05-03 23:07:28,957 - INFO - STARTING FUNCTION SaveInput
+2014-05-03 23:07:28,957 - INFO - Converting dictionary TestTemplate.csv to file
+2014-05-03 23:07:28,957 - DEBUG - File will be saved at C:\Users\Sean\Desktop\Buckeye Current\Simulation\Deployment Package\test_in\Project Template\TestTemplate.csv
+2014-05-03 23:07:28,960 - INFO - Data converted and saved to C:\Users\Sean\Desktop\Buckeye Current\Simulation\Deployment Package\test_in\Project Template\TestTemplate.csv
+2014-05-03 23:08:17,763 - INFO - STARTING FUNCTION SaveInput
+2014-05-03 23:08:17,763 - INFO - Converting dictionary TestTemplate.csv to file
+2014-05-03 23:08:17,763 - DEBUG - File will be saved at C:\Users\Sean\Desktop\Buckeye Current\Simulation\Deployment Package\test_in\Project Template\TestTemplate.csv
+2014-05-03 23:08:17,766 - INFO - Data converted and saved to C:\Users\Sean\Desktop\Buckeye Current\Simulation\Deployment Package\test_in\Project Template\TestTemplate.csv
+2014-05-03 23:10:16,178 - INFO - STARTING automation.py
+2014-05-03 23:10:51,661 - INFO - STARTING FUNCTIONS FileToParams
+2014-05-03 23:10:51,663 - DEBUG - Options file location passed: C:\Users\Sean\Desktop\Buckeye Current\Simulation\Deployment Package\test_in\Project Template\OPTIONS.csv
+2014-05-03 23:10:51,668 - INFO - Current file to search for data: TestTemplate.csv
+2014-05-03 23:10:51,668 - INFO - Data extraction from TestTemplate.csv complete
+2014-05-03 23:10:51,670 - INFO - Current file to search for data: IOM_check.csv
+2014-05-03 23:10:51,670 - INFO - Data extraction from IOM_check.csv complete
+2014-05-03 23:10:51,671 - INFO - Files have been converted to dictionaries
+2014-05-03 23:10:53,724 - INFO - STARTING FUNCTION SaveInput
+2014-05-03 23:10:53,726 - INFO - Converting dictionary TestTemplate.csv to file
+2014-05-03 23:10:53,726 - DEBUG - File will be saved at C:\Users\Sean\Desktop\Buckeye Current\Simulation\Deployment Package\test_in\Project Template\TestTemplate.csv
+2014-05-03 23:10:53,726 - INFO - Data converted and saved to C:\Users\Sean\Desktop\Buckeye Current\Simulation\Deployment Package\test_in\Project Template\TestTemplate.csv
+2014-05-03 23:11:24,493 - INFO - STARTING FUNCTION SaveInput
+2014-05-03 23:11:24,493 - INFO - Converting dictionary TestTemplate.csv to file
+2014-05-03 23:11:24,493 - DEBUG - File will be saved at C:\Users\Sean\Desktop\Buckeye Current\Simulation\Deployment Package\test_in\Project Template\TestTemplate.csv
+2014-05-03 23:11:24,496 - INFO - Data converted and saved to C:\Users\Sean\Desktop\Buckeye Current\Simulation\Deployment Package\test_in\Project Template\TestTemplate.csv
+2014-05-03 23:12:28,414 - INFO - STARTING automation.py
+2014-05-03 23:12:59,233 - INFO - STARTING FUNCTIONS FileToParams
+2014-05-03 23:12:59,234 - DEBUG - Options file location passed: C:\Users\Sean\Desktop\Buckeye Current\Simulation\Deployment Package\test_in\Project Template\OPTIONS.csv
+2014-05-03 23:12:59,240 - INFO - Current file to search for data: TestTemplate.csv
+2014-05-03 23:12:59,240 - INFO - Data extraction from TestTemplate.csv complete
+2014-05-03 23:12:59,240 - INFO - Current file to search for data: IOM_check.csv
+2014-05-03 23:12:59,240 - INFO - Data extraction from IOM_check.csv complete
+2014-05-03 23:12:59,242 - INFO - Files have been converted to dictionaries
+2014-05-03 23:13:01,900 - INFO - STARTING FUNCTION SaveInput
+2014-05-03 23:13:01,900 - INFO - Converting dictionary TestTemplate.csv to file
+2014-05-03 23:13:01,900 - DEBUG - File will be saved at C:\Users\Sean\Desktop\Buckeye Current\Simulation\Deployment Package\test_in\Project Template\TestTemplate.csv
+2014-05-03 23:13:01,901 - INFO - Data converted and saved to C:\Users\Sean\Desktop\Buckeye Current\Simulation\Deployment Package\test_in\Project Template\TestTemplate.csv
+2014-05-03 23:13:10,746 - INFO - STARTING FUNCTION SaveInput
+2014-05-03 23:13:10,746 - INFO - Converting dictionary TestTemplate.csv to file
+2014-05-03 23:13:10,746 - DEBUG - File will be saved at C:\Users\Sean\Desktop\Buckeye Current\Simulation\Deployment Package\test_in\Project Template\TestTemplate.csv
+2014-05-03 23:13:10,749 - INFO - Data converted and saved to C:\Users\Sean\Desktop\Buckeye Current\Simulation\Deployment Package\test_in\Project Template\TestTemplate.csv
+2014-05-03 23:13:11,744 - INFO - STARTING FUNCTION SaveInput
+2014-05-03 23:13:11,744 - INFO - Converting dictionary TestTemplateOutput.csv to file
+2014-05-03 23:13:11,744 - DEBUG - File will be saved at C:\Users\Sean\Desktop\Buckeye Current\Simulation\Deployment Package\test_in\Project Template\TestTemplateOutput.csv
+2014-05-03 23:13:11,746 - INFO - Data converted and saved to C:\Users\Sean\Desktop\Buckeye Current\Simulation\Deployment Package\test_in\Project Template\TestTemplateOutput.csv
+2014-05-03 23:18:55,368 - INFO - STARTING automation.py
+2014-05-03 23:19:11,875 - INFO - STARTING automation.py
+2014-05-03 23:20:00,812 - INFO - STARTING FUNCTIONS FileToParams
+2014-05-03 23:20:00,813 - DEBUG - Options file location passed: C:\Users\Sean\Desktop\Buckeye Current\Simulation\Deployment Package\test_in\Project Template\OPTIONS.csv
+2014-05-03 23:20:00,819 - INFO - Current file to search for data: TestTemplate.csv
+2014-05-03 23:20:00,819 - INFO - Data extraction from TestTemplate.csv complete
+2014-05-03 23:20:00,819 - INFO - Current file to search for data: IOM_check.csv
+2014-05-03 23:20:00,821 - INFO - Data extraction from IOM_check.csv complete
+2014-05-03 23:20:00,821 - INFO - Files have been converted to dictionaries
+2014-05-03 23:20:19,509 - INFO - STARTING automation.py
+2014-05-03 23:20:45,124 - INFO - STARTING FUNCTIONS FileToParams
+2014-05-03 23:20:45,124 - DEBUG - Options file location passed: C:\Users\Sean\Desktop\Buckeye Current\Simulation\Deployment Package\test_in\Project Template\OPTIONS.csv
+2014-05-03 23:20:45,131 - INFO - Current file to search for data: TestTemplate.csv
+2014-05-03 23:20:45,131 - INFO - Data extraction from TestTemplate.csv complete
+2014-05-03 23:20:45,131 - INFO - Current file to search for data: IOM_check.csv
+2014-05-03 23:20:45,131 - INFO - Data extraction from IOM_check.csv complete
+2014-05-03 23:20:45,131 - INFO - Files have been converted to dictionaries
+2014-05-03 23:20:47,380 - INFO - STARTING FUNCTION SaveInput
+2014-05-03 23:20:47,381 - INFO - Converting dictionary TestTemplate.csv to file
+2014-05-03 23:20:47,381 - DEBUG - File will be saved at C:\Users\Sean\Desktop\Buckeye Current\Simulation\Deployment Package\test_in\Project Template\TestTemplate.csv
+2014-05-03 23:20:47,381 - INFO - Data converted and saved to C:\Users\Sean\Desktop\Buckeye Current\Simulation\Deployment Package\test_in\Project Template\TestTemplate.csv
+2014-05-03 23:22:47,576 - INFO - STARTING automation.py
+2014-05-03 23:23:14,051 - INFO - STARTING FUNCTIONS FileToParams
+2014-05-03 23:23:14,051 - DEBUG - Options file location passed: C:\Users\Sean\Desktop\Buckeye Current\Simulation\Deployment Package\test_in\Project Template\OPTIONS.csv
+2014-05-03 23:23:14,055 - INFO - Current file to search for data: TestTemplate.csv
+2014-05-03 23:23:14,056 - INFO - Data extraction from TestTemplate.csv complete
+2014-05-03 23:23:14,056 - INFO - Current file to search for data: IOM_check.csv
+2014-05-03 23:23:14,058 - INFO - Data extraction from IOM_check.csv complete
+2014-05-03 23:23:14,058 - INFO - Files have been converted to dictionaries
+2014-05-03 23:23:16,845 - INFO - STARTING FUNCTION SaveInput
+2014-05-03 23:23:16,845 - INFO - Converting dictionary TestTemplate.csv to file
+2014-05-03 23:23:16,845 - DEBUG - File will be saved at C:\Users\Sean\Desktop\Buckeye Current\Simulation\Deployment Package\test_in\Project Template\TestTemplate.csv
+2014-05-03 23:23:16,848 - INFO - Data converted and saved to C:\Users\Sean\Desktop\Buckeye Current\Simulation\Deployment Package\test_in\Project Template\TestTemplate.csv
+2014-05-03 23:24:06,122 - INFO - STARTING automation.py
+2014-05-03 23:25:50,043 - INFO - STARTING FUNCTIONS FileToParams
+2014-05-03 23:25:50,045 - DEBUG - Options file location passed: C:\Users\Sean\Desktop\Buckeye Current\Simulation\Deployment Package\test_in\Project Template\OPTIONS.csv
+2014-05-03 23:25:50,049 - INFO - Current file to search for data: TestTemplate.csv
+2014-05-03 23:25:50,049 - INFO - Data extraction from TestTemplate.csv complete
+2014-05-03 23:25:50,051 - INFO - Current file to search for data: IOM_check.csv
+2014-05-03 23:25:50,052 - INFO - Data extraction from IOM_check.csv complete
+2014-05-03 23:25:50,052 - INFO - Files have been converted to dictionaries
+2014-05-03 23:25:52,444 - INFO - STARTING FUNCTION SaveInput
+2014-05-03 23:25:52,444 - INFO - Converting dictionary TestTemplate.csv to file
+2014-05-03 23:25:52,444 - DEBUG - File will be saved at C:\Users\Sean\Desktop\Buckeye Current\Simulation\Deployment Package\test_in\Project Template\TestTemplate.csv
+2014-05-03 23:25:52,446 - INFO - Data converted and saved to C:\Users\Sean\Desktop\Buckeye Current\Simulation\Deployment Package\test_in\Project Template\TestTemplate.csv
+2014-05-03 23:25:56,200 - INFO - STARTING FUNCTION SaveInput
+2014-05-03 23:25:56,200 - INFO - Converting dictionary TestTemplate.csv to file
+2014-05-03 23:25:56,200 - DEBUG - File will be saved at C:\Users\Sean\Desktop\Buckeye Current\Simulation\Deployment Package\test_in\Project Template\TestTemplate.csv
+2014-05-03 23:25:56,201 - INFO - Data converted and saved to C:\Users\Sean\Desktop\Buckeye Current\Simulation\Deployment Package\test_in\Project Template\TestTemplate.csv
+2014-05-03 23:25:56,204 - INFO - STARTING FUNCTION SaveInput
+2014-05-03 23:25:56,204 - INFO - Converting dictionary IOM_check.csv to file
+2014-05-03 23:25:56,206 - DEBUG - File will be saved at C:\Users\Sean\Desktop\Buckeye Current\Simulation\Deployment Package\test_in\Project Template\IOM_check.csv
+2014-05-03 23:25:56,209 - INFO - Data converted and saved to C:\Users\Sean\Desktop\Buckeye Current\Simulation\Deployment Package\test_in\Project Template\IOM_check.csv
+2014-05-03 23:26:16,220 - INFO - STARTING FUNCTION SaveInput
+2014-05-03 23:26:16,220 - INFO - Converting dictionary TestTemplate.csv to file
+2014-05-03 23:26:16,220 - DEBUG - File will be saved at C:\Users\Sean\Desktop\Buckeye Current\Simulation\Deployment Package\test_in\Project Template\TestTemplate.csv
+2014-05-03 23:26:16,223 - INFO - Data converted and saved to C:\Users\Sean\Desktop\Buckeye Current\Simulation\Deployment Package\test_in\Project Template\TestTemplate.csv
+2014-05-03 23:26:16,226 - INFO - STARTING FUNCTION SaveInput
+2014-05-03 23:26:16,226 - INFO - Converting dictionary IOM_check.csv to file
+2014-05-03 23:26:16,226 - DEBUG - File will be saved at C:\Users\Sean\Desktop\Buckeye Current\Simulation\Deployment Package\test_in\Project Template\IOM_check.csv
+2014-05-03 23:26:16,230 - INFO - Data converted and saved to C:\Users\Sean\Desktop\Buckeye Current\Simulation\Deployment Package\test_in\Project Template\IOM_check.csv
