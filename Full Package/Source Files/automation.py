@@ -170,11 +170,11 @@ def OutputFile(folderName, outputDict):
 
 def SaveInput(folderName, outputDict):
     
-    logging.info("STARTING FUNCTION OutputFile")        
+    logging.info("STARTING FUNCTION SaveInput")        
     fileNames = np.array(outputDict.keys())
     
     for key in fileNames:
-        
+        print
         logging.info("Converting dictionary %s to file",key)
         fileName = folderName + "\\" + key
         logging.debug("File will be saved at %s", fileName)
@@ -316,8 +316,9 @@ class MainFrame(wx.Frame):
         pub.subscribe(self.SetCurrentFiles, ("InputFiles"))
         pub.subscribe(self.ChangeProjectName, ("ProjectName"))        
         pub.subscribe(self.DisableDeleteCopy, ("DisableDelete"))        
-
+        pub.subscribe(self.CopyFileToFile, ("InputFile"))
         
+        self.fileToFile = dict()
         self.currentFiles = np.empty(shape=(0,0))
         self.currentFile = dict()        
         # Load icon
@@ -571,29 +572,32 @@ class MainFrame(wx.Frame):
     
     def OnSave(self, e):
         """Saves the current parameter file open in input panel"""
-        SaveInput(os.path.dirname(os.path.realpath(self.project)), self.currentFile)
-        msg = datetime.now().strftime('%H:%M:%S') + ": " + "Successfully saved " + self.currentFile.keys()[0]
+        currentFile = self.fileToFile.keys()[self.fileToFile.values().index(self.currentFile.keys()[0])]
+        saveDict = dict()
+        saveDict[currentFile] = self.currentFile[self.currentFile.keys()[0]]
+        SaveInput(os.path.dirname(os.path.realpath(self.project)), saveDict)
+        msg = datetime.now().strftime('%H:%M:%S') + ": " + "Successfully saved " + saveDict.keys()[0]
         pub.sendMessage(("AddStatus"), msg)  
         
         optionsData = np.loadtxt(open(self.project, "rb"), dtype = 'string', delimiter=',')
         if np.shape(optionsData)[0] > 1:
-            optionsData[np.where(self.currentFiles == self.currentFile.keys()[0])[0][0]+1,2] = self.dictionary[self.currentFile.keys()[0]]["comments"][0]
+            optionsData[np.where(self.currentFiles == saveDict.keys()[0])[0][0]+1,2] = self.dictionary[self.currentFile.keys()[0]]["comments"][0]
             np.savetxt(self.project, optionsData, delimiter=",", fmt="%s")
-
+                
+    def CopyFileToFile(self, msg):
+        self.fileToFile = msg.data
         
-    
     def OnSaveAll(self,e):
         """Saves all parameters file in the current project"""
         
         optionsData = np.loadtxt(open(self.project, "rb"), dtype = 'string', delimiter=',')
-        
-        for key in self.dictionary.keys():
+        for key in self.fileToFile.keys():
             saveDict = dict()
-            saveDict[key] = self.dictionary[key]
+            saveDict[key] = self.dictionary[self.fileToFile[key]]
             SaveInput(os.path.dirname(os.path.realpath(self.project)), saveDict)
 
             if np.shape(optionsData)[0] > 1:
-                optionsData[np.where(self.currentFiles == key)[0][0]+1,2] = self.dictionary[key]["comments"][0]
+                optionsData[np.where(self.currentFiles == key)[0][0]+1,2] = self.dictionary[self.fileToFile[key]]["comments"][0]
                              
             msg = datetime.now().strftime('%H:%M:%S') + ": " + "Successfully saved " + key
             pub.sendMessage(("AddStatus"), msg)  
@@ -819,6 +823,7 @@ class MainFrame(wx.Frame):
             index = index + 1
         
         try:
+            print self.project
             np.savetxt(self.project, inFiles, delimiter=",", fmt="%s")
         except:
             logging.critical("Could not save project at the end of the simulation")
@@ -1067,7 +1072,6 @@ class InputPanel(scrolled.ScrolledPanel):
         
     def SetDictionary(self, msg):
         self.dictionary = msg.data
-        self
         index = 0
         for file in self.dictionary:   
             self.fileToFile[self.fileNames[index]] = file 
@@ -1103,6 +1107,7 @@ class InputPanel(scrolled.ScrolledPanel):
     def UpdateFields(self,event):
         
         self.values = []
+        pub.sendMessage(("InputFile"), self.fileToFile) 
         currentFile = self.dictionary[self.fileToFile[self.dropDownList.GetValue()]]
         fileDict = dict()
         fileDict[self.fileToFile[self.dropDownList.GetValue()]] = currentFile
