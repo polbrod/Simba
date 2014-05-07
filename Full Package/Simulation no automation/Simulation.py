@@ -16,7 +16,7 @@ tests = 1
 step = 1.0       #time step in seconds
 total_time = 3600.0
 
-wheel_radius = 0.323596 #meters
+#wheel_radius = 0.323596 #meters
 gearing = 1.8
 
 rider_mass = 90.71 
@@ -51,6 +51,10 @@ motor_heat_capacity = 400.0
 coolant_temp = 20.0
 max_motor_temp = 100.0
 
+#wheel_radius = tyreA*lean_angle**2 + tyreB*lean_angle + TyreC
+tyreA = -2.069641313760728140e-05
+tyreB = 6.386679031823000125e-06
+TyreC = 3.197376543933548310e-01
 
 #lookup files
 dist_to_speed_lookup = 'disttospeed.csv'
@@ -59,12 +63,13 @@ motor_controller_eff_lookup = 'Tritium_ws200_eff.csv'
 motor_eff_lookup = 'Emrax_eff.csv'
 soc_to_voltage_lookup = 'aee.csv'
 throttlemap_lookup = 'throttle.csv'
+lean_angle_lookup = 'lean.csv'
 
 #simulation calcs
 steps = int(math.ceil(total_time/step))
 sqrt2 = np.sqrt(2)
-motor_top_speed = ((wheel_radius*2*np.pi* (top_rpm) / (gearing))/60)
-motor_top_force = (top_torque * gearing) / wheel_radius
+#motor_top_speed = ((wheel_radius*2*np.pi* (top_rpm) / (gearing))/60)
+#motor_top_force = (top_torque * gearing) / wheel_radius
 drag_area = frontal_area * air_resistance
 mass = rider_mass + bike_mass
 
@@ -127,6 +132,8 @@ mt_total_power = np.zeros((steps+1,tests),dtype=float)
 motor_thermal_limit = np.zeros((steps+1,tests),dtype=float)
 motor_thermal_error = np.zeros((steps+1,tests),dtype=float)
 
+wheel_radius = np.zeros((steps+1,tests),dtype=float)
+
 #Lookups
 #soc to voltage
 n = np.loadtxt(soc_to_voltage_lookup,dtype = 'string',delimiter = ',', skiprows = 1)
@@ -151,6 +158,12 @@ n = np.loadtxt(throttlemap_lookup,dtype = 'string',delimiter = ',', skiprows = 1
 x = n[:,0].astype(np.float)
 y = n[:,1].astype(np.float)
 throttlemap = interp1d(x,y)
+
+#distance to lean angle lookup
+n = np.loadtxt(lean_angle_lookup,dtype = 'string',delimiter = ',', skiprows = 1)
+x = n[:,0].astype(np.float)
+y = n[:,1].astype(np.float)
+lean_angle_lookup = interp1d(x,y)
 
 #motorcontroller efficiency 
 #[volts_rms][amps_rms] to efficiency %
@@ -185,6 +198,11 @@ if np.max(distancetospeed_lookup.x) < max_distance_travel:
 if np.max(distancetoaltitude_lookup.x) < max_distance_travel:
     max_distance_travel =  np.max(distancetoaltitude_lookup.x)  
     print 'max_distance_travel greater than altitude to distance look up'
+    print 'max_distance_travel changed to ' + repr(max_distance_travel)
+
+if np.max(lean_angle_lookup.x) < max_distance_travel:
+    max_distance_travel =  np.max(lean_angle_lookup.x)  
+    print 'max_distance_travel greater than lean angle to distance look up'
     print 'max_distance_travel changed to ' + repr(max_distance_travel)
 
 if np.max(throttlemap.x) < top_rpm:
@@ -242,8 +260,8 @@ def Force(s,n):
 
 #Find Efficiency given speed, force, power at point n+1
 def Efficiency(s,f,p,n):
-    motor_rpm[n+1] = ((s)/(wheel_radius*2*np.pi)) * gearing * 60
-    motor_torque[n+1] = (f * wheel_radius)/gearing
+    motor_rpm[n+1] = ((s)/(wheel_radius[n+1]*2*np.pi)) * gearing * 60
+    motor_torque[n+1] = (f * wheel_radius[n+1])/gearing
     arms[n+1] = motor_torque[n+1]/motor_torque_constant
     vrms[n+1] = motor_rpm[n+1]/(motor_rpm_constant)*(1/(sqrt2))  
 
@@ -267,11 +285,11 @@ def Battery_Voltage(n):
     
 #Top force (allows for expandsion to more than one top forces)
 def Top_force(n):
-    return ((throttlemap(motor_rpm[n]) * motor_torque_constant) * gearing) / wheel_radius
+    return ((throttlemap(motor_rpm[n+1]) * motor_torque_constant) * gearing) / wheel_radius[n+1]
 
 #Top Speed(allows for expandsion to one top speeds)
 def Top_speed(n):
-    return motor_top_speed
+    return ((wheel_radius[n+1]*2*np.pi* (top_rpm) / (gearing))/60)
 
 #Top Power 
 #check which has lower top power battery or motor
@@ -305,7 +323,10 @@ def Motor_Thermal_solve(s,n):
     Motor_Thermal(n)
     motor_thermal_error[n+1] = abs(motor_temp[n+1] - max_motor_temp)
     return motor_thermal_error[n+1]
-      
+
+def Wheel_Radius(lean):
+    return tyreA*lean**2 + tyreB*lean + TyreC
+ 
 #initial condidtions
 distance[0] = .1 #can't be 0 because not in look up
 speed[0] = .1 #can't be 0 or the bike will never start moving
@@ -319,7 +340,9 @@ def loop(n):
         distance[n+1] = distance[n] + speed[n]*step #move bike forward 
         if (distance[n+1] > max_distance_travel):
             return n                                #stop if cross finish line
-            
+        
+        wheel_radius[n+1] = Wheel_Radius(lean_angle_lookup(distance[n+1]))
+        
         voltage[n+1] = Battery_Voltage(n)           #find battery voltage
         top_force[n+1] = Top_force(n)               #Top_force at this point
         top_speed[n+1] = Top_speed(n)               #Top_speed at this point
