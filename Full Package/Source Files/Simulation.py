@@ -1,10 +1,4 @@
-# -*- coding: utf-8 -*-
-"""
-Created on Fri Jun 28 22:43:03 2013
-
-@author: Nathan
-"""
-
+#Import important libraries 
 from scipy import optimize as opt
 from scipy.interpolate import griddata,interp1d
 import math 
@@ -43,7 +37,7 @@ def Simulation(dict_in):
                 raise Exception("One or more params in " + file + " have two or more values. Each param can only have one value")
 
         tests = 1
-	#parameters
+        #parameters
         logging.info("Checking to make sure file %s has needed parameters...", file)
         
         assert "step" in currentData, logging.critical("%s is missing data: step" % file)
@@ -54,10 +48,6 @@ def Simulation(dict_in):
         assert "total_time" in currentData, logging.critical("%s is missing data: total_time" % file)
         logging.info("total_time found")
         total_time = currentData["total_time"]
-        
-        assert "wheel_radius" in currentData, logging.critical("%s is missing data: wheel_radius" % file)
-        logging.info("wheel_radius found")
-        wheel_radius = currentData["wheel_radius"] #meters
         
         assert "gearing" in currentData, logging.critical("%s is missing data: gearing" % file)
         logging.info("gearing found")
@@ -179,17 +169,45 @@ def Simulation(dict_in):
         logging.info("throttlemap_lookup found")
         throttlemap_lookup = currentData["throttlemap_lookup"][0]
    
+        assert "lean_angle_lookup" in currentData, logging.critical("%s is missing data: lean_angle_lookup" % file)
+        logging.info("lean_angle_lookup found")
+        lean_angle_lookup = currentData["lean_angle_lookup"][0]
+	
+        assert "tyreA" in currentData, logging.critical("%s is missing data: tyreA" % file)
+        logging.info("tyreA found")
+        tyreA = currentData["tyreA"][0]
+       
+        #tyreA = -2.069641313760728140e-05
+	
+        assert "tyreB" in currentData, logging.critical("%s is missing data: tyreB" % file)
+        logging.info("tyreB found")
+        tyreB = currentData["tyreB"][0]
+
+        #tyreB = 6.386679031823000125e-06
+	
+        assert "tyreC" in currentData, logging.critical("%s is missing data: tyreC" % file)
+        logging.info("tyreC found")
+        TyreC = currentData["tyreC"][0]
+
+        #TyreC = 3.197376543933548310e-01
+	
+        assert "top_lean_angle" in currentData, logging.critical("%s is missing data: top_lean_angle" % file)
+        logging.info("top_lean_angle found")
+        top_lean_angle = currentData["top_lean_angle"][0]
+
+        #top_lean_angle = 45
         
         #calc values
         
+        #simulation calcs
         steps = int(math.ceil(total_time/step))
         sqrt2 = np.sqrt(2)     
-        motor_top_speed = ((wheel_radius*2*np.pi* (top_rpm) / (gearing))/60)
-        motor_top_force = (top_torque * gearing) / wheel_radius
+        #motor_top_speed = ((wheel_radius*2*np.pi* (top_rpm) / (gearing))/60)
+        #motor_top_force = (top_torque * gearing) / wheel_radius
         drag_area = frontal_area * air_resistance
         mass = rider_mass + bike_mass
 
-#Arrays (output)
+        #Arrays (output)
         time = np.zeros((steps+1,tests),dtype=float)
         distance = np.zeros((steps+1,tests),dtype=float)
         l_speed = np.zeros((steps+1,tests),dtype=float) #look up speed
@@ -248,6 +266,9 @@ def Simulation(dict_in):
         motor_thermal_limit = np.zeros((steps+1,tests),dtype=float)
         motor_thermal_error = np.zeros((steps+1,tests),dtype=float)
         
+        wheel_radius = np.zeros((steps+1,tests),dtype=float)
+        lean_angle_limit = np.zeros((steps+1,tests),dtype=float)
+        
         #Lookups
         dist_to_speed_lookup = "Lookup Files\\" + dist_to_speed_lookup
         try:
@@ -268,6 +289,7 @@ def Simulation(dict_in):
 	   #y = np.array([1000,1000])
         distancetospeed_lookup = interp1d(x,y)
           
+
             
         #Lookups
         soc_to_voltage_lookup = "Lookup Files\\" + soc_to_voltage_lookup
@@ -284,10 +306,10 @@ def Simulation(dict_in):
             
         x = n[:,0].astype(np.float)
         y = n[:,1].astype(np.float)
-        #x = np.array([0,3220])
-        #y = np.array([1000,1000])
+
         soctovoltage_lookup = interp1d(x,y)
        
+
         
         dist_to_alt_lookup = "Lookup Files\\" + dist_to_alt_lookup
         try:
@@ -303,8 +325,7 @@ def Simulation(dict_in):
             raise Exception("Unable to load \'" + dist_to_alt_lookup + "\'")
         x = n[:,0].astype(np.float)
         y = n[:,1].astype(np.float)
-	  #x = np.array([0,3220])
-	  #y = np.array([0,0])
+
         distancetoaltitude_lookup = interp1d(x,y)
         
         
@@ -322,8 +343,25 @@ def Simulation(dict_in):
             raise Exception("Unable to load \'" + throttlemap_lookup + "\'")
         x = n[:,0].astype(np.float)
         y = n[:,1].astype(np.float)
-        throttlemap = interp1d(x,y)
+        throttlemap = interp1d(x,y)        
         
+        #distance_to_lean_angle_lookup
+        lean_angle_lookup = "Lookup Files\\" + lean_angle_lookup
+        try:
+            n = np.loadtxt(lean_angle_lookup,dtype = 'string',delimiter = ',', skiprows = 1)
+            logging.info("%s loaded", lean_angle_lookup)
+            msg = datetime.now().strftime('%H:%M:%S') + ": " + lean_angle_lookup + " loaded"
+            pub.sendMessage(("AddStatus"), msg) 
+            
+        except IOError:
+            logging.critical("Unable to load %s", lean_angle_lookup)
+            msg = datetime.now().strftime('%H:%M:%S') + ": " + "Unable to load " + lean_angle_lookup + ". Make sure the file exists and is not open."
+            pub.sendMessage(("AddStatus"), msg)
+            raise Exception("Unable to load \'" + lean_angle_lookup + "\'")
+        x = n[:,0].astype(np.float)
+        y = n[:,1].astype(np.float)
+        lean_angle_lookup = interp1d(x,y)
+   
         motor_controller_eff_lookup = "Lookup Files\\" + motor_controller_eff_lookup
         try:
             n = np.loadtxt(motor_controller_eff_lookup,dtype = 'string',delimiter = ',', skiprows = 1)
@@ -337,6 +375,7 @@ def Simulation(dict_in):
             pub.sendMessage(("AddStatus"), msg)
             raise Exception("Unable to load \'" + motor_controller_eff_lookup + "\'")
             
+
         x = n[:,0].astype(np.float)
         y = n[:,1].astype(np.float)
         z = n[:,2].astype(np.float)
@@ -344,7 +383,7 @@ def Simulation(dict_in):
         values = np.array(z)
         grid_x, grid_y = np.mgrid[np.min(x):np.max(x)+1, np.min(y):np.max(y)+1]
         motor_controller_eff_grid = griddata(points, values, (grid_x, grid_y), method='linear')
-        #[volts_rms][amps_rms]
+
         
         motor_eff_lookup = "Lookup Files\\" + motor_eff_lookup
         try:
@@ -366,53 +405,54 @@ def Simulation(dict_in):
         values = np.array(z)
         grid_x, grid_y = np.mgrid[np.min(x):np.max(x)+1, np.min(y):np.max(y)+1]
         motor_eff_grid = griddata(points, values, (grid_x, grid_y), method='linear')
-        #[rpm][torque]
 
-	  #look up tests
 
         message = '';        
         
+        #Make sure parameters don't extend lookups
         if np.max(distancetospeed_lookup.x) < max_distance_travel:
             max_distance_travel =  np.max(distancetospeed_lookup.x)  
             message += 'max_distance_travel greater than speed to distance look up --- '
             message += 'max_distance_travel changed to ' + repr(max_distance_travel) + linesep
-            message += linesep
 
         if np.max(distancetoaltitude_lookup.x) < max_distance_travel:
             max_distance_travel =  np.max(distancetoaltitude_lookup.x)  
             message += 'max_distance_travel greater than altitude to distance look up --- '
             message += 'max_distance_travel changed to ' + repr(max_distance_travel) + linesep
-            message += linesep
             
         if np.max(throttlemap.x) < top_rpm:
             top_rpm = np.max(throttlemap.x)
             message += 'top rpm is greater than throttle map look up --- '
             message += 'top rpm changed to ' + repr(top_rpm)
+            message += linesep
             
         (x,y) = motor_eff_grid.shape
         if y-1 <  top_torque:
             top_torque = y-1
             message += 'top_torque greater than motor efficiency look up --- '
             message += 'top_torque changed to ' + repr(top_torque) + linesep
-            message += linesep
 
         if x-1 <  top_rpm:
             top_rpm = x-1
             message += 'top_rpm greater than motor efficiency look up --- '
             message += 'top_rpm changed to ' + repr(top_rpm) + linesep
-            message += linesep
 
         (x,y) = motor_controller_eff_grid.shape
         if y-1 <  top_torque/motor_torque_constant:
             top_torque = (y-1) * motor_torque_constant
             message += 'possible arms (from top_torque and motor torque constant) is greater than motor controller efficiency look up --- '
             message += 'top_torque changed to ' + repr(top_torque) + linesep
-            message += linesep
 
         if x-1 <  (top_rpm/(motor_rpm_constant)*(1/(sqrt2))) :
             top_rpm = (x-1)*(motor_rpm_constant)*(1/(sqrt2)) 
             message += 'possible Vrms (from top_rpm and motor rpm constant) is greater than motor controller efficiency look up --- '
             message += 'top_rpm changed to ' + repr(top_rpm) + linesep
+            
+        if np.max(lean_angle_lookup.x) < max_distance_travel:
+            max_distance_travel =  np.max(lean_angle_lookup.x)  
+            message += 'max_distance_travel greater than lean angle to distance look up'
+            message += 'max_distance_travel changed to ' + repr(max_distance_travel)
+            message += linesep
             
         if len(message) > 1:
             GUIdialog = wx.MessageDialog(None, message, "Warning", wx.OK)
@@ -421,16 +461,21 @@ def Simulation(dict_in):
          
         
         #functions
-
+        #Find power at point n+1
         def Power(s,n):
             return Force(s,n) * s
 
+        #Solve for when power_solve = 0
+        #Finds max speed given max power
         def power_solve(s,n):
             return Power(s,n) - top_power[n+1]
     
+        #Solve for when force_solve = 0
+        #Finds max speed given max power    
         def force_solve(s,n):
             return Force(s,n) - top_force[n+1]
         
+        #Find Force at point n+1
         def Force(s,n):
             acceleration[n+1] = mass*((s - speed[n])/step)
             drag[n+1] = 0.5 * drag_area*air_density*s**2
@@ -440,9 +485,10 @@ def Simulation(dict_in):
             rolling[n+1] = mass*gravity*rolling_resistance
             return np.max([0,(acceleration[n+1] + drag[n+1] + incline[n+1] + rolling[n+1])])
         
+        #Find Efficiency given speed, force, power at point n+1
         def Efficiency(s,f,p,n):
-            motor_rpm[n+1] = ((s)/(wheel_radius*2*np.pi)) * gearing * 60
-            motor_torque[n+1] = (f * wheel_radius)/gearing
+            motor_rpm[n+1] = ((s)/(wheel_radius[n+1]*2*np.pi)) * gearing * 60
+            motor_torque[n+1] = (f * wheel_radius[n+1])/gearing
             arms[n+1] = motor_torque[n+1]/motor_torque_constant
             vrms[n+1] = motor_rpm[n+1]/(motor_rpm_constant)*(1/(sqrt2))  
         
@@ -460,67 +506,81 @@ def Simulation(dict_in):
             battery_loss[n+1] = battery_power[n+1]*(1-battery_efficiency)
             return battery_power[n+1]
  
+        #Battery voltage at point n
         def Battery_Voltage(n):
             return series_cells*soctovoltage_lookup(max([0,1-(amphour[n]/max_amphour)]))
              
+        #Top force (allows for expandsion to more than one top forces)
         def Top_force(n):
-            return motor_top_force
+            return ((throttlemap(motor_rpm[n+1]) * motor_torque_constant) * gearing) / wheel_radius[n+1]
                 
+        #Top Speed(allows for expandsion to one top speeds)
         def Top_speed(n):
-            return motor_top_speed
+            return ((wheel_radius[n+1]*2*np.pi* (top_rpm) / (gearing))/60)
                     
+        #Top Power 
+        #check which has lower top power battery or motor
         def Top_power(n):
-                global is_motor_power
-                global is_batt_power
-                batt_top_power = voltage[n+1] * batt_max_current
-                if motor_top_power < batt_top_power:
-                    is_motor_power = True 
-                    is_batt_power = False
-                    return motor_top_power
-                else:
-                    is_motor_power = False
-                    is_batt_power = True
-                    return batt_top_power
+            global is_motor_power
+            global is_batt_power
+            batt_top_power = voltage[n+1] * batt_max_current
+            if motor_top_power < batt_top_power:
+                is_motor_power = True 
+                is_batt_power = False
+                return motor_top_power
+            else:
+                is_motor_power = False
+                is_batt_power = True
+                return batt_top_power
               
+        #Find motor thermal values at point n+1
         def Motor_Thermal(n):
             motor_energy_in[n+1] = motor_loss[n] * step
             motor_energy_out[n+1] = motor_thermal_conductivity*(motor_temp[n]-coolant_temp)
             motor_energy[n+1] = motor_energy_in[n+1] - motor_energy_out[n+1]
             motor_temp[n+1] = motor_temp[n] + motor_energy[n+1]/motor_heat_capacity 
         
+        #Solve for when Motor_Thermal_solve = 0
+        #Finds max speed given other forces and thermal limits   
+        #save error of solving. Thermal limits are hard to solve for
         def Motor_Thermal_solve(s,n):
-            f = Force(s,n)    
+            f = Force(s,n)
             p = Power(s,n)
             Efficiency(s,f,p,n)
             Motor_Thermal(n)
             motor_thermal_error[n+1] = abs(motor_temp[n+1] - max_motor_temp)
             return motor_thermal_error[n+1]   
 
+        def Wheel_Radius(lean,n):
+            if abs(lean) > top_lean_angle:
+                lean = top_lean_angle
+                lean_angle_limit[n+1] = 1
+            return tyreA*lean**2 + tyreB*lean + TyreC
 
         #initial condidtions
-        distance[0] = .1
-        speed[0] = .1
+        distance[0] = .1 #can't be 0 because not in look up
+        speed[0] = .1 #can't be 0 or the bike will never start moving
         altitude[0] = distancetoaltitude_lookup(1)
         voltage[0] = soctovoltage_lookup(0) * series_cells
         
-        #simulation and plot loop
-        #(iteration,test conditions..) 
+
         def loop(n):
             for n in range(steps):
-                #model formulas here
-                time[n+1] = time[n] + step
-                distance[n+1] = distance[n] + speed[n]*step
+                time[n+1] = time[n] + step                  #increase time step
+                distance[n+1] = distance[n] + speed[n]*step #move bike forward 
                 if (distance[n+1] > max_distance_travel):
-                    return n
+                    return n                                #stop if cross finish line
                     
+                wheel_radius[n+1] = Wheel_Radius(lean_angle_lookup(distance[n+1]), n)
                 voltage[n+1] = Battery_Voltage(n)
                 top_force[n+1] = Top_force(n)
                 top_speed[n+1] = Top_speed(n)
                 top_power[n+1] = Top_power(n)
                 
+
                 l_speed[n+1] = distancetospeed_lookup(distance[n+1])
                 
-                if l_speed[n+1] > top_speed[n+1]:
+                if l_speed[n+1] > top_speed[n+1]:           #Limit speed to top speed
                     motor_rpm_limit[n+1] = 1
                     t_speed[n+1] = top_speed[n+1]
                 else:
@@ -529,7 +589,7 @@ def Simulation(dict_in):
                 
                 c_force[n+1] = Force(t_speed[n+1],n)
                 
-                if c_force[n+1] > top_force[n+1]:
+                if c_force[n+1] > top_force[n+1]:           #Limit speed to top force
                     motor_torque_limit[n+1] = 1
                     p_speed[n+1] = (opt.fsolve(force_solve,t_speed[n+1],n))[0]
                     p_force[n+1] = Force(p_speed[n+1],n)
@@ -539,7 +599,7 @@ def Simulation(dict_in):
                 
                 c_power[n+1] = Power(p_speed[n+1],n)
                 
-                if c_power[n+1] > top_power[n+1]:
+                if c_power[n+1] > top_power[n+1]:           #Limit speed to top power
                     if is_motor_power:
                         motor_power_limit[n+1] = 1
                     if is_batt_power:
@@ -555,7 +615,7 @@ def Simulation(dict_in):
                 mt_total_power[n+1] = Efficiency(mt_speed[n+1],mt_force[n+1],mt_power[n+1],n)
                 #thermal 
                 #Motor
-                Motor_Thermal(n)
+                Motor_Thermal(n)                            #Limit speed to thermal limtis
                 if motor_temp[n+1] > max_motor_temp:
                     bnds = [(0,mt_speed[n+1])]
                     speed[n+1] = (opt.fmin_tnc(Motor_Thermal_solve,mt_speed[n+1]-1,args = (n,),bounds=bnds, approx_grad = True, messages = 0))[0]
@@ -569,7 +629,7 @@ def Simulation(dict_in):
                     power[n+1] = mt_power[n+1]   
                     total_power[n+1] = mt_total_power[n+1]
                 
-               
+                #Find amphours and energy
                 amphour[n+1] = amphour[n] + (total_power[n+1]/voltage[n+1])*(step/(60.0*60.0))
                 energy[n+1] = energy[n] + total_power[n+1]*(step/(60.0*60.0))
                 
@@ -581,7 +641,7 @@ def Simulation(dict_in):
         #simulate and plot
         
         n = 0
-        #for c  in condition:
+
         end = loop(n)
         n+=1
         
@@ -642,11 +702,13 @@ def Simulation(dict_in):
         newData["Motor RPM Limit"] = (motor_rpm_limit[:end])
         newData["Motor Thermal Limit"] = (motor_thermal_limit[:end])
         newData["Motor Thermal Error"] = (motor_thermal_error[:end])
+        newData["Lean Angle Limit"] = (lean_angle_limit[:end])
         newData["% Motor RPM Limit"] = (np.mean(motor_rpm_limit[:end])*100)
         newData["% Motor Torque Limit"] = (np.mean(motor_torque_limit[:end])*100)
         newData["% Motor Power Limit"] = (np.mean(motor_power_limit[:end])*100)
         newData["% Battery Power Limit"] = (np.mean(batt_power_limit[:end])*100)
         newData["% Motor Thermal Limit"] = (np.mean(motor_thermal_limit[:end])*100)
+        newData["% Lean Angle Limit"] = (np.mean(lean_angle_limit[:end])*100)
 
         newData["Average MPH"] = (round(np.mean(speed[:end])*2.23,3))
         newData["Max MPH"] = (round(np.max(speed[:end])*2.23,3))
@@ -654,35 +716,12 @@ def Simulation(dict_in):
         newData["Max Power (Watts)"] = (round(np.max(power),3))
         newData["Max Energy (Wh)"] = (round(np.max(energy),3))
         newData["Max Amphours"] = (round(np.max(amphour),3))
-
-        
-        
-        
-        top_power = np.zeros((steps+1,tests),dtype=float)
-
-        batt_power_limit = np.zeros((steps+1,tests),dtype=float)
-        motor_power_limit = np.zeros((steps+1,tests),dtype=float)
-        motor_torque_limit = np.zeros((steps+1,tests),dtype=float)
-        motor_rpm_limit = np.zeros((steps+1,tests),dtype=float)
-        
-        motor_energy_in = np.zeros((steps+1,tests),dtype=float)
-        motor_energy_out = np.zeros((steps+1,tests),dtype=float)
-        motor_energy = np.zeros((steps+1,tests),dtype=float)
-        motor_temp = np.zeros((steps+1,tests),dtype=float)
-        mt_speed = np.zeros((steps+1,tests),dtype=float)
-        mt_force = np.zeros((steps+1,tests),dtype=float)
-        mt_power = np.zeros((steps+1,tests),dtype=float)
-        mt_total_power = np.zeros((steps+1,tests),dtype=float)
-        motor_thermal_limit = np.zeros((steps+1,tests),dtype=float)
-        motor_thermal_error = np.zeros((steps+1,tests),dtype=float)
         
         msg = datetime.now().strftime('%H:%M:%S') + ": " + "Finished storing simulation data"
         pub.sendMessage(("AddStatus"), msg) 
 
-
         dict_in[file] = newData
         logging.info("Converted %s to a dictionary successfully", file)
-
         
     logging.info("ENDING Simulation.py")
     return dict_in

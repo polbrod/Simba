@@ -15,3 +15,4 @@
 2014-05-04 00:27:33,950 - INFO - Converting dictionary IOM_check.csv to file
 2014-05-04 00:27:33,950 - DEBUG - File will be saved at C:\Users\Sean\Desktop\Buckeye Current\Simulation\Deployment Package\test_in\Project Template\IOM_check.csv
 2014-05-04 00:27:33,953 - INFO - Data converted and saved to C:\Users\Sean\Desktop\Buckeye Current\Simulation\Deployment Package\test_in\Project Template\IOM_check.csv
+2014-05-07 17:09:27,687 - INFO - STARTING automation.py
