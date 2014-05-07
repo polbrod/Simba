@@ -56,6 +56,8 @@ tyreA = -2.069641313760728140e-05
 tyreB = 6.386679031823000125e-06
 TyreC = 3.197376543933548310e-01
 
+top_lean_angle = 45
+
 #lookup files
 dist_to_speed_lookup = 'disttospeed.csv'
 dist_to_alt_lookup = 'disttoalt.csv'
@@ -133,6 +135,8 @@ motor_thermal_limit = np.zeros((steps+1,tests),dtype=float)
 motor_thermal_error = np.zeros((steps+1,tests),dtype=float)
 
 wheel_radius = np.zeros((steps+1,tests),dtype=float)
+
+lean_angle_limit = np.zeros((steps+1,tests),dtype=float)
 
 #Lookups
 #soc to voltage
@@ -324,7 +328,10 @@ def Motor_Thermal_solve(s,n):
     motor_thermal_error[n+1] = abs(motor_temp[n+1] - max_motor_temp)
     return motor_thermal_error[n+1]
 
-def Wheel_Radius(lean):
+def Wheel_Radius(lean,n):
+    if abs(lean) > top_lean_angle:
+        lean = top_lean_angle
+        lean_angle_limit[n+1] = 1
     return tyreA*lean**2 + tyreB*lean + TyreC
  
 #initial condidtions
@@ -341,7 +348,7 @@ def loop(n):
         if (distance[n+1] > max_distance_travel):
             return n                                #stop if cross finish line
         
-        wheel_radius[n+1] = Wheel_Radius(lean_angle_lookup(distance[n+1]))
+        wheel_radius[n+1] = Wheel_Radius(lean_angle_lookup(distance[n+1]), n)
         
         voltage[n+1] = Battery_Voltage(n)           #find battery voltage
         top_force[n+1] = Top_force(n)               #Top_force at this point
@@ -426,6 +433,7 @@ print '% motor torque limit  = ' + repr(np.mean(motor_torque_limit[:end])*100)
 print '% motor power limit  = ' + repr(np.mean(motor_power_limit[:end])*100)
 print '% battery power limit  = ' + repr(np.mean(batt_power_limit[:end])*100)
 print '% motor thermal limit = ' + repr(np.mean(motor_thermal_limit[:end])*100)
+print '% motor lean angle limit = ' + repr(np.mean(lean_angle_limit[:end])*100)
 #finish plot
 
     
