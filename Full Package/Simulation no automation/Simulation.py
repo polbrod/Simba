@@ -65,7 +65,7 @@ motor_controller_eff_lookup = 'Tritium_ws200_eff.csv'
 motor_eff_lookup = 'Emrax_eff.csv'
 soc_to_voltage_lookup = 'aee.csv'
 throttlemap_lookup = 'throttle.csv'
-lean_angle_lookup = 'lean.csv'
+lean_angle_lookup = 'lean_IOM_video_data.csv'
 
 #simulation calcs
 steps = int(math.ceil(total_time/step))
