@@ -289,7 +289,7 @@ def Battery_Voltage(n):
     
 #Top force (allows for expandsion to more than one top forces)
 def Top_force(n):
-    return ((throttlemap(motor_rpm[n+1]) * motor_torque_constant) * gearing) / wheel_radius[n+1]
+    return ((throttlemap(motor_rpm[n]) * motor_torque_constant) * gearing) / wheel_radius[n+1]
 
 #Top Speed(allows for expandsion to one top speeds)
 def Top_speed(n):
