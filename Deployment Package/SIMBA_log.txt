@@ -16,3 +16,2410 @@
 2014-05-04 00:27:33,950 - DEBUG - File will be saved at C:\Users\Sean\Desktop\Buckeye Current\Simulation\Deployment Package\test_in\Project Template\IOM_check.csv
 2014-05-04 00:27:33,953 - INFO - Data converted and saved to C:\Users\Sean\Desktop\Buckeye Current\Simulation\Deployment Package\test_in\Project Template\IOM_check.csv
 2014-05-07 17:09:27,687 - INFO - STARTING automation.py
+2014-05-11 16:26:48,217 - INFO - STARTING automation.py
+2014-05-11 16:28:09,444 - INFO - STARTING FUNCTIONS FileToParams
+2014-05-11 16:28:09,446 - DEBUG - Options file location passed: C:\Users\Sean\Desktop\Buckeye Current\Simba\Deployment Package\test_in\Project Template\OPTIONS.csv
+2014-05-11 16:28:09,453 - INFO - Current file to search for data: TestTemplate.csv
+2014-05-11 16:28:09,453 - INFO - Data extraction from TestTemplate.csv complete
+2014-05-11 16:28:09,453 - INFO - Current file to search for data: IOM_check.csv
+2014-05-11 16:28:09,453 - INFO - Data extraction from IOM_check.csv complete
+2014-05-11 16:28:09,454 - INFO - Files have been converted to dictionaries
+2014-05-11 16:28:11,535 - DEBUG - Entered path: C:\Users\Sean\Desktop\Buckeye Current\Simba\Deployment Package\test_in\Project Template\OPTIONS.csv
+2014-05-11 16:28:11,535 - INFO - STARTING FUNCTIONS FileToParams
+2014-05-11 16:28:11,535 - DEBUG - Options file location passed: C:\Users\Sean\Desktop\Buckeye Current\Simba\Deployment Package\test_in\Project Template\OPTIONS.csv
+2014-05-11 16:28:11,536 - INFO - Current file to search for data: TestTemplate.csv
+2014-05-11 16:28:11,536 - INFO - Data extraction from TestTemplate.csv complete
+2014-05-11 16:28:11,536 - INFO - Current file to search for data: IOM_check.csv
+2014-05-11 16:28:11,536 - INFO - Data extraction from IOM_check.csv complete
+2014-05-11 16:28:11,538 - INFO - Files have been converted to dictionaries
+2014-05-11 16:28:11,539 - INFO - STARTING Simulation.py
+2014-05-11 16:28:11,539 - INFO - Checking to make sure file TestTemplateOutput.csv has needed parameters...
+2014-05-11 16:28:11,539 - INFO - Step found
+2014-05-11 16:28:11,539 - INFO - total_time found
+2014-05-11 16:28:11,539 - INFO - gearing found
+2014-05-11 16:28:11,539 - INFO - rider_mass found
+2014-05-11 16:28:11,539 - INFO - bike_mass found
+2014-05-11 16:28:11,539 - INFO - gravity found
+2014-05-11 16:28:11,539 - INFO - air_resistance found
+2014-05-11 16:28:11,539 - INFO - air_density found
+2014-05-11 16:28:11,539 - INFO - frontal_area found
+2014-05-11 16:28:11,539 - INFO - rolling_resistance found
+2014-05-11 16:28:11,539 - INFO - top_torque found
+2014-05-11 16:28:11,539 - INFO - top_rpm found
+2014-05-11 16:28:11,540 - INFO - motor_top_power found
+2014-05-11 16:28:11,540 - INFO - chain_efficiency found
+2014-05-11 16:28:11,540 - INFO - battery_efficiency found
+2014-05-11 16:28:11,540 - INFO - motor_torque_constant found
+2014-05-11 16:28:11,540 - INFO - motor_rpm_constant found
+2014-05-11 16:28:11,540 - INFO - motor_thermal_conductivity
+2014-05-11 16:28:11,540 - INFO - motor_heat_capacity
+2014-05-11 16:28:11,540 - INFO - coolant_temp
+2014-05-11 16:28:11,540 - INFO - max_motor_temp
+2014-05-11 16:28:11,540 - INFO - series_cells found
+2014-05-11 16:28:11,540 - INFO - max_amphour
+2014-05-11 16:28:11,540 - INFO - batt_max_current
+2014-05-11 16:28:11,540 - INFO - max_distance_travel found
+2014-05-11 16:28:11,540 - INFO - dist_to_speed_lookup found
+2014-05-11 16:28:11,542 - INFO - dist_to_alt_lookup found
+2014-05-11 16:28:11,542 - INFO - motor_controller_eff_lookup found
+2014-05-11 16:28:11,542 - INFO - motor_eff_lookup found
+2014-05-11 16:28:11,542 - INFO - soc_to_voltage_lookup found
+2014-05-11 16:28:11,542 - INFO - throttlemap_lookup found
+2014-05-11 16:28:11,542 - INFO - lean_angle_lookup found
+2014-05-11 16:28:11,542 - INFO - tyreA found
+2014-05-11 16:28:11,542 - INFO - tyreB found
+2014-05-11 16:28:11,542 - INFO - tyreC found
+2014-05-11 16:28:11,542 - INFO - top_lean_angle found
+2014-05-11 16:28:12,119 - INFO - Lookup Files\IOM_data.csv loaded
+2014-05-11 16:28:12,204 - INFO - Lookup Files\aee.csv loaded
+2014-05-11 16:28:12,223 - INFO - Lookup Files\disttoalt.csv loaded
+2014-05-11 16:28:12,227 - INFO - Lookup Files\throttle.csv loaded
+2014-05-11 16:28:12,236 - INFO - Lookup Files\lean_IOM_video_data.csv loaded
+2014-05-11 16:28:12,240 - INFO - Lookup Files\Tritium_ws200_eff.csv loaded
+2014-05-11 16:28:12,272 - INFO - Lookup Files\Emrax_eff.csv loaded
+2014-05-11 16:28:16,117 - INFO - Converted TestTemplateOutput.csv to a dictionary successfully
+2014-05-11 16:28:16,117 - INFO - Checking to make sure file IOM_check_output.csv has needed parameters...
+2014-05-11 16:28:16,118 - INFO - Step found
+2014-05-11 16:28:16,118 - INFO - total_time found
+2014-05-11 16:28:16,118 - INFO - gearing found
+2014-05-11 16:28:16,118 - INFO - rider_mass found
+2014-05-11 16:28:16,118 - INFO - bike_mass found
+2014-05-11 16:28:16,118 - INFO - gravity found
+2014-05-11 16:28:16,118 - INFO - air_resistance found
+2014-05-11 16:28:16,118 - INFO - air_density found
+2014-05-11 16:28:16,118 - INFO - frontal_area found
+2014-05-11 16:28:16,118 - INFO - rolling_resistance found
+2014-05-11 16:28:16,118 - INFO - top_torque found
+2014-05-11 16:28:16,118 - INFO - top_rpm found
+2014-05-11 16:28:16,118 - INFO - motor_top_power found
+2014-05-11 16:28:16,118 - INFO - chain_efficiency found
+2014-05-11 16:28:16,118 - INFO - battery_efficiency found
+2014-05-11 16:28:16,118 - INFO - motor_torque_constant found
+2014-05-11 16:28:16,118 - INFO - motor_rpm_constant found
+2014-05-11 16:28:16,118 - INFO - motor_thermal_conductivity
+2014-05-11 16:28:16,118 - INFO - motor_heat_capacity
+2014-05-11 16:28:16,118 - INFO - coolant_temp
+2014-05-11 16:28:16,118 - INFO - max_motor_temp
+2014-05-11 16:28:16,118 - INFO - series_cells found
+2014-05-11 16:28:16,118 - INFO - max_amphour
+2014-05-11 16:28:16,118 - INFO - batt_max_current
+2014-05-11 16:28:16,118 - INFO - max_distance_travel found
+2014-05-11 16:28:16,118 - INFO - dist_to_speed_lookup found
+2014-05-11 16:28:16,119 - INFO - dist_to_alt_lookup found
+2014-05-11 16:28:16,119 - INFO - motor_controller_eff_lookup found
+2014-05-11 16:28:16,119 - INFO - motor_eff_lookup found
+2014-05-11 16:28:16,119 - INFO - soc_to_voltage_lookup found
+2014-05-11 16:28:16,119 - INFO - throttlemap_lookup found
+2014-05-11 16:28:16,119 - INFO - lean_angle_lookup found
+2014-05-11 16:28:16,119 - INFO - tyreA found
+2014-05-11 16:28:16,119 - INFO - tyreB found
+2014-05-11 16:28:16,119 - INFO - tyreC found
+2014-05-11 16:28:16,119 - INFO - top_lean_angle found
+2014-05-11 16:28:16,694 - INFO - Lookup Files\IOM_data.csv loaded
+2014-05-11 16:28:16,782 - INFO - Lookup Files\aee.csv loaded
+2014-05-11 16:28:16,803 - INFO - Lookup Files\disttoalt.csv loaded
+2014-05-11 16:28:16,809 - INFO - Lookup Files\throttle.csv loaded
+2014-05-11 16:28:16,812 - INFO - Lookup Files\lean.csv loaded
+2014-05-11 16:28:16,818 - INFO - Lookup Files\Tritium_ws200_eff.csv loaded
+2014-05-11 16:28:16,851 - INFO - Lookup Files\Emrax_eff.csv loaded
+2014-05-11 16:28:21,094 - INFO - Converted IOM_check_output.csv to a dictionary successfully
+2014-05-11 16:28:21,094 - INFO - ENDING Simulation.py
+2014-05-11 16:28:21,096 - DEBUG - Entered out path: C:\Users\Sean\Desktop
+2014-05-11 16:28:21,096 - INFO - STARTING FUNCTION OutputFile
+2014-05-11 16:28:21,096 - INFO - Converting dictionary TestTemplateOutput.csv to file
+2014-05-11 16:28:21,096 - DEBUG - File will be saved at C:\Users\Sean\Desktop\TestTemplateOutput.csv
+2014-05-11 16:28:21,187 - INFO - Data converted and saved to C:\Users\Sean\Desktop\TestTemplateOutput.csv
+2014-05-11 16:28:21,187 - INFO - Converting dictionary IOM_check_output.csv to file
+2014-05-11 16:28:21,187 - DEBUG - File will be saved at C:\Users\Sean\Desktop\IOM_check_output.csv
+2014-05-11 16:28:21,282 - INFO - Data converted and saved to C:\Users\Sean\Desktop\IOM_check_output.csv
+2014-05-11 16:28:21,283 - INFO - Data extraction from <type 'file'> complete
+2014-05-11 16:28:21,285 - INFO - C:\Users\Sean\Desktop\Buckeye Current\Simba\Deployment Package\test_in\Project Template\OPTIONS.csv successfully edited
+2014-05-11 16:30:22,332 - INFO - STARTING FUNCTIONS FileToParams
+2014-05-11 16:30:22,332 - DEBUG - Options file location passed: Z:\Design files (technical)\RW-2x Gearing\051014_leanangle_gearing\test_in_bestaero\OPTIONS_bestaero.csv
+2014-05-11 16:30:22,438 - INFO - Current file to search for data: 51014_RW2Xgearcheck_1.6522_b.csv
+2014-05-11 16:30:22,589 - INFO - Data extraction from 51014_RW2Xgearcheck_1.6522_b.csv complete
+2014-05-11 16:30:22,592 - INFO - Current file to search for data: 51014_RW2Xgearcheck_1.7273_b.csv
+2014-05-11 16:30:22,746 - INFO - Data extraction from 51014_RW2Xgearcheck_1.7273_b.csv complete
+2014-05-11 16:30:22,747 - INFO - Current file to search for data: 51014_RW2Xgearcheck_1.8095_b.csv
+2014-05-11 16:30:22,891 - INFO - Data extraction from 51014_RW2Xgearcheck_1.8095_b.csv complete
+2014-05-11 16:30:22,892 - INFO - Current file to search for data: 51014_RW2Xgearcheck_1.8261_b.csv
+2014-05-11 16:30:23,032 - INFO - Data extraction from 51014_RW2Xgearcheck_1.8261_b.csv complete
+2014-05-11 16:30:23,035 - INFO - Current file to search for data: 51014_RW2Xgearcheck_1.9091_b.csv
+2014-05-11 16:30:23,170 - INFO - Data extraction from 51014_RW2Xgearcheck_1.9091_b.csv complete
+2014-05-11 16:30:23,171 - INFO - Current file to search for data: 51014_RW2Xgearcheck_2.0000_b.csv
+2014-05-11 16:30:23,311 - INFO - Data extraction from 51014_RW2Xgearcheck_2.0000_b.csv complete
+2014-05-11 16:30:23,312 - INFO - Current file to search for data: 51014_RW2Xgearcheck_2.1740_b.csv
+2014-05-11 16:30:23,448 - INFO - Data extraction from 51014_RW2Xgearcheck_2.1740_b.csv complete
+2014-05-11 16:30:23,450 - INFO - Current file to search for data: 51014_RW2Xgearcheck_2.2727_b.csv
+2014-05-11 16:30:23,601 - INFO - Data extraction from 51014_RW2Xgearcheck_2.2727_b.csv complete
+2014-05-11 16:30:23,602 - INFO - Files have been converted to dictionaries
+2014-05-11 16:30:41,138 - DEBUG - Entered path: Z:\Design files (technical)\RW-2x Gearing\051014_leanangle_gearing\test_in_bestaero\OPTIONS_bestaero.csv
+2014-05-11 16:30:41,138 - INFO - STARTING FUNCTIONS FileToParams
+2014-05-11 16:30:41,138 - DEBUG - Options file location passed: Z:\Design files (technical)\RW-2x Gearing\051014_leanangle_gearing\test_in_bestaero\OPTIONS_bestaero.csv
+2014-05-11 16:30:47,908 - INFO - Current file to search for data: 51014_RW2Xgearcheck_1.6522_b.csv
+2014-05-11 16:30:48,042 - INFO - Data extraction from 51014_RW2Xgearcheck_1.6522_b.csv complete
+2014-05-11 16:30:48,045 - INFO - Current file to search for data: 51014_RW2Xgearcheck_1.7273_b.csv
+2014-05-11 16:30:48,177 - INFO - Data extraction from 51014_RW2Xgearcheck_1.7273_b.csv complete
+2014-05-11 16:30:48,178 - INFO - Current file to search for data: 51014_RW2Xgearcheck_1.8095_b.csv
+2014-05-11 16:30:48,312 - INFO - Data extraction from 51014_RW2Xgearcheck_1.8095_b.csv complete
+2014-05-11 16:30:48,315 - INFO - Current file to search for data: 51014_RW2Xgearcheck_1.8261_b.csv
+2014-05-11 16:30:48,459 - INFO - Data extraction from 51014_RW2Xgearcheck_1.8261_b.csv complete
+2014-05-11 16:30:48,460 - INFO - Current file to search for data: 51014_RW2Xgearcheck_1.9091_b.csv
+2014-05-11 16:30:48,592 - INFO - Data extraction from 51014_RW2Xgearcheck_1.9091_b.csv complete
+2014-05-11 16:30:48,595 - INFO - Current file to search for data: 51014_RW2Xgearcheck_2.0000_b.csv
+2014-05-11 16:30:48,730 - INFO - Data extraction from 51014_RW2Xgearcheck_2.0000_b.csv complete
+2014-05-11 16:30:48,733 - INFO - Current file to search for data: 51014_RW2Xgearcheck_2.1740_b.csv
+2014-05-11 16:30:48,868 - INFO - Data extraction from 51014_RW2Xgearcheck_2.1740_b.csv complete
+2014-05-11 16:30:48,869 - INFO - Current file to search for data: 51014_RW2Xgearcheck_2.2727_b.csv
+2014-05-11 16:30:49,000 - INFO - Data extraction from 51014_RW2Xgearcheck_2.2727_b.csv complete
+2014-05-11 16:30:49,003 - INFO - Files have been converted to dictionaries
+2014-05-11 16:30:49,062 - INFO - STARTING Simulation.py
+2014-05-11 16:30:49,063 - INFO - Checking to make sure file 51014_RW2Xgearcheck_1.6522_b_output.csv has needed parameters...
+2014-05-11 16:30:49,063 - INFO - Step found
+2014-05-11 16:30:49,065 - INFO - total_time found
+2014-05-11 16:30:49,065 - INFO - gearing found
+2014-05-11 16:30:49,065 - INFO - rider_mass found
+2014-05-11 16:30:49,065 - INFO - bike_mass found
+2014-05-11 16:30:49,065 - INFO - gravity found
+2014-05-11 16:30:49,065 - INFO - air_resistance found
+2014-05-11 16:30:49,065 - INFO - air_density found
+2014-05-11 16:30:49,065 - INFO - frontal_area found
+2014-05-11 16:30:49,065 - INFO - rolling_resistance found
+2014-05-11 16:30:49,066 - INFO - top_torque found
+2014-05-11 16:30:49,066 - INFO - top_rpm found
+2014-05-11 16:30:49,066 - INFO - motor_top_power found
+2014-05-11 16:30:49,066 - INFO - chain_efficiency found
+2014-05-11 16:30:49,068 - INFO - battery_efficiency found
+2014-05-11 16:30:49,068 - INFO - motor_torque_constant found
+2014-05-11 16:30:49,068 - INFO - motor_rpm_constant found
+2014-05-11 16:30:49,068 - INFO - motor_thermal_conductivity
+2014-05-11 16:30:49,068 - INFO - motor_heat_capacity
+2014-05-11 16:30:49,069 - INFO - coolant_temp
+2014-05-11 16:30:49,069 - INFO - max_motor_temp
+2014-05-11 16:30:49,069 - INFO - series_cells found
+2014-05-11 16:30:49,069 - INFO - max_amphour
+2014-05-11 16:30:49,069 - INFO - batt_max_current
+2014-05-11 16:30:49,069 - INFO - max_distance_travel found
+2014-05-11 16:30:49,069 - INFO - dist_to_speed_lookup found
+2014-05-11 16:30:49,069 - INFO - dist_to_alt_lookup found
+2014-05-11 16:30:49,069 - INFO - motor_controller_eff_lookup found
+2014-05-11 16:30:49,071 - INFO - motor_eff_lookup found
+2014-05-11 16:30:49,071 - INFO - soc_to_voltage_lookup found
+2014-05-11 16:30:49,071 - INFO - throttlemap_lookup found
+2014-05-11 16:30:49,071 - INFO - lean_angle_lookup found
+2014-05-11 16:30:49,072 - INFO - tyreA found
+2014-05-11 16:30:49,072 - INFO - tyreB found
+2014-05-11 16:30:49,072 - INFO - tyreC found
+2014-05-11 16:30:49,072 - INFO - top_lean_angle found
+2014-05-11 16:30:50,885 - INFO - Lookup Files\disttospeed.csv loaded
+2014-05-11 16:30:51,278 - INFO - Lookup Files\aee.csv loaded
+2014-05-11 16:30:51,493 - INFO - Lookup Files\disttoalt.csv loaded
+2014-05-11 16:30:51,631 - INFO - Lookup Files\throttle.csv loaded
+2014-05-11 16:30:51,871 - INFO - Lookup Files\lean_IOM_video_data.csv loaded
+2014-05-11 16:30:52,115 - INFO - Lookup Files\Tritium_ws200_eff.csv loaded
+2014-05-11 16:30:52,473 - INFO - Lookup Files\Emrax_eff.csv loaded
+2014-05-11 16:30:57,255 - INFO - Converted 51014_RW2Xgearcheck_1.6522_b_output.csv to a dictionary successfully
+2014-05-11 16:30:57,255 - INFO - Checking to make sure file 51014_RW2Xgearcheck_1.7273_b_output.csv has needed parameters...
+2014-05-11 16:30:57,256 - INFO - Step found
+2014-05-11 16:30:57,256 - INFO - total_time found
+2014-05-11 16:30:57,256 - INFO - gearing found
+2014-05-11 16:30:57,256 - INFO - rider_mass found
+2014-05-11 16:30:57,256 - INFO - bike_mass found
+2014-05-11 16:30:57,256 - INFO - gravity found
+2014-05-11 16:30:57,256 - INFO - air_resistance found
+2014-05-11 16:30:57,256 - INFO - air_density found
+2014-05-11 16:30:57,256 - INFO - frontal_area found
+2014-05-11 16:30:57,256 - INFO - rolling_resistance found
+2014-05-11 16:30:57,256 - INFO - top_torque found
+2014-05-11 16:30:57,256 - INFO - top_rpm found
+2014-05-11 16:30:57,256 - INFO - motor_top_power found
+2014-05-11 16:30:57,256 - INFO - chain_efficiency found
+2014-05-11 16:30:57,256 - INFO - battery_efficiency found
+2014-05-11 16:30:57,256 - INFO - motor_torque_constant found
+2014-05-11 16:30:57,256 - INFO - motor_rpm_constant found
+2014-05-11 16:30:57,256 - INFO - motor_thermal_conductivity
+2014-05-11 16:30:57,256 - INFO - motor_heat_capacity
+2014-05-11 16:30:57,256 - INFO - coolant_temp
+2014-05-11 16:30:57,256 - INFO - max_motor_temp
+2014-05-11 16:30:57,256 - INFO - series_cells found
+2014-05-11 16:30:57,256 - INFO - max_amphour
+2014-05-11 16:30:57,256 - INFO - batt_max_current
+2014-05-11 16:30:57,256 - INFO - max_distance_travel found
+2014-05-11 16:30:57,256 - INFO - dist_to_speed_lookup found
+2014-05-11 16:30:57,257 - INFO - dist_to_alt_lookup found
+2014-05-11 16:30:57,257 - INFO - motor_controller_eff_lookup found
+2014-05-11 16:30:57,257 - INFO - motor_eff_lookup found
+2014-05-11 16:30:57,257 - INFO - soc_to_voltage_lookup found
+2014-05-11 16:30:57,257 - INFO - throttlemap_lookup found
+2014-05-11 16:30:57,257 - INFO - lean_angle_lookup found
+2014-05-11 16:30:57,257 - INFO - tyreA found
+2014-05-11 16:30:57,257 - INFO - tyreB found
+2014-05-11 16:30:57,257 - INFO - tyreC found
+2014-05-11 16:30:57,257 - INFO - top_lean_angle found
+2014-05-11 16:30:57,532 - INFO - Lookup Files\disttospeed.csv loaded
+2014-05-11 16:30:57,641 - INFO - Lookup Files\aee.csv loaded
+2014-05-11 16:30:57,719 - INFO - Lookup Files\disttoalt.csv loaded
+2014-05-11 16:30:57,769 - INFO - Lookup Files\throttle.csv loaded
+2014-05-11 16:30:57,844 - INFO - Lookup Files\lean_IOM_video_data.csv loaded
+2014-05-11 16:30:57,936 - INFO - Lookup Files\Tritium_ws200_eff.csv loaded
+2014-05-11 16:30:58,062 - INFO - Lookup Files\Emrax_eff.csv loaded
+2014-05-11 16:31:02,236 - INFO - Converted 51014_RW2Xgearcheck_1.7273_b_output.csv to a dictionary successfully
+2014-05-11 16:31:02,237 - INFO - Checking to make sure file 51014_RW2Xgearcheck_1.8095_b_output.csv has needed parameters...
+2014-05-11 16:31:02,237 - INFO - Step found
+2014-05-11 16:31:02,237 - INFO - total_time found
+2014-05-11 16:31:02,237 - INFO - gearing found
+2014-05-11 16:31:02,237 - INFO - rider_mass found
+2014-05-11 16:31:02,237 - INFO - bike_mass found
+2014-05-11 16:31:02,237 - INFO - gravity found
+2014-05-11 16:31:02,237 - INFO - air_resistance found
+2014-05-11 16:31:02,237 - INFO - air_density found
+2014-05-11 16:31:02,237 - INFO - frontal_area found
+2014-05-11 16:31:02,237 - INFO - rolling_resistance found
+2014-05-11 16:31:02,239 - INFO - top_torque found
+2014-05-11 16:31:02,239 - INFO - top_rpm found
+2014-05-11 16:31:02,239 - INFO - motor_top_power found
+2014-05-11 16:31:02,239 - INFO - chain_efficiency found
+2014-05-11 16:31:02,239 - INFO - battery_efficiency found
+2014-05-11 16:31:02,239 - INFO - motor_torque_constant found
+2014-05-11 16:31:02,239 - INFO - motor_rpm_constant found
+2014-05-11 16:31:02,239 - INFO - motor_thermal_conductivity
+2014-05-11 16:31:02,239 - INFO - motor_heat_capacity
+2014-05-11 16:31:02,239 - INFO - coolant_temp
+2014-05-11 16:31:02,239 - INFO - max_motor_temp
+2014-05-11 16:31:02,239 - INFO - series_cells found
+2014-05-11 16:31:02,239 - INFO - max_amphour
+2014-05-11 16:31:02,239 - INFO - batt_max_current
+2014-05-11 16:31:02,240 - INFO - max_distance_travel found
+2014-05-11 16:31:02,240 - INFO - dist_to_speed_lookup found
+2014-05-11 16:31:02,240 - INFO - dist_to_alt_lookup found
+2014-05-11 16:31:02,240 - INFO - motor_controller_eff_lookup found
+2014-05-11 16:31:02,240 - INFO - motor_eff_lookup found
+2014-05-11 16:31:02,240 - INFO - soc_to_voltage_lookup found
+2014-05-11 16:31:02,240 - INFO - throttlemap_lookup found
+2014-05-11 16:31:02,240 - INFO - lean_angle_lookup found
+2014-05-11 16:31:02,240 - INFO - tyreA found
+2014-05-11 16:31:02,240 - INFO - tyreB found
+2014-05-11 16:31:02,240 - INFO - tyreC found
+2014-05-11 16:31:02,240 - INFO - top_lean_angle found
+2014-05-11 16:31:02,512 - INFO - Lookup Files\disttospeed.csv loaded
+2014-05-11 16:31:02,686 - INFO - Lookup Files\aee.csv loaded
+2014-05-11 16:31:02,766 - INFO - Lookup Files\disttoalt.csv loaded
+2014-05-11 16:31:02,842 - INFO - Lookup Files\throttle.csv loaded
+2014-05-11 16:31:03,019 - INFO - Lookup Files\lean_IOM_video_data.csv loaded
+2014-05-11 16:31:03,217 - INFO - Lookup Files\Tritium_ws200_eff.csv loaded
+2014-05-11 16:31:03,319 - INFO - Lookup Files\Emrax_eff.csv loaded
+2014-05-11 16:31:07,039 - INFO - Converted 51014_RW2Xgearcheck_1.8095_b_output.csv to a dictionary successfully
+2014-05-11 16:31:07,039 - INFO - Checking to make sure file 51014_RW2Xgearcheck_1.8261_b_output.csv has needed parameters...
+2014-05-11 16:31:07,039 - INFO - Step found
+2014-05-11 16:31:07,039 - INFO - total_time found
+2014-05-11 16:31:07,039 - INFO - gearing found
+2014-05-11 16:31:07,040 - INFO - rider_mass found
+2014-05-11 16:31:07,040 - INFO - bike_mass found
+2014-05-11 16:31:07,040 - INFO - gravity found
+2014-05-11 16:31:07,040 - INFO - air_resistance found
+2014-05-11 16:31:07,040 - INFO - air_density found
+2014-05-11 16:31:07,040 - INFO - frontal_area found
+2014-05-11 16:31:07,040 - INFO - rolling_resistance found
+2014-05-11 16:31:07,040 - INFO - top_torque found
+2014-05-11 16:31:07,040 - INFO - top_rpm found
+2014-05-11 16:31:07,040 - INFO - motor_top_power found
+2014-05-11 16:31:07,040 - INFO - chain_efficiency found
+2014-05-11 16:31:07,040 - INFO - battery_efficiency found
+2014-05-11 16:31:07,040 - INFO - motor_torque_constant found
+2014-05-11 16:31:07,042 - INFO - motor_rpm_constant found
+2014-05-11 16:31:07,042 - INFO - motor_thermal_conductivity
+2014-05-11 16:31:07,042 - INFO - motor_heat_capacity
+2014-05-11 16:31:07,042 - INFO - coolant_temp
+2014-05-11 16:31:07,042 - INFO - max_motor_temp
+2014-05-11 16:31:07,042 - INFO - series_cells found
+2014-05-11 16:31:07,042 - INFO - max_amphour
+2014-05-11 16:31:07,042 - INFO - batt_max_current
+2014-05-11 16:31:07,042 - INFO - max_distance_travel found
+2014-05-11 16:31:07,042 - INFO - dist_to_speed_lookup found
+2014-05-11 16:31:07,042 - INFO - dist_to_alt_lookup found
+2014-05-11 16:31:07,042 - INFO - motor_controller_eff_lookup found
+2014-05-11 16:31:07,042 - INFO - motor_eff_lookup found
+2014-05-11 16:31:07,042 - INFO - soc_to_voltage_lookup found
+2014-05-11 16:31:07,042 - INFO - throttlemap_lookup found
+2014-05-11 16:31:07,042 - INFO - lean_angle_lookup found
+2014-05-11 16:31:07,042 - INFO - tyreA found
+2014-05-11 16:31:07,042 - INFO - tyreB found
+2014-05-11 16:31:07,042 - INFO - tyreC found
+2014-05-11 16:31:07,042 - INFO - top_lean_angle found
+2014-05-11 16:31:07,368 - INFO - Lookup Files\disttospeed.csv loaded
+2014-05-11 16:31:07,726 - INFO - Lookup Files\aee.csv loaded
+2014-05-11 16:31:07,829 - INFO - Lookup Files\disttoalt.csv loaded
+2014-05-11 16:31:07,875 - INFO - Lookup Files\throttle.csv loaded
+2014-05-11 16:31:07,957 - INFO - Lookup Files\lean_IOM_video_data.csv loaded
+2014-05-11 16:31:08,072 - INFO - Lookup Files\Tritium_ws200_eff.csv loaded
+2014-05-11 16:31:08,164 - INFO - Lookup Files\Emrax_eff.csv loaded
+2014-05-11 16:31:11,782 - INFO - Converted 51014_RW2Xgearcheck_1.8261_b_output.csv to a dictionary successfully
+2014-05-11 16:31:11,782 - INFO - Checking to make sure file 51014_RW2Xgearcheck_1.9091_b_output.csv has needed parameters...
+2014-05-11 16:31:11,782 - INFO - Step found
+2014-05-11 16:31:11,782 - INFO - total_time found
+2014-05-11 16:31:11,782 - INFO - gearing found
+2014-05-11 16:31:11,782 - INFO - rider_mass found
+2014-05-11 16:31:11,782 - INFO - bike_mass found
+2014-05-11 16:31:11,782 - INFO - gravity found
+2014-05-11 16:31:11,782 - INFO - air_resistance found
+2014-05-11 16:31:11,782 - INFO - air_density found
+2014-05-11 16:31:11,782 - INFO - frontal_area found
+2014-05-11 16:31:11,782 - INFO - rolling_resistance found
+2014-05-11 16:31:11,782 - INFO - top_torque found
+2014-05-11 16:31:11,782 - INFO - top_rpm found
+2014-05-11 16:31:11,782 - INFO - motor_top_power found
+2014-05-11 16:31:11,782 - INFO - chain_efficiency found
+2014-05-11 16:31:11,783 - INFO - battery_efficiency found
+2014-05-11 16:31:11,783 - INFO - motor_torque_constant found
+2014-05-11 16:31:11,783 - INFO - motor_rpm_constant found
+2014-05-11 16:31:11,783 - INFO - motor_thermal_conductivity
+2014-05-11 16:31:11,783 - INFO - motor_heat_capacity
+2014-05-11 16:31:11,783 - INFO - coolant_temp
+2014-05-11 16:31:11,783 - INFO - max_motor_temp
+2014-05-11 16:31:11,783 - INFO - series_cells found
+2014-05-11 16:31:11,783 - INFO - max_amphour
+2014-05-11 16:31:11,783 - INFO - batt_max_current
+2014-05-11 16:31:11,783 - INFO - max_distance_travel found
+2014-05-11 16:31:11,783 - INFO - dist_to_speed_lookup found
+2014-05-11 16:31:11,783 - INFO - dist_to_alt_lookup found
+2014-05-11 16:31:11,785 - INFO - motor_controller_eff_lookup found
+2014-05-11 16:31:11,785 - INFO - motor_eff_lookup found
+2014-05-11 16:31:11,785 - INFO - soc_to_voltage_lookup found
+2014-05-11 16:31:11,785 - INFO - throttlemap_lookup found
+2014-05-11 16:31:11,785 - INFO - lean_angle_lookup found
+2014-05-11 16:31:11,785 - INFO - tyreA found
+2014-05-11 16:31:11,785 - INFO - tyreB found
+2014-05-11 16:31:11,785 - INFO - tyreC found
+2014-05-11 16:31:11,785 - INFO - top_lean_angle found
+2014-05-11 16:31:12,035 - INFO - Lookup Files\disttospeed.csv loaded
+2014-05-11 16:31:12,233 - INFO - Lookup Files\aee.csv loaded
+2014-05-11 16:31:12,312 - INFO - Lookup Files\disttoalt.csv loaded
+2014-05-11 16:31:12,358 - INFO - Lookup Files\throttle.csv loaded
+2014-05-11 16:31:12,428 - INFO - Lookup Files\lean_IOM_video_data.csv loaded
+2014-05-11 16:31:12,483 - INFO - Lookup Files\Tritium_ws200_eff.csv loaded
+2014-05-11 16:31:12,575 - INFO - Lookup Files\Emrax_eff.csv loaded
+2014-05-11 16:31:17,489 - INFO - Converted 51014_RW2Xgearcheck_1.9091_b_output.csv to a dictionary successfully
+2014-05-11 16:31:17,489 - INFO - Checking to make sure file 51014_RW2Xgearcheck_2.0000_b_output.csv has needed parameters...
+2014-05-11 16:31:17,489 - INFO - Step found
+2014-05-11 16:31:17,490 - INFO - total_time found
+2014-05-11 16:31:17,490 - INFO - gearing found
+2014-05-11 16:31:17,490 - INFO - rider_mass found
+2014-05-11 16:31:17,490 - INFO - bike_mass found
+2014-05-11 16:31:17,490 - INFO - gravity found
+2014-05-11 16:31:17,490 - INFO - air_resistance found
+2014-05-11 16:31:17,490 - INFO - air_density found
+2014-05-11 16:31:17,490 - INFO - frontal_area found
+2014-05-11 16:31:17,490 - INFO - rolling_resistance found
+2014-05-11 16:31:17,490 - INFO - top_torque found
+2014-05-11 16:31:17,490 - INFO - top_rpm found
+2014-05-11 16:31:17,490 - INFO - motor_top_power found
+2014-05-11 16:31:17,490 - INFO - chain_efficiency found
+2014-05-11 16:31:17,490 - INFO - battery_efficiency found
+2014-05-11 16:31:17,490 - INFO - motor_torque_constant found
+2014-05-11 16:31:17,490 - INFO - motor_rpm_constant found
+2014-05-11 16:31:17,490 - INFO - motor_thermal_conductivity
+2014-05-11 16:31:17,490 - INFO - motor_heat_capacity
+2014-05-11 16:31:17,490 - INFO - coolant_temp
+2014-05-11 16:31:17,490 - INFO - max_motor_temp
+2014-05-11 16:31:17,490 - INFO - series_cells found
+2014-05-11 16:31:17,490 - INFO - max_amphour
+2014-05-11 16:31:17,490 - INFO - batt_max_current
+2014-05-11 16:31:17,490 - INFO - max_distance_travel found
+2014-05-11 16:31:17,490 - INFO - dist_to_speed_lookup found
+2014-05-11 16:31:17,490 - INFO - dist_to_alt_lookup found
+2014-05-11 16:31:17,492 - INFO - motor_controller_eff_lookup found
+2014-05-11 16:31:17,492 - INFO - motor_eff_lookup found
+2014-05-11 16:31:17,492 - INFO - soc_to_voltage_lookup found
+2014-05-11 16:31:17,492 - INFO - throttlemap_lookup found
+2014-05-11 16:31:17,492 - INFO - lean_angle_lookup found
+2014-05-11 16:31:17,492 - INFO - tyreA found
+2014-05-11 16:31:17,492 - INFO - tyreB found
+2014-05-11 16:31:17,492 - INFO - tyreC found
+2014-05-11 16:31:17,492 - INFO - top_lean_angle found
+2014-05-11 16:31:17,931 - INFO - Lookup Files\disttospeed.csv loaded
+2014-05-11 16:31:18,096 - INFO - Lookup Files\aee.csv loaded
+2014-05-11 16:31:18,302 - INFO - Lookup Files\disttoalt.csv loaded
+2014-05-11 16:31:18,767 - INFO - Lookup Files\throttle.csv loaded
+2014-05-11 16:31:18,894 - INFO - Lookup Files\lean_IOM_video_data.csv loaded
+2014-05-11 16:31:19,213 - INFO - Lookup Files\Tritium_ws200_eff.csv loaded
+2014-05-11 16:31:19,351 - INFO - Lookup Files\Emrax_eff.csv loaded
+2014-05-11 16:31:22,655 - INFO - Converted 51014_RW2Xgearcheck_2.0000_b_output.csv to a dictionary successfully
+2014-05-11 16:31:22,655 - INFO - Checking to make sure file 51014_RW2Xgearcheck_2.1740_b_output.csv has needed parameters...
+2014-05-11 16:31:22,655 - INFO - Step found
+2014-05-11 16:31:22,657 - INFO - total_time found
+2014-05-11 16:31:22,657 - INFO - gearing found
+2014-05-11 16:31:22,657 - INFO - rider_mass found
+2014-05-11 16:31:22,657 - INFO - bike_mass found
+2014-05-11 16:31:22,657 - INFO - gravity found
+2014-05-11 16:31:22,657 - INFO - air_resistance found
+2014-05-11 16:31:22,657 - INFO - air_density found
+2014-05-11 16:31:22,657 - INFO - frontal_area found
+2014-05-11 16:31:22,657 - INFO - rolling_resistance found
+2014-05-11 16:31:22,657 - INFO - top_torque found
+2014-05-11 16:31:22,657 - INFO - top_rpm found
+2014-05-11 16:31:22,657 - INFO - motor_top_power found
+2014-05-11 16:31:22,657 - INFO - chain_efficiency found
+2014-05-11 16:31:22,657 - INFO - battery_efficiency found
+2014-05-11 16:31:22,657 - INFO - motor_torque_constant found
+2014-05-11 16:31:22,657 - INFO - motor_rpm_constant found
+2014-05-11 16:31:22,657 - INFO - motor_thermal_conductivity
+2014-05-11 16:31:22,657 - INFO - motor_heat_capacity
+2014-05-11 16:31:22,657 - INFO - coolant_temp
+2014-05-11 16:31:22,657 - INFO - max_motor_temp
+2014-05-11 16:31:22,657 - INFO - series_cells found
+2014-05-11 16:31:22,657 - INFO - max_amphour
+2014-05-11 16:31:22,657 - INFO - batt_max_current
+2014-05-11 16:31:22,657 - INFO - max_distance_travel found
+2014-05-11 16:31:22,657 - INFO - dist_to_speed_lookup found
+2014-05-11 16:31:22,657 - INFO - dist_to_alt_lookup found
+2014-05-11 16:31:22,657 - INFO - motor_controller_eff_lookup found
+2014-05-11 16:31:22,658 - INFO - motor_eff_lookup found
+2014-05-11 16:31:22,658 - INFO - soc_to_voltage_lookup found
+2014-05-11 16:31:22,658 - INFO - throttlemap_lookup found
+2014-05-11 16:31:22,658 - INFO - lean_angle_lookup found
+2014-05-11 16:31:22,658 - INFO - tyreA found
+2014-05-11 16:31:22,658 - INFO - tyreB found
+2014-05-11 16:31:22,658 - INFO - tyreC found
+2014-05-11 16:31:22,658 - INFO - top_lean_angle found
+2014-05-11 16:31:23,273 - INFO - Lookup Files\disttospeed.csv loaded
+2014-05-11 16:31:23,819 - INFO - Lookup Files\aee.csv loaded
+2014-05-11 16:31:24,273 - INFO - Lookup Files\disttoalt.csv loaded
+2014-05-11 16:31:24,723 - INFO - Lookup Files\throttle.csv loaded
+2014-05-11 16:31:25,048 - INFO - Lookup Files\lean_IOM_video_data.csv loaded
+2014-05-11 16:31:25,282 - INFO - Lookup Files\Tritium_ws200_eff.csv loaded
+2014-05-11 16:31:25,836 - INFO - Lookup Files\Emrax_eff.csv loaded
+2014-05-11 16:31:29,137 - INFO - Converted 51014_RW2Xgearcheck_2.1740_b_output.csv to a dictionary successfully
+2014-05-11 16:31:29,137 - INFO - Checking to make sure file 51014_RW2Xgearcheck_2.2727_b_output.csv has needed parameters...
+2014-05-11 16:31:29,138 - INFO - Step found
+2014-05-11 16:31:29,138 - INFO - total_time found
+2014-05-11 16:31:29,138 - INFO - gearing found
+2014-05-11 16:31:29,138 - INFO - rider_mass found
+2014-05-11 16:31:29,138 - INFO - bike_mass found
+2014-05-11 16:31:29,138 - INFO - gravity found
+2014-05-11 16:31:29,138 - INFO - air_resistance found
+2014-05-11 16:31:29,138 - INFO - air_density found
+2014-05-11 16:31:29,138 - INFO - frontal_area found
+2014-05-11 16:31:29,138 - INFO - rolling_resistance found
+2014-05-11 16:31:29,138 - INFO - top_torque found
+2014-05-11 16:31:29,138 - INFO - top_rpm found
+2014-05-11 16:31:29,138 - INFO - motor_top_power found
+2014-05-11 16:31:29,138 - INFO - chain_efficiency found
+2014-05-11 16:31:29,138 - INFO - battery_efficiency found
+2014-05-11 16:31:29,138 - INFO - motor_torque_constant found
+2014-05-11 16:31:29,138 - INFO - motor_rpm_constant found
+2014-05-11 16:31:29,138 - INFO - motor_thermal_conductivity
+2014-05-11 16:31:29,138 - INFO - motor_heat_capacity
+2014-05-11 16:31:29,138 - INFO - coolant_temp
+2014-05-11 16:31:29,138 - INFO - max_motor_temp
+2014-05-11 16:31:29,138 - INFO - series_cells found
+2014-05-11 16:31:29,138 - INFO - max_amphour
+2014-05-11 16:31:29,138 - INFO - batt_max_current
+2014-05-11 16:31:29,138 - INFO - max_distance_travel found
+2014-05-11 16:31:29,138 - INFO - dist_to_speed_lookup found
+2014-05-11 16:31:29,140 - INFO - dist_to_alt_lookup found
+2014-05-11 16:31:29,140 - INFO - motor_controller_eff_lookup found
+2014-05-11 16:31:29,140 - INFO - motor_eff_lookup found
+2014-05-11 16:31:29,140 - INFO - soc_to_voltage_lookup found
+2014-05-11 16:31:29,140 - INFO - throttlemap_lookup found
+2014-05-11 16:31:29,140 - INFO - lean_angle_lookup found
+2014-05-11 16:31:29,140 - INFO - tyreA found
+2014-05-11 16:31:29,140 - INFO - tyreB found
+2014-05-11 16:31:29,140 - INFO - tyreC found
+2014-05-11 16:31:29,140 - INFO - top_lean_angle found
+2014-05-11 16:31:29,450 - INFO - Lookup Files\disttospeed.csv loaded
+2014-05-11 16:31:29,566 - INFO - Lookup Files\aee.csv loaded
+2014-05-11 16:31:29,647 - INFO - Lookup Files\disttoalt.csv loaded
+2014-05-11 16:31:29,696 - INFO - Lookup Files\throttle.csv loaded
+2014-05-11 16:31:29,760 - INFO - Lookup Files\lean_IOM_video_data.csv loaded
+2014-05-11 16:31:29,815 - INFO - Lookup Files\Tritium_ws200_eff.csv loaded
+2014-05-11 16:31:29,907 - INFO - Lookup Files\Emrax_eff.csv loaded
+2014-05-11 16:31:33,380 - INFO - Converted 51014_RW2Xgearcheck_2.2727_b_output.csv to a dictionary successfully
+2014-05-11 16:31:33,381 - INFO - ENDING Simulation.py
+2014-05-11 16:31:33,382 - DEBUG - Entered out path: C:\Users\Sean\Desktop
+2014-05-11 16:31:33,384 - INFO - STARTING FUNCTION OutputFile
+2014-05-11 16:31:33,384 - INFO - Converting dictionary 51014_RW2Xgearcheck_1.6522_b_output.csv to file
+2014-05-11 16:31:33,384 - DEBUG - File will be saved at C:\Users\Sean\Desktop\51014_RW2Xgearcheck_1.6522_b_output.csv
+2014-05-11 16:31:33,463 - INFO - Data converted and saved to C:\Users\Sean\Desktop\51014_RW2Xgearcheck_1.6522_b_output.csv
+2014-05-11 16:31:33,463 - INFO - Converting dictionary 51014_RW2Xgearcheck_1.7273_b_output.csv to file
+2014-05-11 16:31:33,463 - DEBUG - File will be saved at C:\Users\Sean\Desktop\51014_RW2Xgearcheck_1.7273_b_output.csv
+2014-05-11 16:31:33,548 - INFO - Data converted and saved to C:\Users\Sean\Desktop\51014_RW2Xgearcheck_1.7273_b_output.csv
+2014-05-11 16:31:33,548 - INFO - Converting dictionary 51014_RW2Xgearcheck_1.8095_b_output.csv to file
+2014-05-11 16:31:33,548 - DEBUG - File will be saved at C:\Users\Sean\Desktop\51014_RW2Xgearcheck_1.8095_b_output.csv
+2014-05-11 16:31:33,641 - INFO - Data converted and saved to C:\Users\Sean\Desktop\51014_RW2Xgearcheck_1.8095_b_output.csv
+2014-05-11 16:31:33,641 - INFO - Converting dictionary 51014_RW2Xgearcheck_1.8261_b_output.csv to file
+2014-05-11 16:31:33,641 - DEBUG - File will be saved at C:\Users\Sean\Desktop\51014_RW2Xgearcheck_1.8261_b_output.csv
+2014-05-11 16:31:33,727 - INFO - Data converted and saved to C:\Users\Sean\Desktop\51014_RW2Xgearcheck_1.8261_b_output.csv
+2014-05-11 16:31:33,727 - INFO - Converting dictionary 51014_RW2Xgearcheck_1.9091_b_output.csv to file
+2014-05-11 16:31:33,727 - DEBUG - File will be saved at C:\Users\Sean\Desktop\51014_RW2Xgearcheck_1.9091_b_output.csv
+2014-05-11 16:31:33,809 - INFO - Data converted and saved to C:\Users\Sean\Desktop\51014_RW2Xgearcheck_1.9091_b_output.csv
+2014-05-11 16:31:33,809 - INFO - Converting dictionary 51014_RW2Xgearcheck_2.0000_b_output.csv to file
+2014-05-11 16:31:33,809 - DEBUG - File will be saved at C:\Users\Sean\Desktop\51014_RW2Xgearcheck_2.0000_b_output.csv
+2014-05-11 16:31:33,905 - INFO - Data converted and saved to C:\Users\Sean\Desktop\51014_RW2Xgearcheck_2.0000_b_output.csv
+2014-05-11 16:31:33,907 - INFO - Converting dictionary 51014_RW2Xgearcheck_2.1740_b_output.csv to file
+2014-05-11 16:31:33,907 - DEBUG - File will be saved at C:\Users\Sean\Desktop\51014_RW2Xgearcheck_2.1740_b_output.csv
+2014-05-11 16:31:34,005 - INFO - Data converted and saved to C:\Users\Sean\Desktop\51014_RW2Xgearcheck_2.1740_b_output.csv
+2014-05-11 16:31:34,005 - INFO - Converting dictionary 51014_RW2Xgearcheck_2.2727_b_output.csv to file
+2014-05-11 16:31:34,005 - DEBUG - File will be saved at C:\Users\Sean\Desktop\51014_RW2Xgearcheck_2.2727_b_output.csv
+2014-05-11 16:31:34,098 - INFO - Data converted and saved to C:\Users\Sean\Desktop\51014_RW2Xgearcheck_2.2727_b_output.csv
+2014-05-11 16:31:34,232 - INFO - Data extraction from <type 'file'> complete
+2014-05-11 16:31:34,539 - INFO - Z:\Design files (technical)\RW-2x Gearing\051014_leanangle_gearing\test_in_bestaero\OPTIONS_bestaero.csv successfully edited
+2014-05-11 16:33:33,673 - DEBUG - Entered path: Z:\Design files (technical)\RW-2x Gearing\051014_leanangle_gearing\test_in_bestaero\OPTIONS_bestaero.csv
+2014-05-11 16:33:33,673 - INFO - STARTING FUNCTIONS FileToParams
+2014-05-11 16:33:33,673 - DEBUG - Options file location passed: Z:\Design files (technical)\RW-2x Gearing\051014_leanangle_gearing\test_in_bestaero\OPTIONS_bestaero.csv
+2014-05-11 16:33:33,867 - INFO - Current file to search for data: 51014_RW2Xgearcheck_1.6522_b.csv
+2014-05-11 16:33:34,003 - INFO - Data extraction from 51014_RW2Xgearcheck_1.6522_b.csv complete
+2014-05-11 16:33:34,005 - INFO - Current file to search for data: 51014_RW2Xgearcheck_1.7273_b.csv
+2014-05-11 16:33:34,138 - INFO - Data extraction from 51014_RW2Xgearcheck_1.7273_b.csv complete
+2014-05-11 16:33:34,141 - INFO - Current file to search for data: 51014_RW2Xgearcheck_1.8095_b.csv
+2014-05-11 16:33:34,279 - INFO - Data extraction from 51014_RW2Xgearcheck_1.8095_b.csv complete
+2014-05-11 16:33:34,280 - INFO - Current file to search for data: 51014_RW2Xgearcheck_1.8261_b.csv
+2014-05-11 16:33:34,414 - INFO - Data extraction from 51014_RW2Xgearcheck_1.8261_b.csv complete
+2014-05-11 16:33:34,415 - INFO - Current file to search for data: 51014_RW2Xgearcheck_1.9091_b.csv
+2014-05-11 16:33:34,549 - INFO - Data extraction from 51014_RW2Xgearcheck_1.9091_b.csv complete
+2014-05-11 16:33:34,552 - INFO - Current file to search for data: 51014_RW2Xgearcheck_2.0000_b.csv
+2014-05-11 16:33:34,686 - INFO - Data extraction from 51014_RW2Xgearcheck_2.0000_b.csv complete
+2014-05-11 16:33:34,687 - INFO - Current file to search for data: 51014_RW2Xgearcheck_2.1740_b.csv
+2014-05-11 16:33:34,822 - INFO - Data extraction from 51014_RW2Xgearcheck_2.1740_b.csv complete
+2014-05-11 16:33:34,823 - INFO - Current file to search for data: 51014_RW2Xgearcheck_2.2727_b.csv
+2014-05-11 16:33:34,961 - INFO - Data extraction from 51014_RW2Xgearcheck_2.2727_b.csv complete
+2014-05-11 16:33:34,963 - INFO - Files have been converted to dictionaries
+2014-05-11 16:33:35,115 - INFO - STARTING Simulation.py
+2014-05-11 16:33:35,115 - INFO - Checking to make sure file 51014_RW2Xgearcheck_1.6522_b_output.csv has needed parameters...
+2014-05-11 16:33:35,117 - INFO - Step found
+2014-05-11 16:33:35,117 - INFO - total_time found
+2014-05-11 16:33:35,117 - INFO - gearing found
+2014-05-11 16:33:35,117 - INFO - rider_mass found
+2014-05-11 16:33:35,118 - INFO - bike_mass found
+2014-05-11 16:33:35,118 - INFO - gravity found
+2014-05-11 16:33:35,118 - INFO - air_resistance found
+2014-05-11 16:33:35,118 - INFO - air_density found
+2014-05-11 16:33:35,118 - INFO - frontal_area found
+2014-05-11 16:33:35,118 - INFO - rolling_resistance found
+2014-05-11 16:33:35,118 - INFO - top_torque found
+2014-05-11 16:33:35,118 - INFO - top_rpm found
+2014-05-11 16:33:35,118 - INFO - motor_top_power found
+2014-05-11 16:33:35,119 - INFO - chain_efficiency found
+2014-05-11 16:33:35,119 - INFO - battery_efficiency found
+2014-05-11 16:33:35,119 - INFO - motor_torque_constant found
+2014-05-11 16:33:35,119 - INFO - motor_rpm_constant found
+2014-05-11 16:33:35,119 - INFO - motor_thermal_conductivity
+2014-05-11 16:33:35,121 - INFO - motor_heat_capacity
+2014-05-11 16:33:35,121 - INFO - coolant_temp
+2014-05-11 16:33:35,121 - INFO - max_motor_temp
+2014-05-11 16:33:35,121 - INFO - series_cells found
+2014-05-11 16:33:35,121 - INFO - max_amphour
+2014-05-11 16:33:35,121 - INFO - batt_max_current
+2014-05-11 16:33:35,121 - INFO - max_distance_travel found
+2014-05-11 16:33:35,121 - INFO - dist_to_speed_lookup found
+2014-05-11 16:33:35,122 - INFO - dist_to_alt_lookup found
+2014-05-11 16:33:35,122 - INFO - motor_controller_eff_lookup found
+2014-05-11 16:33:35,122 - INFO - motor_eff_lookup found
+2014-05-11 16:33:35,122 - INFO - soc_to_voltage_lookup found
+2014-05-11 16:33:35,124 - INFO - throttlemap_lookup found
+2014-05-11 16:33:35,124 - INFO - lean_angle_lookup found
+2014-05-11 16:33:35,124 - INFO - tyreA found
+2014-05-11 16:33:35,124 - INFO - tyreB found
+2014-05-11 16:33:35,125 - INFO - tyreC found
+2014-05-11 16:33:35,125 - INFO - top_lean_angle found
+2014-05-11 16:33:36,622 - INFO - Lookup Files\disttospeed.csv loaded
+2014-05-11 16:33:37,033 - INFO - Lookup Files\aee.csv loaded
+2014-05-11 16:33:37,243 - INFO - Lookup Files\disttoalt.csv loaded
+2014-05-11 16:33:37,388 - INFO - Lookup Files\throttle.csv loaded
+2014-05-11 16:33:37,611 - INFO - Lookup Files\lean_IOM_video_data.csv loaded
+2014-05-11 16:33:37,753 - INFO - Lookup Files\Tritium_ws200_eff.csv loaded
+2014-05-11 16:33:37,943 - INFO - Lookup Files\Emrax_eff.csv loaded
+2014-05-11 16:33:42,822 - INFO - Converted 51014_RW2Xgearcheck_1.6522_b_output.csv to a dictionary successfully
+2014-05-11 16:33:42,822 - INFO - Checking to make sure file 51014_RW2Xgearcheck_1.7273_b_output.csv has needed parameters...
+2014-05-11 16:33:42,822 - INFO - Step found
+2014-05-11 16:33:42,822 - INFO - total_time found
+2014-05-11 16:33:42,822 - INFO - gearing found
+2014-05-11 16:33:42,822 - INFO - rider_mass found
+2014-05-11 16:33:42,822 - INFO - bike_mass found
+2014-05-11 16:33:42,822 - INFO - gravity found
+2014-05-11 16:33:42,822 - INFO - air_resistance found
+2014-05-11 16:33:42,822 - INFO - air_density found
+2014-05-11 16:33:42,822 - INFO - frontal_area found
+2014-05-11 16:33:42,822 - INFO - rolling_resistance found
+2014-05-11 16:33:42,822 - INFO - top_torque found
+2014-05-11 16:33:42,822 - INFO - top_rpm found
+2014-05-11 16:33:42,822 - INFO - motor_top_power found
+2014-05-11 16:33:42,822 - INFO - chain_efficiency found
+2014-05-11 16:33:42,822 - INFO - battery_efficiency found
+2014-05-11 16:33:42,822 - INFO - motor_torque_constant found
+2014-05-11 16:33:42,822 - INFO - motor_rpm_constant found
+2014-05-11 16:33:42,822 - INFO - motor_thermal_conductivity
+2014-05-11 16:33:42,822 - INFO - motor_heat_capacity
+2014-05-11 16:33:42,822 - INFO - coolant_temp
+2014-05-11 16:33:42,822 - INFO - max_motor_temp
+2014-05-11 16:33:42,822 - INFO - series_cells found
+2014-05-11 16:33:42,822 - INFO - max_amphour
+2014-05-11 16:33:42,823 - INFO - batt_max_current
+2014-05-11 16:33:42,823 - INFO - max_distance_travel found
+2014-05-11 16:33:42,823 - INFO - dist_to_speed_lookup found
+2014-05-11 16:33:42,823 - INFO - dist_to_alt_lookup found
+2014-05-11 16:33:42,823 - INFO - motor_controller_eff_lookup found
+2014-05-11 16:33:42,823 - INFO - motor_eff_lookup found
+2014-05-11 16:33:42,823 - INFO - soc_to_voltage_lookup found
+2014-05-11 16:33:42,823 - INFO - throttlemap_lookup found
+2014-05-11 16:33:42,823 - INFO - lean_angle_lookup found
+2014-05-11 16:33:42,823 - INFO - tyreA found
+2014-05-11 16:33:42,823 - INFO - tyreB found
+2014-05-11 16:33:42,823 - INFO - tyreC found
+2014-05-11 16:33:42,823 - INFO - top_lean_angle found
+2014-05-11 16:33:43,096 - INFO - Lookup Files\disttospeed.csv loaded
+2014-05-11 16:33:43,210 - INFO - Lookup Files\aee.csv loaded
+2014-05-11 16:33:43,288 - INFO - Lookup Files\disttoalt.csv loaded
+2014-05-11 16:33:43,336 - INFO - Lookup Files\throttle.csv loaded
+2014-05-11 16:33:43,397 - INFO - Lookup Files\lean_IOM_video_data.csv loaded
+2014-05-11 16:33:43,453 - INFO - Lookup Files\Tritium_ws200_eff.csv loaded
+2014-05-11 16:33:43,539 - INFO - Lookup Files\Emrax_eff.csv loaded
+2014-05-11 16:33:47,813 - INFO - Converted 51014_RW2Xgearcheck_1.7273_b_output.csv to a dictionary successfully
+2014-05-11 16:33:47,813 - INFO - Checking to make sure file 51014_RW2Xgearcheck_1.8095_b_output.csv has needed parameters...
+2014-05-11 16:33:47,813 - INFO - Step found
+2014-05-11 16:33:47,813 - INFO - total_time found
+2014-05-11 16:33:47,813 - INFO - gearing found
+2014-05-11 16:33:47,813 - INFO - rider_mass found
+2014-05-11 16:33:47,813 - INFO - bike_mass found
+2014-05-11 16:33:47,813 - INFO - gravity found
+2014-05-11 16:33:47,815 - INFO - air_resistance found
+2014-05-11 16:33:47,815 - INFO - air_density found
+2014-05-11 16:33:47,815 - INFO - frontal_area found
+2014-05-11 16:33:47,815 - INFO - rolling_resistance found
+2014-05-11 16:33:47,815 - INFO - top_torque found
+2014-05-11 16:33:47,815 - INFO - top_rpm found
+2014-05-11 16:33:47,815 - INFO - motor_top_power found
+2014-05-11 16:33:47,815 - INFO - chain_efficiency found
+2014-05-11 16:33:47,815 - INFO - battery_efficiency found
+2014-05-11 16:33:47,815 - INFO - motor_torque_constant found
+2014-05-11 16:33:47,815 - INFO - motor_rpm_constant found
+2014-05-11 16:33:47,815 - INFO - motor_thermal_conductivity
+2014-05-11 16:33:47,815 - INFO - motor_heat_capacity
+2014-05-11 16:33:47,815 - INFO - coolant_temp
+2014-05-11 16:33:47,815 - INFO - max_motor_temp
+2014-05-11 16:33:47,815 - INFO - series_cells found
+2014-05-11 16:33:47,815 - INFO - max_amphour
+2014-05-11 16:33:47,815 - INFO - batt_max_current
+2014-05-11 16:33:47,815 - INFO - max_distance_travel found
+2014-05-11 16:33:47,815 - INFO - dist_to_speed_lookup found
+2014-05-11 16:33:47,815 - INFO - dist_to_alt_lookup found
+2014-05-11 16:33:47,815 - INFO - motor_controller_eff_lookup found
+2014-05-11 16:33:47,815 - INFO - motor_eff_lookup found
+2014-05-11 16:33:47,815 - INFO - soc_to_voltage_lookup found
+2014-05-11 16:33:47,815 - INFO - throttlemap_lookup found
+2014-05-11 16:33:47,815 - INFO - lean_angle_lookup found
+2014-05-11 16:33:47,815 - INFO - tyreA found
+2014-05-11 16:33:47,815 - INFO - tyreB found
+2014-05-11 16:33:47,816 - INFO - tyreC found
+2014-05-11 16:33:47,816 - INFO - top_lean_angle found
+2014-05-11 16:33:48,171 - INFO - Lookup Files\disttospeed.csv loaded
+2014-05-11 16:33:48,346 - INFO - Lookup Files\aee.csv loaded
+2014-05-11 16:33:48,480 - INFO - Lookup Files\disttoalt.csv loaded
+2014-05-11 16:33:48,572 - INFO - Lookup Files\throttle.csv loaded
+2014-05-11 16:33:48,678 - INFO - Lookup Files\lean_IOM_video_data.csv loaded
+2014-05-11 16:33:48,776 - INFO - Lookup Files\Tritium_ws200_eff.csv loaded
+2014-05-11 16:33:48,927 - INFO - Lookup Files\Emrax_eff.csv loaded
+2014-05-11 16:33:52,667 - INFO - Converted 51014_RW2Xgearcheck_1.8095_b_output.csv to a dictionary successfully
+2014-05-11 16:33:52,667 - INFO - Checking to make sure file 51014_RW2Xgearcheck_1.8261_b_output.csv has needed parameters...
+2014-05-11 16:33:52,667 - INFO - Step found
+2014-05-11 16:33:52,668 - INFO - total_time found
+2014-05-11 16:33:52,668 - INFO - gearing found
+2014-05-11 16:33:52,668 - INFO - rider_mass found
+2014-05-11 16:33:52,668 - INFO - bike_mass found
+2014-05-11 16:33:52,668 - INFO - gravity found
+2014-05-11 16:33:52,668 - INFO - air_resistance found
+2014-05-11 16:33:52,668 - INFO - air_density found
+2014-05-11 16:33:52,668 - INFO - frontal_area found
+2014-05-11 16:33:52,668 - INFO - rolling_resistance found
+2014-05-11 16:33:52,668 - INFO - top_torque found
+2014-05-11 16:33:52,668 - INFO - top_rpm found
+2014-05-11 16:33:52,668 - INFO - motor_top_power found
+2014-05-11 16:33:52,670 - INFO - chain_efficiency found
+2014-05-11 16:33:52,670 - INFO - battery_efficiency found
+2014-05-11 16:33:52,670 - INFO - motor_torque_constant found
+2014-05-11 16:33:52,670 - INFO - motor_rpm_constant found
+2014-05-11 16:33:52,670 - INFO - motor_thermal_conductivity
+2014-05-11 16:33:52,670 - INFO - motor_heat_capacity
+2014-05-11 16:33:52,670 - INFO - coolant_temp
+2014-05-11 16:33:52,670 - INFO - max_motor_temp
+2014-05-11 16:33:52,670 - INFO - series_cells found
+2014-05-11 16:33:52,670 - INFO - max_amphour
+2014-05-11 16:33:52,670 - INFO - batt_max_current
+2014-05-11 16:33:52,670 - INFO - max_distance_travel found
+2014-05-11 16:33:52,670 - INFO - dist_to_speed_lookup found
+2014-05-11 16:33:52,670 - INFO - dist_to_alt_lookup found
+2014-05-11 16:33:52,671 - INFO - motor_controller_eff_lookup found
+2014-05-11 16:33:52,671 - INFO - motor_eff_lookup found
+2014-05-11 16:33:52,671 - INFO - soc_to_voltage_lookup found
+2014-05-11 16:33:52,671 - INFO - throttlemap_lookup found
+2014-05-11 16:33:52,671 - INFO - lean_angle_lookup found
+2014-05-11 16:33:52,671 - INFO - tyreA found
+2014-05-11 16:33:52,671 - INFO - tyreB found
+2014-05-11 16:33:52,671 - INFO - tyreC found
+2014-05-11 16:33:52,671 - INFO - top_lean_angle found
+2014-05-11 16:33:52,947 - INFO - Lookup Files\disttospeed.csv loaded
+2014-05-11 16:33:53,058 - INFO - Lookup Files\aee.csv loaded
+2014-05-11 16:33:53,135 - INFO - Lookup Files\disttoalt.csv loaded
+2014-05-11 16:33:53,180 - INFO - Lookup Files\throttle.csv loaded
+2014-05-11 16:33:53,244 - INFO - Lookup Files\lean_IOM_video_data.csv loaded
+2014-05-11 16:33:53,301 - INFO - Lookup Files\Tritium_ws200_eff.csv loaded
+2014-05-11 16:33:53,410 - INFO - Lookup Files\Emrax_eff.csv loaded
+2014-05-11 16:33:57,061 - INFO - Converted 51014_RW2Xgearcheck_1.8261_b_output.csv to a dictionary successfully
+2014-05-11 16:33:57,061 - INFO - Checking to make sure file 51014_RW2Xgearcheck_1.9091_b_output.csv has needed parameters...
+2014-05-11 16:33:57,062 - INFO - Step found
+2014-05-11 16:33:57,062 - INFO - total_time found
+2014-05-11 16:33:57,062 - INFO - gearing found
+2014-05-11 16:33:57,062 - INFO - rider_mass found
+2014-05-11 16:33:57,062 - INFO - bike_mass found
+2014-05-11 16:33:57,062 - INFO - gravity found
+2014-05-11 16:33:57,062 - INFO - air_resistance found
+2014-05-11 16:33:57,062 - INFO - air_density found
+2014-05-11 16:33:57,062 - INFO - frontal_area found
+2014-05-11 16:33:57,062 - INFO - rolling_resistance found
+2014-05-11 16:33:57,062 - INFO - top_torque found
+2014-05-11 16:33:57,062 - INFO - top_rpm found
+2014-05-11 16:33:57,062 - INFO - motor_top_power found
+2014-05-11 16:33:57,062 - INFO - chain_efficiency found
+2014-05-11 16:33:57,062 - INFO - battery_efficiency found
+2014-05-11 16:33:57,062 - INFO - motor_torque_constant found
+2014-05-11 16:33:57,062 - INFO - motor_rpm_constant found
+2014-05-11 16:33:57,062 - INFO - motor_thermal_conductivity
+2014-05-11 16:33:57,062 - INFO - motor_heat_capacity
+2014-05-11 16:33:57,062 - INFO - coolant_temp
+2014-05-11 16:33:57,062 - INFO - max_motor_temp
+2014-05-11 16:33:57,062 - INFO - series_cells found
+2014-05-11 16:33:57,062 - INFO - max_amphour
+2014-05-11 16:33:57,062 - INFO - batt_max_current
+2014-05-11 16:33:57,062 - INFO - max_distance_travel found
+2014-05-11 16:33:57,063 - INFO - dist_to_speed_lookup found
+2014-05-11 16:33:57,063 - INFO - dist_to_alt_lookup found
+2014-05-11 16:33:57,063 - INFO - motor_controller_eff_lookup found
+2014-05-11 16:33:57,063 - INFO - motor_eff_lookup found
+2014-05-11 16:33:57,063 - INFO - soc_to_voltage_lookup found
+2014-05-11 16:33:57,063 - INFO - throttlemap_lookup found
+2014-05-11 16:33:57,063 - INFO - lean_angle_lookup found
+2014-05-11 16:33:57,063 - INFO - tyreA found
+2014-05-11 16:33:57,063 - INFO - tyreB found
+2014-05-11 16:33:57,063 - INFO - tyreC found
+2014-05-11 16:33:57,063 - INFO - top_lean_angle found
+2014-05-11 16:33:57,326 - INFO - Lookup Files\disttospeed.csv loaded
+2014-05-11 16:33:57,467 - INFO - Lookup Files\aee.csv loaded
+2014-05-11 16:33:57,549 - INFO - Lookup Files\disttoalt.csv loaded
+2014-05-11 16:33:57,601 - INFO - Lookup Files\throttle.csv loaded
+2014-05-11 16:33:57,677 - INFO - Lookup Files\lean_IOM_video_data.csv loaded
+2014-05-11 16:33:57,732 - INFO - Lookup Files\Tritium_ws200_eff.csv loaded
+2014-05-11 16:33:57,805 - INFO - Lookup Files\Emrax_eff.csv loaded
+2014-05-11 16:34:04,285 - INFO - Converted 51014_RW2Xgearcheck_1.9091_b_output.csv to a dictionary successfully
+2014-05-11 16:34:04,285 - INFO - Checking to make sure file 51014_RW2Xgearcheck_2.0000_b_output.csv has needed parameters...
+2014-05-11 16:34:04,285 - INFO - Step found
+2014-05-11 16:34:04,286 - INFO - total_time found
+2014-05-11 16:34:04,286 - INFO - gearing found
+2014-05-11 16:34:04,286 - INFO - rider_mass found
+2014-05-11 16:34:04,286 - INFO - bike_mass found
+2014-05-11 16:34:04,286 - INFO - gravity found
+2014-05-11 16:34:04,286 - INFO - air_resistance found
+2014-05-11 16:34:04,286 - INFO - air_density found
+2014-05-11 16:34:04,286 - INFO - frontal_area found
+2014-05-11 16:34:04,286 - INFO - rolling_resistance found
+2014-05-11 16:34:04,286 - INFO - top_torque found
+2014-05-11 16:34:04,286 - INFO - top_rpm found
+2014-05-11 16:34:04,286 - INFO - motor_top_power found
+2014-05-11 16:34:04,286 - INFO - chain_efficiency found
+2014-05-11 16:34:04,286 - INFO - battery_efficiency found
+2014-05-11 16:34:04,286 - INFO - motor_torque_constant found
+2014-05-11 16:34:04,286 - INFO - motor_rpm_constant found
+2014-05-11 16:34:04,286 - INFO - motor_thermal_conductivity
+2014-05-11 16:34:04,286 - INFO - motor_heat_capacity
+2014-05-11 16:34:04,286 - INFO - coolant_temp
+2014-05-11 16:34:04,286 - INFO - max_motor_temp
+2014-05-11 16:34:04,286 - INFO - series_cells found
+2014-05-11 16:34:04,286 - INFO - max_amphour
+2014-05-11 16:34:04,286 - INFO - batt_max_current
+2014-05-11 16:34:04,286 - INFO - max_distance_travel found
+2014-05-11 16:34:04,288 - INFO - dist_to_speed_lookup found
+2014-05-11 16:34:04,288 - INFO - dist_to_alt_lookup found
+2014-05-11 16:34:04,288 - INFO - motor_controller_eff_lookup found
+2014-05-11 16:34:04,288 - INFO - motor_eff_lookup found
+2014-05-11 16:34:04,288 - INFO - soc_to_voltage_lookup found
+2014-05-11 16:34:04,288 - INFO - throttlemap_lookup found
+2014-05-11 16:34:04,288 - INFO - lean_angle_lookup found
+2014-05-11 16:34:04,288 - INFO - tyreA found
+2014-05-11 16:34:04,288 - INFO - tyreB found
+2014-05-11 16:34:04,288 - INFO - tyreC found
+2014-05-11 16:34:04,288 - INFO - top_lean_angle found
+2014-05-11 16:34:04,641 - INFO - Lookup Files\disttospeed.csv loaded
+2014-05-11 16:34:04,808 - INFO - Lookup Files\aee.csv loaded
+2014-05-11 16:34:04,934 - INFO - Lookup Files\disttoalt.csv loaded
+2014-05-11 16:34:05,032 - INFO - Lookup Files\throttle.csv loaded
+2014-05-11 16:34:05,155 - INFO - Lookup Files\lean_IOM_video_data.csv loaded
+2014-05-11 16:34:05,250 - INFO - Lookup Files\Tritium_ws200_eff.csv loaded
+2014-05-11 16:34:05,408 - INFO - Lookup Files\Emrax_eff.csv loaded
+2014-05-11 16:34:08,772 - INFO - Converted 51014_RW2Xgearcheck_2.0000_b_output.csv to a dictionary successfully
+2014-05-11 16:34:08,772 - INFO - Checking to make sure file 51014_RW2Xgearcheck_2.1740_b_output.csv has needed parameters...
+2014-05-11 16:34:08,773 - INFO - Step found
+2014-05-11 16:34:08,773 - INFO - total_time found
+2014-05-11 16:34:08,773 - INFO - gearing found
+2014-05-11 16:34:08,773 - INFO - rider_mass found
+2014-05-11 16:34:08,773 - INFO - bike_mass found
+2014-05-11 16:34:08,773 - INFO - gravity found
+2014-05-11 16:34:08,773 - INFO - air_resistance found
+2014-05-11 16:34:08,773 - INFO - air_density found
+2014-05-11 16:34:08,773 - INFO - frontal_area found
+2014-05-11 16:34:08,773 - INFO - rolling_resistance found
+2014-05-11 16:34:08,773 - INFO - top_torque found
+2014-05-11 16:34:08,773 - INFO - top_rpm found
+2014-05-11 16:34:08,773 - INFO - motor_top_power found
+2014-05-11 16:34:08,773 - INFO - chain_efficiency found
+2014-05-11 16:34:08,773 - INFO - battery_efficiency found
+2014-05-11 16:34:08,773 - INFO - motor_torque_constant found
+2014-05-11 16:34:08,773 - INFO - motor_rpm_constant found
+2014-05-11 16:34:08,773 - INFO - motor_thermal_conductivity
+2014-05-11 16:34:08,773 - INFO - motor_heat_capacity
+2014-05-11 16:34:08,773 - INFO - coolant_temp
+2014-05-11 16:34:08,773 - INFO - max_motor_temp
+2014-05-11 16:34:08,773 - INFO - series_cells found
+2014-05-11 16:34:08,773 - INFO - max_amphour
+2014-05-11 16:34:08,773 - INFO - batt_max_current
+2014-05-11 16:34:08,773 - INFO - max_distance_travel found
+2014-05-11 16:34:08,773 - INFO - dist_to_speed_lookup found
+2014-05-11 16:34:08,773 - INFO - dist_to_alt_lookup found
+2014-05-11 16:34:08,775 - INFO - motor_controller_eff_lookup found
+2014-05-11 16:34:08,775 - INFO - motor_eff_lookup found
+2014-05-11 16:34:08,775 - INFO - soc_to_voltage_lookup found
+2014-05-11 16:34:08,775 - INFO - throttlemap_lookup found
+2014-05-11 16:34:08,775 - INFO - lean_angle_lookup found
+2014-05-11 16:34:08,775 - INFO - tyreA found
+2014-05-11 16:34:08,775 - INFO - tyreB found
+2014-05-11 16:34:08,775 - INFO - tyreC found
+2014-05-11 16:34:08,775 - INFO - top_lean_angle found
+2014-05-11 16:34:09,059 - INFO - Lookup Files\disttospeed.csv loaded
+2014-05-11 16:34:09,198 - INFO - Lookup Files\aee.csv loaded
+2014-05-11 16:34:09,296 - INFO - Lookup Files\disttoalt.csv loaded
+2014-05-11 16:34:09,349 - INFO - Lookup Files\throttle.csv loaded
+2014-05-11 16:34:09,421 - INFO - Lookup Files\lean_IOM_video_data.csv loaded
+2014-05-11 16:34:09,473 - INFO - Lookup Files\Tritium_ws200_eff.csv loaded
+2014-05-11 16:34:09,582 - INFO - Lookup Files\Emrax_eff.csv loaded
+2014-05-11 16:34:12,917 - INFO - Converted 51014_RW2Xgearcheck_2.1740_b_output.csv to a dictionary successfully
+2014-05-11 16:34:12,917 - INFO - Checking to make sure file 51014_RW2Xgearcheck_2.2727_b_output.csv has needed parameters...
+2014-05-11 16:34:12,918 - INFO - Step found
+2014-05-11 16:34:12,918 - INFO - total_time found
+2014-05-11 16:34:12,918 - INFO - gearing found
+2014-05-11 16:34:12,918 - INFO - rider_mass found
+2014-05-11 16:34:12,918 - INFO - bike_mass found
+2014-05-11 16:34:12,918 - INFO - gravity found
+2014-05-11 16:34:12,918 - INFO - air_resistance found
+2014-05-11 16:34:12,918 - INFO - air_density found
+2014-05-11 16:34:12,918 - INFO - frontal_area found
+2014-05-11 16:34:12,918 - INFO - rolling_resistance found
+2014-05-11 16:34:12,918 - INFO - top_torque found
+2014-05-11 16:34:12,918 - INFO - top_rpm found
+2014-05-11 16:34:12,918 - INFO - motor_top_power found
+2014-05-11 16:34:12,920 - INFO - chain_efficiency found
+2014-05-11 16:34:12,920 - INFO - battery_efficiency found
+2014-05-11 16:34:12,920 - INFO - motor_torque_constant found
+2014-05-11 16:34:12,920 - INFO - motor_rpm_constant found
+2014-05-11 16:34:12,920 - INFO - motor_thermal_conductivity
+2014-05-11 16:34:12,920 - INFO - motor_heat_capacity
+2014-05-11 16:34:12,920 - INFO - coolant_temp
+2014-05-11 16:34:12,920 - INFO - max_motor_temp
+2014-05-11 16:34:12,920 - INFO - series_cells found
+2014-05-11 16:34:12,920 - INFO - max_amphour
+2014-05-11 16:34:12,920 - INFO - batt_max_current
+2014-05-11 16:34:12,920 - INFO - max_distance_travel found
+2014-05-11 16:34:12,920 - INFO - dist_to_speed_lookup found
+2014-05-11 16:34:12,920 - INFO - dist_to_alt_lookup found
+2014-05-11 16:34:12,921 - INFO - motor_controller_eff_lookup found
+2014-05-11 16:34:12,921 - INFO - motor_eff_lookup found
+2014-05-11 16:34:12,921 - INFO - soc_to_voltage_lookup found
+2014-05-11 16:34:12,921 - INFO - throttlemap_lookup found
+2014-05-11 16:34:12,921 - INFO - lean_angle_lookup found
+2014-05-11 16:34:12,921 - INFO - tyreA found
+2014-05-11 16:34:12,921 - INFO - tyreB found
+2014-05-11 16:34:12,921 - INFO - tyreC found
+2014-05-11 16:34:12,921 - INFO - top_lean_angle found
+2014-05-11 16:34:13,211 - INFO - Lookup Files\disttospeed.csv loaded
+2014-05-11 16:34:13,311 - INFO - Lookup Files\aee.csv loaded
+2014-05-11 16:34:13,394 - INFO - Lookup Files\disttoalt.csv loaded
+2014-05-11 16:34:13,450 - INFO - Lookup Files\throttle.csv loaded
+2014-05-11 16:34:13,535 - INFO - Lookup Files\lean_IOM_video_data.csv loaded
+2014-05-11 16:34:13,601 - INFO - Lookup Files\Tritium_ws200_eff.csv loaded
+2014-05-11 16:34:13,701 - INFO - Lookup Files\Emrax_eff.csv loaded
+2014-05-11 16:34:17,390 - INFO - Converted 51014_RW2Xgearcheck_2.2727_b_output.csv to a dictionary successfully
+2014-05-11 16:34:17,390 - INFO - ENDING Simulation.py
+2014-05-11 16:34:17,392 - DEBUG - Entered out path: Z:\Design files (technical)\RW-2x Gearing\051014_leanangle_gearing\test_out_bestaero
+2014-05-11 16:34:17,394 - INFO - STARTING FUNCTION OutputFile
+2014-05-11 16:34:17,394 - INFO - Converting dictionary 51014_RW2Xgearcheck_1.6522_b_output.csv to file
+2014-05-11 16:34:17,394 - DEBUG - File will be saved at Z:\Design files (technical)\RW-2x Gearing\051014_leanangle_gearing\test_out_bestaero\51014_RW2Xgearcheck_1.6522_b_output.csv
+2014-05-11 16:34:36,117 - INFO - Data converted and saved to Z:\Design files (technical)\RW-2x Gearing\051014_leanangle_gearing\test_out_bestaero\51014_RW2Xgearcheck_1.6522_b_output.csv
+2014-05-11 16:34:36,118 - INFO - Converting dictionary 51014_RW2Xgearcheck_1.7273_b_output.csv to file
+2014-05-11 16:34:36,118 - DEBUG - File will be saved at Z:\Design files (technical)\RW-2x Gearing\051014_leanangle_gearing\test_out_bestaero\51014_RW2Xgearcheck_1.7273_b_output.csv
+2014-05-11 16:34:54,538 - INFO - Data converted and saved to Z:\Design files (technical)\RW-2x Gearing\051014_leanangle_gearing\test_out_bestaero\51014_RW2Xgearcheck_1.7273_b_output.csv
+2014-05-11 16:34:54,539 - INFO - Converting dictionary 51014_RW2Xgearcheck_1.8095_b_output.csv to file
+2014-05-11 16:34:54,539 - DEBUG - File will be saved at Z:\Design files (technical)\RW-2x Gearing\051014_leanangle_gearing\test_out_bestaero\51014_RW2Xgearcheck_1.8095_b_output.csv
+2014-05-11 16:35:14,392 - INFO - Data converted and saved to Z:\Design files (technical)\RW-2x Gearing\051014_leanangle_gearing\test_out_bestaero\51014_RW2Xgearcheck_1.8095_b_output.csv
+2014-05-11 16:35:14,394 - INFO - Converting dictionary 51014_RW2Xgearcheck_1.8261_b_output.csv to file
+2014-05-11 16:35:14,394 - DEBUG - File will be saved at Z:\Design files (technical)\RW-2x Gearing\051014_leanangle_gearing\test_out_bestaero\51014_RW2Xgearcheck_1.8261_b_output.csv
+2014-05-11 16:35:32,983 - INFO - Data converted and saved to Z:\Design files (technical)\RW-2x Gearing\051014_leanangle_gearing\test_out_bestaero\51014_RW2Xgearcheck_1.8261_b_output.csv
+2014-05-11 16:35:32,984 - INFO - Converting dictionary 51014_RW2Xgearcheck_1.9091_b_output.csv to file
+2014-05-11 16:35:32,984 - DEBUG - File will be saved at Z:\Design files (technical)\RW-2x Gearing\051014_leanangle_gearing\test_out_bestaero\51014_RW2Xgearcheck_1.9091_b_output.csv
+2014-05-11 16:35:51,499 - INFO - Data converted and saved to Z:\Design files (technical)\RW-2x Gearing\051014_leanangle_gearing\test_out_bestaero\51014_RW2Xgearcheck_1.9091_b_output.csv
+2014-05-11 16:35:51,499 - INFO - Converting dictionary 51014_RW2Xgearcheck_2.0000_b_output.csv to file
+2014-05-11 16:35:51,500 - DEBUG - File will be saved at Z:\Design files (technical)\RW-2x Gearing\051014_leanangle_gearing\test_out_bestaero\51014_RW2Xgearcheck_2.0000_b_output.csv
+2014-05-11 16:36:10,348 - INFO - Data converted and saved to Z:\Design files (technical)\RW-2x Gearing\051014_leanangle_gearing\test_out_bestaero\51014_RW2Xgearcheck_2.0000_b_output.csv
+2014-05-11 16:36:10,349 - INFO - Converting dictionary 51014_RW2Xgearcheck_2.1740_b_output.csv to file
+2014-05-11 16:36:10,349 - DEBUG - File will be saved at Z:\Design files (technical)\RW-2x Gearing\051014_leanangle_gearing\test_out_bestaero\51014_RW2Xgearcheck_2.1740_b_output.csv
+2014-05-11 16:36:30,273 - INFO - Data converted and saved to Z:\Design files (technical)\RW-2x Gearing\051014_leanangle_gearing\test_out_bestaero\51014_RW2Xgearcheck_2.1740_b_output.csv
+2014-05-11 16:36:30,273 - INFO - Converting dictionary 51014_RW2Xgearcheck_2.2727_b_output.csv to file
+2014-05-11 16:36:30,273 - DEBUG - File will be saved at Z:\Design files (technical)\RW-2x Gearing\051014_leanangle_gearing\test_out_bestaero\51014_RW2Xgearcheck_2.2727_b_output.csv
+2014-05-11 16:36:50,071 - INFO - Data converted and saved to Z:\Design files (technical)\RW-2x Gearing\051014_leanangle_gearing\test_out_bestaero\51014_RW2Xgearcheck_2.2727_b_output.csv
+2014-05-11 16:36:50,253 - INFO - Data extraction from <type 'file'> complete
+2014-05-11 16:36:50,571 - INFO - Z:\Design files (technical)\RW-2x Gearing\051014_leanangle_gearing\test_in_bestaero\OPTIONS_bestaero.csv successfully edited
+2014-05-11 16:37:25,707 - INFO - STARTING FUNCTIONS FileToParams
+2014-05-11 16:37:25,709 - DEBUG - Options file location passed: Z:\Design files (technical)\RW-2x Gearing\051014_leanangle_gearing\test_in_worstaero\OPTIONS_worstaero.csv
+2014-05-11 16:37:25,793 - INFO - Current file to search for data: 51014_RW2Xgearcheck_1.6522.csv
+2014-05-11 16:37:25,948 - INFO - Data extraction from 51014_RW2Xgearcheck_1.6522.csv complete
+2014-05-11 16:37:25,950 - INFO - Current file to search for data: 51014_RW2Xgearcheck_1.7273.csv
+2014-05-11 16:37:26,111 - INFO - Data extraction from 51014_RW2Xgearcheck_1.7273.csv complete
+2014-05-11 16:37:26,114 - INFO - Current file to search for data: 51014_RW2Xgearcheck_1.8095.csv
+2014-05-11 16:37:26,263 - INFO - Data extraction from 51014_RW2Xgearcheck_1.8095.csv complete
+2014-05-11 16:37:26,266 - INFO - Current file to search for data: 51014_RW2Xgearcheck_1.8261.csv
+2014-05-11 16:37:26,489 - INFO - Data extraction from 51014_RW2Xgearcheck_1.8261.csv complete
+2014-05-11 16:37:26,492 - INFO - Current file to search for data: 51014_RW2Xgearcheck_1.9091.csv
+2014-05-11 16:37:26,680 - INFO - Data extraction from 51014_RW2Xgearcheck_1.9091.csv complete
+2014-05-11 16:37:26,681 - INFO - Current file to search for data: 51014_RW2Xgearcheck_2.0000.csv
+2014-05-11 16:37:26,823 - INFO - Data extraction from 51014_RW2Xgearcheck_2.0000.csv complete
+2014-05-11 16:37:26,828 - INFO - Current file to search for data: 51014_RW2Xgearcheck_2.1740.csv
+2014-05-11 16:37:26,971 - INFO - Data extraction from 51014_RW2Xgearcheck_2.1740.csv complete
+2014-05-11 16:37:26,973 - INFO - Current file to search for data: 51014_RW2Xgearcheck_2.2727.csv
+2014-05-11 16:37:27,117 - INFO - Data extraction from 51014_RW2Xgearcheck_2.2727.csv complete
+2014-05-11 16:37:27,118 - INFO - Files have been converted to dictionaries
+2014-05-11 16:38:11,217 - DEBUG - Entered path: Z:\Design files (technical)\RW-2x Gearing\051014_leanangle_gearing\test_in_worstaero\OPTIONS_worstaero.csv
+2014-05-11 16:38:11,217 - INFO - STARTING FUNCTIONS FileToParams
+2014-05-11 16:38:11,219 - DEBUG - Options file location passed: Z:\Design files (technical)\RW-2x Gearing\051014_leanangle_gearing\test_in_worstaero\OPTIONS_worstaero.csv
+2014-05-11 16:38:11,405 - INFO - Current file to search for data: 51014_RW2Xgearcheck_1.6522.csv
+2014-05-11 16:38:11,536 - INFO - Data extraction from 51014_RW2Xgearcheck_1.6522.csv complete
+2014-05-11 16:38:11,539 - INFO - Current file to search for data: 51014_RW2Xgearcheck_1.7273.csv
+2014-05-11 16:38:11,671 - INFO - Data extraction from 51014_RW2Xgearcheck_1.7273.csv complete
+2014-05-11 16:38:11,674 - INFO - Current file to search for data: 51014_RW2Xgearcheck_1.8095.csv
+2014-05-11 16:38:11,806 - INFO - Data extraction from 51014_RW2Xgearcheck_1.8095.csv complete
+2014-05-11 16:38:11,809 - INFO - Current file to search for data: 51014_RW2Xgearcheck_1.8261.csv
+2014-05-11 16:38:11,946 - INFO - Data extraction from 51014_RW2Xgearcheck_1.8261.csv complete
+2014-05-11 16:38:11,947 - INFO - Current file to search for data: 51014_RW2Xgearcheck_1.9091.csv
+2014-05-11 16:38:12,081 - INFO - Data extraction from 51014_RW2Xgearcheck_1.9091.csv complete
+2014-05-11 16:38:12,082 - INFO - Current file to search for data: 51014_RW2Xgearcheck_2.0000.csv
+2014-05-11 16:38:12,217 - INFO - Data extraction from 51014_RW2Xgearcheck_2.0000.csv complete
+2014-05-11 16:38:12,219 - INFO - Current file to search for data: 51014_RW2Xgearcheck_2.1740.csv
+2014-05-11 16:38:12,357 - INFO - Data extraction from 51014_RW2Xgearcheck_2.1740.csv complete
+2014-05-11 16:38:12,358 - INFO - Current file to search for data: 51014_RW2Xgearcheck_2.2727.csv
+2014-05-11 16:38:12,492 - INFO - Data extraction from 51014_RW2Xgearcheck_2.2727.csv complete
+2014-05-11 16:38:12,493 - INFO - Files have been converted to dictionaries
+2014-05-11 16:38:12,640 - INFO - STARTING Simulation.py
+2014-05-11 16:38:12,641 - INFO - Checking to make sure file 51014_RW2Xgearcheck_1.6522_output.csv has needed parameters...
+2014-05-11 16:38:12,641 - INFO - Step found
+2014-05-11 16:38:12,641 - INFO - total_time found
+2014-05-11 16:38:12,641 - INFO - gearing found
+2014-05-11 16:38:12,641 - INFO - rider_mass found
+2014-05-11 16:38:12,642 - INFO - bike_mass found
+2014-05-11 16:38:12,642 - INFO - gravity found
+2014-05-11 16:38:12,642 - INFO - air_resistance found
+2014-05-11 16:38:12,642 - INFO - air_density found
+2014-05-11 16:38:12,642 - INFO - frontal_area found
+2014-05-11 16:38:12,644 - INFO - rolling_resistance found
+2014-05-11 16:38:12,644 - INFO - top_torque found
+2014-05-11 16:38:12,644 - INFO - top_rpm found
+2014-05-11 16:38:12,644 - INFO - motor_top_power found
+2014-05-11 16:38:12,644 - INFO - chain_efficiency found
+2014-05-11 16:38:12,644 - INFO - battery_efficiency found
+2014-05-11 16:38:12,644 - INFO - motor_torque_constant found
+2014-05-11 16:38:12,644 - INFO - motor_rpm_constant found
+2014-05-11 16:38:12,645 - INFO - motor_thermal_conductivity
+2014-05-11 16:38:12,645 - INFO - motor_heat_capacity
+2014-05-11 16:38:12,645 - INFO - coolant_temp
+2014-05-11 16:38:12,645 - INFO - max_motor_temp
+2014-05-11 16:38:12,645 - INFO - series_cells found
+2014-05-11 16:38:12,647 - INFO - max_amphour
+2014-05-11 16:38:12,647 - INFO - batt_max_current
+2014-05-11 16:38:12,647 - INFO - max_distance_travel found
+2014-05-11 16:38:12,647 - INFO - dist_to_speed_lookup found
+2014-05-11 16:38:12,648 - INFO - dist_to_alt_lookup found
+2014-05-11 16:38:12,648 - INFO - motor_controller_eff_lookup found
+2014-05-11 16:38:12,648 - INFO - motor_eff_lookup found
+2014-05-11 16:38:12,648 - INFO - soc_to_voltage_lookup found
+2014-05-11 16:38:12,648 - INFO - throttlemap_lookup found
+2014-05-11 16:38:12,648 - INFO - lean_angle_lookup found
+2014-05-11 16:38:12,648 - INFO - tyreA found
+2014-05-11 16:38:12,648 - INFO - tyreB found
+2014-05-11 16:38:12,650 - INFO - tyreC found
+2014-05-11 16:38:12,650 - INFO - top_lean_angle found
+2014-05-11 16:38:14,065 - INFO - Lookup Files\disttospeed.csv loaded
+2014-05-11 16:38:14,430 - INFO - Lookup Files\aee.csv loaded
+2014-05-11 16:38:14,654 - INFO - Lookup Files\disttoalt.csv loaded
+2014-05-11 16:38:14,802 - INFO - Lookup Files\throttle.csv loaded
+2014-05-11 16:38:14,990 - INFO - Lookup Files\lean_IOM_video_data.csv loaded
+2014-05-11 16:38:15,154 - INFO - Lookup Files\Tritium_ws200_eff.csv loaded
+2014-05-11 16:38:15,355 - INFO - Lookup Files\Emrax_eff.csv loaded
+2014-05-11 16:38:22,680 - INFO - Converted 51014_RW2Xgearcheck_1.6522_output.csv to a dictionary successfully
+2014-05-11 16:38:22,680 - INFO - Checking to make sure file 51014_RW2Xgearcheck_1.7273_output.csv has needed parameters...
+2014-05-11 16:38:22,680 - INFO - Step found
+2014-05-11 16:38:22,680 - INFO - total_time found
+2014-05-11 16:38:22,680 - INFO - gearing found
+2014-05-11 16:38:22,680 - INFO - rider_mass found
+2014-05-11 16:38:22,680 - INFO - bike_mass found
+2014-05-11 16:38:22,680 - INFO - gravity found
+2014-05-11 16:38:22,680 - INFO - air_resistance found
+2014-05-11 16:38:22,680 - INFO - air_density found
+2014-05-11 16:38:22,680 - INFO - frontal_area found
+2014-05-11 16:38:22,680 - INFO - rolling_resistance found
+2014-05-11 16:38:22,681 - INFO - top_torque found
+2014-05-11 16:38:22,681 - INFO - top_rpm found
+2014-05-11 16:38:22,681 - INFO - motor_top_power found
+2014-05-11 16:38:22,681 - INFO - chain_efficiency found
+2014-05-11 16:38:22,681 - INFO - battery_efficiency found
+2014-05-11 16:38:22,681 - INFO - motor_torque_constant found
+2014-05-11 16:38:22,681 - INFO - motor_rpm_constant found
+2014-05-11 16:38:22,681 - INFO - motor_thermal_conductivity
+2014-05-11 16:38:22,681 - INFO - motor_heat_capacity
+2014-05-11 16:38:22,681 - INFO - coolant_temp
+2014-05-11 16:38:22,681 - INFO - max_motor_temp
+2014-05-11 16:38:22,681 - INFO - series_cells found
+2014-05-11 16:38:22,681 - INFO - max_amphour
+2014-05-11 16:38:22,681 - INFO - batt_max_current
+2014-05-11 16:38:22,683 - INFO - max_distance_travel found
+2014-05-11 16:38:22,683 - INFO - dist_to_speed_lookup found
+2014-05-11 16:38:22,683 - INFO - dist_to_alt_lookup found
+2014-05-11 16:38:22,683 - INFO - motor_controller_eff_lookup found
+2014-05-11 16:38:22,683 - INFO - motor_eff_lookup found
+2014-05-11 16:38:22,683 - INFO - soc_to_voltage_lookup found
+2014-05-11 16:38:22,683 - INFO - throttlemap_lookup found
+2014-05-11 16:38:22,683 - INFO - lean_angle_lookup found
+2014-05-11 16:38:22,683 - INFO - tyreA found
+2014-05-11 16:38:22,683 - INFO - tyreB found
+2014-05-11 16:38:22,683 - INFO - tyreC found
+2014-05-11 16:38:22,683 - INFO - top_lean_angle found
+2014-05-11 16:38:23,028 - INFO - Lookup Files\disttospeed.csv loaded
+2014-05-11 16:38:23,144 - INFO - Lookup Files\aee.csv loaded
+2014-05-11 16:38:23,226 - INFO - Lookup Files\disttoalt.csv loaded
+2014-05-11 16:38:23,276 - INFO - Lookup Files\throttle.csv loaded
+2014-05-11 16:38:23,349 - INFO - Lookup Files\lean_IOM_video_data.csv loaded
+2014-05-11 16:38:23,414 - INFO - Lookup Files\Tritium_ws200_eff.csv loaded
+2014-05-11 16:38:23,510 - INFO - Lookup Files\Emrax_eff.csv loaded
+2014-05-11 16:38:29,019 - INFO - Converted 51014_RW2Xgearcheck_1.7273_output.csv to a dictionary successfully
+2014-05-11 16:38:29,019 - INFO - Checking to make sure file 51014_RW2Xgearcheck_1.8095_output.csv has needed parameters...
+2014-05-11 16:38:29,019 - INFO - Step found
+2014-05-11 16:38:29,019 - INFO - total_time found
+2014-05-11 16:38:29,020 - INFO - gearing found
+2014-05-11 16:38:29,020 - INFO - rider_mass found
+2014-05-11 16:38:29,020 - INFO - bike_mass found
+2014-05-11 16:38:29,020 - INFO - gravity found
+2014-05-11 16:38:29,020 - INFO - air_resistance found
+2014-05-11 16:38:29,020 - INFO - air_density found
+2014-05-11 16:38:29,020 - INFO - frontal_area found
+2014-05-11 16:38:29,020 - INFO - rolling_resistance found
+2014-05-11 16:38:29,020 - INFO - top_torque found
+2014-05-11 16:38:29,020 - INFO - top_rpm found
+2014-05-11 16:38:29,020 - INFO - motor_top_power found
+2014-05-11 16:38:29,020 - INFO - chain_efficiency found
+2014-05-11 16:38:29,020 - INFO - battery_efficiency found
+2014-05-11 16:38:29,022 - INFO - motor_torque_constant found
+2014-05-11 16:38:29,022 - INFO - motor_rpm_constant found
+2014-05-11 16:38:29,022 - INFO - motor_thermal_conductivity
+2014-05-11 16:38:29,022 - INFO - motor_heat_capacity
+2014-05-11 16:38:29,022 - INFO - coolant_temp
+2014-05-11 16:38:29,022 - INFO - max_motor_temp
+2014-05-11 16:38:29,022 - INFO - series_cells found
+2014-05-11 16:38:29,022 - INFO - max_amphour
+2014-05-11 16:38:29,022 - INFO - batt_max_current
+2014-05-11 16:38:29,022 - INFO - max_distance_travel found
+2014-05-11 16:38:29,022 - INFO - dist_to_speed_lookup found
+2014-05-11 16:38:29,022 - INFO - dist_to_alt_lookup found
+2014-05-11 16:38:29,022 - INFO - motor_controller_eff_lookup found
+2014-05-11 16:38:29,022 - INFO - motor_eff_lookup found
+2014-05-11 16:38:29,023 - INFO - soc_to_voltage_lookup found
+2014-05-11 16:38:29,023 - INFO - throttlemap_lookup found
+2014-05-11 16:38:29,023 - INFO - lean_angle_lookup found
+2014-05-11 16:38:29,023 - INFO - tyreA found
+2014-05-11 16:38:29,023 - INFO - tyreB found
+2014-05-11 16:38:29,023 - INFO - tyreC found
+2014-05-11 16:38:29,023 - INFO - top_lean_angle found
+2014-05-11 16:38:29,346 - INFO - Lookup Files\disttospeed.csv loaded
+2014-05-11 16:38:29,507 - INFO - Lookup Files\aee.csv loaded
+2014-05-11 16:38:29,641 - INFO - Lookup Files\disttoalt.csv loaded
+2014-05-11 16:38:29,737 - INFO - Lookup Files\throttle.csv loaded
+2014-05-11 16:38:29,865 - INFO - Lookup Files\lean_IOM_video_data.csv loaded
+2014-05-11 16:38:29,967 - INFO - Lookup Files\Tritium_ws200_eff.csv loaded
+2014-05-11 16:38:30,112 - INFO - Lookup Files\Emrax_eff.csv loaded
+2014-05-11 16:38:35,052 - INFO - Converted 51014_RW2Xgearcheck_1.8095_output.csv to a dictionary successfully
+2014-05-11 16:38:35,052 - INFO - Checking to make sure file 51014_RW2Xgearcheck_1.8261_output.csv has needed parameters...
+2014-05-11 16:38:35,052 - INFO - Step found
+2014-05-11 16:38:35,052 - INFO - total_time found
+2014-05-11 16:38:35,052 - INFO - gearing found
+2014-05-11 16:38:35,052 - INFO - rider_mass found
+2014-05-11 16:38:35,052 - INFO - bike_mass found
+2014-05-11 16:38:35,052 - INFO - gravity found
+2014-05-11 16:38:35,052 - INFO - air_resistance found
+2014-05-11 16:38:35,052 - INFO - air_density found
+2014-05-11 16:38:35,052 - INFO - frontal_area found
+2014-05-11 16:38:35,053 - INFO - rolling_resistance found
+2014-05-11 16:38:35,053 - INFO - top_torque found
+2014-05-11 16:38:35,053 - INFO - top_rpm found
+2014-05-11 16:38:35,053 - INFO - motor_top_power found
+2014-05-11 16:38:35,053 - INFO - chain_efficiency found
+2014-05-11 16:38:35,053 - INFO - battery_efficiency found
+2014-05-11 16:38:35,053 - INFO - motor_torque_constant found
+2014-05-11 16:38:35,053 - INFO - motor_rpm_constant found
+2014-05-11 16:38:35,053 - INFO - motor_thermal_conductivity
+2014-05-11 16:38:35,053 - INFO - motor_heat_capacity
+2014-05-11 16:38:35,053 - INFO - coolant_temp
+2014-05-11 16:38:35,053 - INFO - max_motor_temp
+2014-05-11 16:38:35,053 - INFO - series_cells found
+2014-05-11 16:38:35,053 - INFO - max_amphour
+2014-05-11 16:38:35,055 - INFO - batt_max_current
+2014-05-11 16:38:35,055 - INFO - max_distance_travel found
+2014-05-11 16:38:35,055 - INFO - dist_to_speed_lookup found
+2014-05-11 16:38:35,055 - INFO - dist_to_alt_lookup found
+2014-05-11 16:38:35,055 - INFO - motor_controller_eff_lookup found
+2014-05-11 16:38:35,055 - INFO - motor_eff_lookup found
+2014-05-11 16:38:35,055 - INFO - soc_to_voltage_lookup found
+2014-05-11 16:38:35,055 - INFO - throttlemap_lookup found
+2014-05-11 16:38:35,055 - INFO - lean_angle_lookup found
+2014-05-11 16:38:35,055 - INFO - tyreA found
+2014-05-11 16:38:35,055 - INFO - tyreB found
+2014-05-11 16:38:35,055 - INFO - tyreC found
+2014-05-11 16:38:35,055 - INFO - top_lean_angle found
+2014-05-11 16:38:35,372 - INFO - Lookup Files\disttospeed.csv loaded
+2014-05-11 16:38:35,503 - INFO - Lookup Files\aee.csv loaded
+2014-05-11 16:38:35,598 - INFO - Lookup Files\disttoalt.csv loaded
+2014-05-11 16:38:35,657 - INFO - Lookup Files\throttle.csv loaded
+2014-05-11 16:38:35,726 - INFO - Lookup Files\lean_IOM_video_data.csv loaded
+2014-05-11 16:38:35,783 - INFO - Lookup Files\Tritium_ws200_eff.csv loaded
+2014-05-11 16:38:35,872 - INFO - Lookup Files\Emrax_eff.csv loaded
+2014-05-11 16:38:41,168 - INFO - Converted 51014_RW2Xgearcheck_1.8261_output.csv to a dictionary successfully
+2014-05-11 16:38:41,168 - INFO - Checking to make sure file 51014_RW2Xgearcheck_1.9091_output.csv has needed parameters...
+2014-05-11 16:38:41,168 - INFO - Step found
+2014-05-11 16:38:41,168 - INFO - total_time found
+2014-05-11 16:38:41,168 - INFO - gearing found
+2014-05-11 16:38:41,168 - INFO - rider_mass found
+2014-05-11 16:38:41,168 - INFO - bike_mass found
+2014-05-11 16:38:41,170 - INFO - gravity found
+2014-05-11 16:38:41,170 - INFO - air_resistance found
+2014-05-11 16:38:41,170 - INFO - air_density found
+2014-05-11 16:38:41,170 - INFO - frontal_area found
+2014-05-11 16:38:41,170 - INFO - rolling_resistance found
+2014-05-11 16:38:41,170 - INFO - top_torque found
+2014-05-11 16:38:41,170 - INFO - top_rpm found
+2014-05-11 16:38:41,170 - INFO - motor_top_power found
+2014-05-11 16:38:41,170 - INFO - chain_efficiency found
+2014-05-11 16:38:41,170 - INFO - battery_efficiency found
+2014-05-11 16:38:41,170 - INFO - motor_torque_constant found
+2014-05-11 16:38:41,170 - INFO - motor_rpm_constant found
+2014-05-11 16:38:41,170 - INFO - motor_thermal_conductivity
+2014-05-11 16:38:41,170 - INFO - motor_heat_capacity
+2014-05-11 16:38:41,171 - INFO - coolant_temp
+2014-05-11 16:38:41,171 - INFO - max_motor_temp
+2014-05-11 16:38:41,171 - INFO - series_cells found
+2014-05-11 16:38:41,171 - INFO - max_amphour
+2014-05-11 16:38:41,171 - INFO - batt_max_current
+2014-05-11 16:38:41,171 - INFO - max_distance_travel found
+2014-05-11 16:38:41,171 - INFO - dist_to_speed_lookup found
+2014-05-11 16:38:41,171 - INFO - dist_to_alt_lookup found
+2014-05-11 16:38:41,171 - INFO - motor_controller_eff_lookup found
+2014-05-11 16:38:41,171 - INFO - motor_eff_lookup found
+2014-05-11 16:38:41,171 - INFO - soc_to_voltage_lookup found
+2014-05-11 16:38:41,171 - INFO - throttlemap_lookup found
+2014-05-11 16:38:41,171 - INFO - lean_angle_lookup found
+2014-05-11 16:38:41,171 - INFO - tyreA found
+2014-05-11 16:38:41,171 - INFO - tyreB found
+2014-05-11 16:38:41,171 - INFO - tyreC found
+2014-05-11 16:38:41,171 - INFO - top_lean_angle found
+2014-05-11 16:38:41,487 - INFO - Lookup Files\disttospeed.csv loaded
+2014-05-11 16:38:41,654 - INFO - Lookup Files\aee.csv loaded
+2014-05-11 16:38:41,790 - INFO - Lookup Files\disttoalt.csv loaded
+2014-05-11 16:38:41,884 - INFO - Lookup Files\throttle.csv loaded
+2014-05-11 16:38:42,025 - INFO - Lookup Files\lean_IOM_video_data.csv loaded
+2014-05-11 16:38:42,118 - INFO - Lookup Files\Tritium_ws200_eff.csv loaded
+2014-05-11 16:38:42,259 - INFO - Lookup Files\Emrax_eff.csv loaded
+2014-05-11 16:38:47,401 - INFO - Converted 51014_RW2Xgearcheck_1.9091_output.csv to a dictionary successfully
+2014-05-11 16:38:47,401 - INFO - Checking to make sure file 51014_RW2Xgearcheck_2.0000_output.csv has needed parameters...
+2014-05-11 16:38:47,401 - INFO - Step found
+2014-05-11 16:38:47,401 - INFO - total_time found
+2014-05-11 16:38:47,401 - INFO - gearing found
+2014-05-11 16:38:47,401 - INFO - rider_mass found
+2014-05-11 16:38:47,401 - INFO - bike_mass found
+2014-05-11 16:38:47,401 - INFO - gravity found
+2014-05-11 16:38:47,401 - INFO - air_resistance found
+2014-05-11 16:38:47,401 - INFO - air_density found
+2014-05-11 16:38:47,401 - INFO - frontal_area found
+2014-05-11 16:38:47,401 - INFO - rolling_resistance found
+2014-05-11 16:38:47,401 - INFO - top_torque found
+2014-05-11 16:38:47,401 - INFO - top_rpm found
+2014-05-11 16:38:47,403 - INFO - motor_top_power found
+2014-05-11 16:38:47,403 - INFO - chain_efficiency found
+2014-05-11 16:38:47,403 - INFO - battery_efficiency found
+2014-05-11 16:38:47,403 - INFO - motor_torque_constant found
+2014-05-11 16:38:47,403 - INFO - motor_rpm_constant found
+2014-05-11 16:38:47,403 - INFO - motor_thermal_conductivity
+2014-05-11 16:38:47,403 - INFO - motor_heat_capacity
+2014-05-11 16:38:47,403 - INFO - coolant_temp
+2014-05-11 16:38:47,403 - INFO - max_motor_temp
+2014-05-11 16:38:47,403 - INFO - series_cells found
+2014-05-11 16:38:47,403 - INFO - max_amphour
+2014-05-11 16:38:47,403 - INFO - batt_max_current
+2014-05-11 16:38:47,403 - INFO - max_distance_travel found
+2014-05-11 16:38:47,404 - INFO - dist_to_speed_lookup found
+2014-05-11 16:38:47,404 - INFO - dist_to_alt_lookup found
+2014-05-11 16:38:47,404 - INFO - motor_controller_eff_lookup found
+2014-05-11 16:38:47,404 - INFO - motor_eff_lookup found
+2014-05-11 16:38:47,404 - INFO - soc_to_voltage_lookup found
+2014-05-11 16:38:47,404 - INFO - throttlemap_lookup found
+2014-05-11 16:38:47,404 - INFO - lean_angle_lookup found
+2014-05-11 16:38:47,404 - INFO - tyreA found
+2014-05-11 16:38:47,404 - INFO - tyreB found
+2014-05-11 16:38:47,404 - INFO - tyreC found
+2014-05-11 16:38:47,404 - INFO - top_lean_angle found
+2014-05-11 16:38:47,871 - INFO - Lookup Files\disttospeed.csv loaded
+2014-05-11 16:38:47,987 - INFO - Lookup Files\aee.csv loaded
+2014-05-11 16:38:48,072 - INFO - Lookup Files\disttoalt.csv loaded
+2014-05-11 16:38:48,128 - INFO - Lookup Files\throttle.csv loaded
+2014-05-11 16:38:48,203 - INFO - Lookup Files\lean_IOM_video_data.csv loaded
+2014-05-11 16:38:48,257 - INFO - Lookup Files\Tritium_ws200_eff.csv loaded
+2014-05-11 16:38:48,338 - INFO - Lookup Files\Emrax_eff.csv loaded
+2014-05-11 16:38:53,822 - INFO - Converted 51014_RW2Xgearcheck_2.0000_output.csv to a dictionary successfully
+2014-05-11 16:38:53,822 - INFO - Checking to make sure file 51014_RW2Xgearcheck_2.1740_output.csv has needed parameters...
+2014-05-11 16:38:53,822 - INFO - Step found
+2014-05-11 16:38:53,822 - INFO - total_time found
+2014-05-11 16:38:53,822 - INFO - gearing found
+2014-05-11 16:38:53,822 - INFO - rider_mass found
+2014-05-11 16:38:53,822 - INFO - bike_mass found
+2014-05-11 16:38:53,823 - INFO - gravity found
+2014-05-11 16:38:53,823 - INFO - air_resistance found
+2014-05-11 16:38:53,823 - INFO - air_density found
+2014-05-11 16:38:53,823 - INFO - frontal_area found
+2014-05-11 16:38:53,823 - INFO - rolling_resistance found
+2014-05-11 16:38:53,823 - INFO - top_torque found
+2014-05-11 16:38:53,823 - INFO - top_rpm found
+2014-05-11 16:38:53,823 - INFO - motor_top_power found
+2014-05-11 16:38:53,823 - INFO - chain_efficiency found
+2014-05-11 16:38:53,823 - INFO - battery_efficiency found
+2014-05-11 16:38:53,823 - INFO - motor_torque_constant found
+2014-05-11 16:38:53,823 - INFO - motor_rpm_constant found
+2014-05-11 16:38:53,823 - INFO - motor_thermal_conductivity
+2014-05-11 16:38:53,823 - INFO - motor_heat_capacity
+2014-05-11 16:38:53,825 - INFO - coolant_temp
+2014-05-11 16:38:53,825 - INFO - max_motor_temp
+2014-05-11 16:38:53,825 - INFO - series_cells found
+2014-05-11 16:38:53,825 - INFO - max_amphour
+2014-05-11 16:38:53,825 - INFO - batt_max_current
+2014-05-11 16:38:53,825 - INFO - max_distance_travel found
+2014-05-11 16:38:53,825 - INFO - dist_to_speed_lookup found
+2014-05-11 16:38:53,825 - INFO - dist_to_alt_lookup found
+2014-05-11 16:38:53,825 - INFO - motor_controller_eff_lookup found
+2014-05-11 16:38:53,825 - INFO - motor_eff_lookup found
+2014-05-11 16:38:53,825 - INFO - soc_to_voltage_lookup found
+2014-05-11 16:38:53,825 - INFO - throttlemap_lookup found
+2014-05-11 16:38:53,825 - INFO - lean_angle_lookup found
+2014-05-11 16:38:53,825 - INFO - tyreA found
+2014-05-11 16:38:53,825 - INFO - tyreB found
+2014-05-11 16:38:53,825 - INFO - tyreC found
+2014-05-11 16:38:53,825 - INFO - top_lean_angle found
+2014-05-11 16:38:54,140 - INFO - Lookup Files\disttospeed.csv loaded
+2014-05-11 16:38:54,345 - INFO - Lookup Files\aee.csv loaded
+2014-05-11 16:38:54,480 - INFO - Lookup Files\disttoalt.csv loaded
+2014-05-11 16:38:54,573 - INFO - Lookup Files\throttle.csv loaded
+2014-05-11 16:38:54,700 - INFO - Lookup Files\lean_IOM_video_data.csv loaded
+2014-05-11 16:38:54,808 - INFO - Lookup Files\Tritium_ws200_eff.csv loaded
+2014-05-11 16:38:54,953 - INFO - Lookup Files\Emrax_eff.csv loaded
+2014-05-11 16:38:59,361 - INFO - Converted 51014_RW2Xgearcheck_2.1740_output.csv to a dictionary successfully
+2014-05-11 16:38:59,361 - INFO - Checking to make sure file 51014_RW2Xgearcheck_2.2727_output.csv has needed parameters...
+2014-05-11 16:38:59,361 - INFO - Step found
+2014-05-11 16:38:59,361 - INFO - total_time found
+2014-05-11 16:38:59,361 - INFO - gearing found
+2014-05-11 16:38:59,362 - INFO - rider_mass found
+2014-05-11 16:38:59,362 - INFO - bike_mass found
+2014-05-11 16:38:59,362 - INFO - gravity found
+2014-05-11 16:38:59,362 - INFO - air_resistance found
+2014-05-11 16:38:59,362 - INFO - air_density found
+2014-05-11 16:38:59,362 - INFO - frontal_area found
+2014-05-11 16:38:59,362 - INFO - rolling_resistance found
+2014-05-11 16:38:59,362 - INFO - top_torque found
+2014-05-11 16:38:59,362 - INFO - top_rpm found
+2014-05-11 16:38:59,362 - INFO - motor_top_power found
+2014-05-11 16:38:59,362 - INFO - chain_efficiency found
+2014-05-11 16:38:59,362 - INFO - battery_efficiency found
+2014-05-11 16:38:59,362 - INFO - motor_torque_constant found
+2014-05-11 16:38:59,364 - INFO - motor_rpm_constant found
+2014-05-11 16:38:59,364 - INFO - motor_thermal_conductivity
+2014-05-11 16:38:59,364 - INFO - motor_heat_capacity
+2014-05-11 16:38:59,364 - INFO - coolant_temp
+2014-05-11 16:38:59,364 - INFO - max_motor_temp
+2014-05-11 16:38:59,364 - INFO - series_cells found
+2014-05-11 16:38:59,364 - INFO - max_amphour
+2014-05-11 16:38:59,364 - INFO - batt_max_current
+2014-05-11 16:38:59,364 - INFO - max_distance_travel found
+2014-05-11 16:38:59,364 - INFO - dist_to_speed_lookup found
+2014-05-11 16:38:59,364 - INFO - dist_to_alt_lookup found
+2014-05-11 16:38:59,364 - INFO - motor_controller_eff_lookup found
+2014-05-11 16:38:59,364 - INFO - motor_eff_lookup found
+2014-05-11 16:38:59,364 - INFO - soc_to_voltage_lookup found
+2014-05-11 16:38:59,365 - INFO - throttlemap_lookup found
+2014-05-11 16:38:59,365 - INFO - lean_angle_lookup found
+2014-05-11 16:38:59,365 - INFO - tyreA found
+2014-05-11 16:38:59,365 - INFO - tyreB found
+2014-05-11 16:38:59,365 - INFO - tyreC found
+2014-05-11 16:38:59,365 - INFO - top_lean_angle found
+2014-05-11 16:38:59,713 - INFO - Lookup Files\disttospeed.csv loaded
+2014-05-11 16:38:59,809 - INFO - Lookup Files\aee.csv loaded
+2014-05-11 16:38:59,892 - INFO - Lookup Files\disttoalt.csv loaded
+2014-05-11 16:38:59,950 - INFO - Lookup Files\throttle.csv loaded
+2014-05-11 16:39:00,033 - INFO - Lookup Files\lean_IOM_video_data.csv loaded
+2014-05-11 16:39:00,104 - INFO - Lookup Files\Tritium_ws200_eff.csv loaded
+2014-05-11 16:39:00,193 - INFO - Lookup Files\Emrax_eff.csv loaded
+2014-05-11 16:39:04,226 - INFO - Converted 51014_RW2Xgearcheck_2.2727_output.csv to a dictionary successfully
+2014-05-11 16:39:04,226 - INFO - ENDING Simulation.py
+2014-05-11 16:39:04,229 - DEBUG - Entered out path: Z:\Design files (technical)\RW-2x Gearing\051014_leanangle_gearing\test_out_worstaero
+2014-05-11 16:39:04,229 - INFO - STARTING FUNCTION OutputFile
+2014-05-11 16:39:04,229 - INFO - Converting dictionary 51014_RW2Xgearcheck_1.6522_output.csv to file
+2014-05-11 16:39:04,229 - DEBUG - File will be saved at Z:\Design files (technical)\RW-2x Gearing\051014_leanangle_gearing\test_out_worstaero\51014_RW2Xgearcheck_1.6522_output.csv
+2014-05-11 16:39:23,474 - INFO - Data converted and saved to Z:\Design files (technical)\RW-2x Gearing\051014_leanangle_gearing\test_out_worstaero\51014_RW2Xgearcheck_1.6522_output.csv
+2014-05-11 16:39:23,474 - INFO - Converting dictionary 51014_RW2Xgearcheck_1.7273_output.csv to file
+2014-05-11 16:39:23,476 - DEBUG - File will be saved at Z:\Design files (technical)\RW-2x Gearing\051014_leanangle_gearing\test_out_worstaero\51014_RW2Xgearcheck_1.7273_output.csv
+2014-05-11 16:39:42,650 - INFO - Data converted and saved to Z:\Design files (technical)\RW-2x Gearing\051014_leanangle_gearing\test_out_worstaero\51014_RW2Xgearcheck_1.7273_output.csv
+2014-05-11 16:39:42,651 - INFO - Converting dictionary 51014_RW2Xgearcheck_1.8095_output.csv to file
+2014-05-11 16:39:42,651 - DEBUG - File will be saved at Z:\Design files (technical)\RW-2x Gearing\051014_leanangle_gearing\test_out_worstaero\51014_RW2Xgearcheck_1.8095_output.csv
+2014-05-11 16:40:02,211 - INFO - Data converted and saved to Z:\Design files (technical)\RW-2x Gearing\051014_leanangle_gearing\test_out_worstaero\51014_RW2Xgearcheck_1.8095_output.csv
+2014-05-11 16:40:02,213 - INFO - Converting dictionary 51014_RW2Xgearcheck_1.8261_output.csv to file
+2014-05-11 16:40:02,213 - DEBUG - File will be saved at Z:\Design files (technical)\RW-2x Gearing\051014_leanangle_gearing\test_out_worstaero\51014_RW2Xgearcheck_1.8261_output.csv
+2014-05-11 16:40:21,184 - INFO - Data converted and saved to Z:\Design files (technical)\RW-2x Gearing\051014_leanangle_gearing\test_out_worstaero\51014_RW2Xgearcheck_1.8261_output.csv
+2014-05-11 16:40:21,184 - INFO - Converting dictionary 51014_RW2Xgearcheck_1.9091_output.csv to file
+2014-05-11 16:40:21,184 - DEBUG - File will be saved at Z:\Design files (technical)\RW-2x Gearing\051014_leanangle_gearing\test_out_worstaero\51014_RW2Xgearcheck_1.9091_output.csv
+2014-05-11 16:40:41,655 - INFO - Data converted and saved to Z:\Design files (technical)\RW-2x Gearing\051014_leanangle_gearing\test_out_worstaero\51014_RW2Xgearcheck_1.9091_output.csv
+2014-05-11 16:40:41,657 - INFO - Converting dictionary 51014_RW2Xgearcheck_2.0000_output.csv to file
+2014-05-11 16:40:41,657 - DEBUG - File will be saved at Z:\Design files (technical)\RW-2x Gearing\051014_leanangle_gearing\test_out_worstaero\51014_RW2Xgearcheck_2.0000_output.csv
+2014-05-11 16:41:00,884 - INFO - Data converted and saved to Z:\Design files (technical)\RW-2x Gearing\051014_leanangle_gearing\test_out_worstaero\51014_RW2Xgearcheck_2.0000_output.csv
+2014-05-11 16:41:00,884 - INFO - Converting dictionary 51014_RW2Xgearcheck_2.1740_output.csv to file
+2014-05-11 16:41:00,884 - DEBUG - File will be saved at Z:\Design files (technical)\RW-2x Gearing\051014_leanangle_gearing\test_out_worstaero\51014_RW2Xgearcheck_2.1740_output.csv
+2014-05-11 16:41:21,072 - INFO - Data converted and saved to Z:\Design files (technical)\RW-2x Gearing\051014_leanangle_gearing\test_out_worstaero\51014_RW2Xgearcheck_2.1740_output.csv
+2014-05-11 16:41:21,073 - INFO - Converting dictionary 51014_RW2Xgearcheck_2.2727_output.csv to file
+2014-05-11 16:41:21,073 - DEBUG - File will be saved at Z:\Design files (technical)\RW-2x Gearing\051014_leanangle_gearing\test_out_worstaero\51014_RW2Xgearcheck_2.2727_output.csv
+2014-05-11 16:41:41,490 - INFO - Data converted and saved to Z:\Design files (technical)\RW-2x Gearing\051014_leanangle_gearing\test_out_worstaero\51014_RW2Xgearcheck_2.2727_output.csv
+2014-05-11 16:41:41,674 - INFO - Data extraction from <type 'file'> complete
+2014-05-11 16:41:42,000 - INFO - Z:\Design files (technical)\RW-2x Gearing\051014_leanangle_gearing\test_in_worstaero\OPTIONS_worstaero.csv successfully edited
+2014-05-11 22:12:55,505 - INFO - STARTING automation.py
+2014-05-11 22:13:13,430 - INFO - STARTING FUNCTIONS FileToParams
+2014-05-11 22:13:13,431 - DEBUG - Options file location passed: Z:\Design files (technical)\RW-2x Gearing\051014_leanangle_gearing\test_in_bestaero_.5ts\OPTIONS_bestaero_.5ts.csv
+2014-05-11 22:13:13,573 - INFO - Current file to search for data: 51014_RW2Xgearcheck_1.6522_.5ts_b.csv
+2014-05-11 22:13:13,719 - INFO - Data extraction from 51014_RW2Xgearcheck_1.6522_.5ts_b.csv complete
+2014-05-11 22:13:13,721 - INFO - Current file to search for data: 51014_RW2Xgearcheck_1.7273_.5ts_b.csv
+2014-05-11 22:13:13,861 - INFO - Data extraction from 51014_RW2Xgearcheck_1.7273_.5ts_b.csv complete
+2014-05-11 22:13:13,862 - INFO - Current file to search for data: 51014_RW2Xgearcheck_1.8095_.5ts_b.csv
+2014-05-11 22:13:14,006 - INFO - Data extraction from 51014_RW2Xgearcheck_1.8095_.5ts_b.csv complete
+2014-05-11 22:13:14,009 - INFO - Current file to search for data: 51014_RW2Xgearcheck_1.8261_.5ts_b.csv
+2014-05-11 22:13:14,150 - INFO - Data extraction from 51014_RW2Xgearcheck_1.8261_.5ts_b.csv complete
+2014-05-11 22:13:14,151 - INFO - Current file to search for data: 51014_RW2Xgearcheck_1.9091_.5ts_b.csv
+2014-05-11 22:13:14,295 - INFO - Data extraction from 51014_RW2Xgearcheck_1.9091_.5ts_b.csv complete
+2014-05-11 22:13:14,298 - INFO - Current file to search for data: 51014_RW2Xgearcheck_2.0000_.5ts_b.csv
+2014-05-11 22:13:14,441 - INFO - Data extraction from 51014_RW2Xgearcheck_2.0000_.5ts_b.csv complete
+2014-05-11 22:13:14,444 - INFO - Current file to search for data: 51014_RW2Xgearcheck_2.1740_.5ts_b.csv
+2014-05-11 22:13:14,585 - INFO - Data extraction from 51014_RW2Xgearcheck_2.1740_.5ts_b.csv complete
+2014-05-11 22:13:14,586 - INFO - Current file to search for data: 51014_RW2Xgearcheck_2.2727_.5ts_b.csv
+2014-05-11 22:13:14,730 - INFO - Data extraction from 51014_RW2Xgearcheck_2.2727_.5ts_b.csv complete
+2014-05-11 22:13:14,732 - INFO - Files have been converted to dictionaries
+2014-05-11 22:13:44,361 - DEBUG - Entered path: Z:\Design files (technical)\RW-2x Gearing\051014_leanangle_gearing\test_in_bestaero_.5ts\OPTIONS_bestaero_.5ts.csv
+2014-05-11 22:13:44,361 - INFO - STARTING FUNCTIONS FileToParams
+2014-05-11 22:13:44,361 - DEBUG - Options file location passed: Z:\Design files (technical)\RW-2x Gearing\051014_leanangle_gearing\test_in_bestaero_.5ts\OPTIONS_bestaero_.5ts.csv
+2014-05-11 22:13:44,585 - INFO - Current file to search for data: 51014_RW2Xgearcheck_1.6522_.5ts_b.csv
+2014-05-11 22:13:44,724 - INFO - Data extraction from 51014_RW2Xgearcheck_1.6522_.5ts_b.csv complete
+2014-05-11 22:13:44,726 - INFO - Current file to search for data: 51014_RW2Xgearcheck_1.7273_.5ts_b.csv
+2014-05-11 22:13:44,869 - INFO - Data extraction from 51014_RW2Xgearcheck_1.7273_.5ts_b.csv complete
+2014-05-11 22:13:44,871 - INFO - Current file to search for data: 51014_RW2Xgearcheck_1.8095_.5ts_b.csv
+2014-05-11 22:13:45,012 - INFO - Data extraction from 51014_RW2Xgearcheck_1.8095_.5ts_b.csv complete
+2014-05-11 22:13:45,013 - INFO - Current file to search for data: 51014_RW2Xgearcheck_1.8261_.5ts_b.csv
+2014-05-11 22:13:45,157 - INFO - Data extraction from 51014_RW2Xgearcheck_1.8261_.5ts_b.csv complete
+2014-05-11 22:13:45,160 - INFO - Current file to search for data: 51014_RW2Xgearcheck_1.9091_.5ts_b.csv
+2014-05-11 22:13:45,306 - INFO - Data extraction from 51014_RW2Xgearcheck_1.9091_.5ts_b.csv complete
+2014-05-11 22:13:45,309 - INFO - Current file to search for data: 51014_RW2Xgearcheck_2.0000_.5ts_b.csv
+2014-05-11 22:13:45,450 - INFO - Data extraction from 51014_RW2Xgearcheck_2.0000_.5ts_b.csv complete
+2014-05-11 22:13:45,451 - INFO - Current file to search for data: 51014_RW2Xgearcheck_2.1740_.5ts_b.csv
+2014-05-11 22:13:45,586 - INFO - Data extraction from 51014_RW2Xgearcheck_2.1740_.5ts_b.csv complete
+2014-05-11 22:13:45,588 - INFO - Current file to search for data: 51014_RW2Xgearcheck_2.2727_.5ts_b.csv
+2014-05-11 22:13:45,726 - INFO - Data extraction from 51014_RW2Xgearcheck_2.2727_.5ts_b.csv complete
+2014-05-11 22:13:45,729 - INFO - Files have been converted to dictionaries
+2014-05-11 22:13:45,875 - INFO - STARTING Simulation.py
+2014-05-11 22:13:45,875 - INFO - Checking to make sure file 51014_RW2Xgearcheck_1.6522_.5ts_b_output.csv has needed parameters...
+2014-05-11 22:13:45,877 - INFO - Step found
+2014-05-11 22:13:45,877 - INFO - total_time found
+2014-05-11 22:13:45,877 - INFO - gearing found
+2014-05-11 22:13:45,877 - INFO - rider_mass found
+2014-05-11 22:13:45,878 - INFO - bike_mass found
+2014-05-11 22:13:45,878 - INFO - gravity found
+2014-05-11 22:13:45,878 - INFO - air_resistance found
+2014-05-11 22:13:45,878 - INFO - air_density found
+2014-05-11 22:13:45,878 - INFO - frontal_area found
+2014-05-11 22:13:45,878 - INFO - rolling_resistance found
+2014-05-11 22:13:45,878 - INFO - top_torque found
+2014-05-11 22:13:45,878 - INFO - top_rpm found
+2014-05-11 22:13:45,880 - INFO - motor_top_power found
+2014-05-11 22:13:45,880 - INFO - chain_efficiency found
+2014-05-11 22:13:45,880 - INFO - battery_efficiency found
+2014-05-11 22:13:45,880 - INFO - motor_torque_constant found
+2014-05-11 22:13:45,881 - INFO - motor_rpm_constant found
+2014-05-11 22:13:45,881 - INFO - motor_thermal_conductivity
+2014-05-11 22:13:45,881 - INFO - motor_heat_capacity
+2014-05-11 22:13:45,881 - INFO - coolant_temp
+2014-05-11 22:13:45,881 - INFO - max_motor_temp
+2014-05-11 22:13:45,881 - INFO - series_cells found
+2014-05-11 22:13:45,881 - INFO - max_amphour
+2014-05-11 22:13:45,881 - INFO - batt_max_current
+2014-05-11 22:13:45,881 - INFO - max_distance_travel found
+2014-05-11 22:13:45,881 - INFO - dist_to_speed_lookup found
+2014-05-11 22:13:45,882 - INFO - dist_to_alt_lookup found
+2014-05-11 22:13:45,882 - INFO - motor_controller_eff_lookup found
+2014-05-11 22:13:45,882 - INFO - motor_eff_lookup found
+2014-05-11 22:13:45,882 - INFO - soc_to_voltage_lookup found
+2014-05-11 22:13:45,884 - INFO - throttlemap_lookup found
+2014-05-11 22:13:45,884 - INFO - lean_angle_lookup found
+2014-05-11 22:13:45,884 - INFO - tyreA found
+2014-05-11 22:13:45,884 - INFO - tyreB found
+2014-05-11 22:13:45,884 - INFO - tyreC found
+2014-05-11 22:13:45,884 - INFO - top_lean_angle found
+2014-05-11 22:13:47,788 - INFO - Lookup Files\disttospeed.csv loaded
+2014-05-11 22:13:48,214 - INFO - Lookup Files\aee.csv loaded
+2014-05-11 22:13:48,427 - INFO - Lookup Files\disttoalt.csv loaded
+2014-05-11 22:13:48,582 - INFO - Lookup Files\throttle.csv loaded
+2014-05-11 22:13:48,795 - INFO - Lookup Files\lean_IOM_video_data.csv loaded
+2014-05-11 22:13:48,953 - INFO - Lookup Files\Tritium_ws200_eff.csv loaded
+2014-05-11 22:13:49,177 - INFO - Lookup Files\Emrax_eff.csv loaded
+2014-05-11 22:13:55,049 - INFO - Converted 51014_RW2Xgearcheck_1.6522_.5ts_b_output.csv to a dictionary successfully
+2014-05-11 22:13:55,049 - INFO - Checking to make sure file 51014_RW2Xgearcheck_1.7273_.5ts_b_output.csv has needed parameters...
+2014-05-11 22:13:55,049 - INFO - Step found
+2014-05-11 22:13:55,049 - INFO - total_time found
+2014-05-11 22:13:55,049 - INFO - gearing found
+2014-05-11 22:13:55,049 - INFO - rider_mass found
+2014-05-11 22:13:55,049 - INFO - bike_mass found
+2014-05-11 22:13:55,049 - INFO - gravity found
+2014-05-11 22:13:55,049 - INFO - air_resistance found
+2014-05-11 22:13:55,049 - INFO - air_density found
+2014-05-11 22:13:55,049 - INFO - frontal_area found
+2014-05-11 22:13:55,049 - INFO - rolling_resistance found
+2014-05-11 22:13:55,049 - INFO - top_torque found
+2014-05-11 22:13:55,049 - INFO - top_rpm found
+2014-05-11 22:13:55,049 - INFO - motor_top_power found
+2014-05-11 22:13:55,049 - INFO - chain_efficiency found
+2014-05-11 22:13:55,049 - INFO - battery_efficiency found
+2014-05-11 22:13:55,049 - INFO - motor_torque_constant found
+2014-05-11 22:13:55,049 - INFO - motor_rpm_constant found
+2014-05-11 22:13:55,049 - INFO - motor_thermal_conductivity
+2014-05-11 22:13:55,049 - INFO - motor_heat_capacity
+2014-05-11 22:13:55,049 - INFO - coolant_temp
+2014-05-11 22:13:55,049 - INFO - max_motor_temp
+2014-05-11 22:13:55,051 - INFO - series_cells found
+2014-05-11 22:13:55,051 - INFO - max_amphour
+2014-05-11 22:13:55,051 - INFO - batt_max_current
+2014-05-11 22:13:55,051 - INFO - max_distance_travel found
+2014-05-11 22:13:55,051 - INFO - dist_to_speed_lookup found
+2014-05-11 22:13:55,051 - INFO - dist_to_alt_lookup found
+2014-05-11 22:13:55,051 - INFO - motor_controller_eff_lookup found
+2014-05-11 22:13:55,051 - INFO - motor_eff_lookup found
+2014-05-11 22:13:55,051 - INFO - soc_to_voltage_lookup found
+2014-05-11 22:13:55,051 - INFO - throttlemap_lookup found
+2014-05-11 22:13:55,051 - INFO - lean_angle_lookup found
+2014-05-11 22:13:55,051 - INFO - tyreA found
+2014-05-11 22:13:55,051 - INFO - tyreB found
+2014-05-11 22:13:55,051 - INFO - tyreC found
+2014-05-11 22:13:55,052 - INFO - top_lean_angle found
+2014-05-11 22:13:55,417 - INFO - Lookup Files\disttospeed.csv loaded
+2014-05-11 22:13:55,571 - INFO - Lookup Files\aee.csv loaded
+2014-05-11 22:13:55,661 - INFO - Lookup Files\disttoalt.csv loaded
+2014-05-11 22:13:55,711 - INFO - Lookup Files\throttle.csv loaded
+2014-05-11 22:13:55,782 - INFO - Lookup Files\lean_IOM_video_data.csv loaded
+2014-05-11 22:13:55,836 - INFO - Lookup Files\Tritium_ws200_eff.csv loaded
+2014-05-11 22:13:55,971 - INFO - Lookup Files\Emrax_eff.csv loaded
+2014-05-11 22:14:02,247 - INFO - Converted 51014_RW2Xgearcheck_1.7273_.5ts_b_output.csv to a dictionary successfully
+2014-05-11 22:14:02,247 - INFO - Checking to make sure file 51014_RW2Xgearcheck_1.8095_.5ts_b_output.csv has needed parameters...
+2014-05-11 22:14:02,247 - INFO - Step found
+2014-05-11 22:14:02,247 - INFO - total_time found
+2014-05-11 22:14:02,247 - INFO - gearing found
+2014-05-11 22:14:02,249 - INFO - rider_mass found
+2014-05-11 22:14:02,249 - INFO - bike_mass found
+2014-05-11 22:14:02,249 - INFO - gravity found
+2014-05-11 22:14:02,249 - INFO - air_resistance found
+2014-05-11 22:14:02,249 - INFO - air_density found
+2014-05-11 22:14:02,249 - INFO - frontal_area found
+2014-05-11 22:14:02,249 - INFO - rolling_resistance found
+2014-05-11 22:14:02,249 - INFO - top_torque found
+2014-05-11 22:14:02,249 - INFO - top_rpm found
+2014-05-11 22:14:02,249 - INFO - motor_top_power found
+2014-05-11 22:14:02,249 - INFO - chain_efficiency found
+2014-05-11 22:14:02,249 - INFO - battery_efficiency found
+2014-05-11 22:14:02,249 - INFO - motor_torque_constant found
+2014-05-11 22:14:02,249 - INFO - motor_rpm_constant found
+2014-05-11 22:14:02,250 - INFO - motor_thermal_conductivity
+2014-05-11 22:14:02,250 - INFO - motor_heat_capacity
+2014-05-11 22:14:02,250 - INFO - coolant_temp
+2014-05-11 22:14:02,250 - INFO - max_motor_temp
+2014-05-11 22:14:02,250 - INFO - series_cells found
+2014-05-11 22:14:02,250 - INFO - max_amphour
+2014-05-11 22:14:02,250 - INFO - batt_max_current
+2014-05-11 22:14:02,250 - INFO - max_distance_travel found
+2014-05-11 22:14:02,250 - INFO - dist_to_speed_lookup found
+2014-05-11 22:14:02,250 - INFO - dist_to_alt_lookup found
+2014-05-11 22:14:02,250 - INFO - motor_controller_eff_lookup found
+2014-05-11 22:14:02,250 - INFO - motor_eff_lookup found
+2014-05-11 22:14:02,250 - INFO - soc_to_voltage_lookup found
+2014-05-11 22:14:02,250 - INFO - throttlemap_lookup found
+2014-05-11 22:14:02,250 - INFO - lean_angle_lookup found
+2014-05-11 22:14:02,250 - INFO - tyreA found
+2014-05-11 22:14:02,250 - INFO - tyreB found
+2014-05-11 22:14:02,250 - INFO - tyreC found
+2014-05-11 22:14:02,250 - INFO - top_lean_angle found
+2014-05-11 22:14:02,631 - INFO - Lookup Files\disttospeed.csv loaded
+2014-05-11 22:14:02,790 - INFO - Lookup Files\aee.csv loaded
+2014-05-11 22:14:02,907 - INFO - Lookup Files\disttoalt.csv loaded
+2014-05-11 22:14:03,009 - INFO - Lookup Files\throttle.csv loaded
+2014-05-11 22:14:03,108 - INFO - Lookup Files\lean_IOM_video_data.csv loaded
+2014-05-11 22:14:03,203 - INFO - Lookup Files\Tritium_ws200_eff.csv loaded
+2014-05-11 22:14:03,365 - INFO - Lookup Files\Emrax_eff.csv loaded
+2014-05-11 22:14:09,341 - INFO - Converted 51014_RW2Xgearcheck_1.8095_.5ts_b_output.csv to a dictionary successfully
+2014-05-11 22:14:09,341 - INFO - Checking to make sure file 51014_RW2Xgearcheck_1.8261_.5ts_b_output.csv has needed parameters...
+2014-05-11 22:14:09,341 - INFO - Step found
+2014-05-11 22:14:09,341 - INFO - total_time found
+2014-05-11 22:14:09,341 - INFO - gearing found
+2014-05-11 22:14:09,342 - INFO - rider_mass found
+2014-05-11 22:14:09,342 - INFO - bike_mass found
+2014-05-11 22:14:09,342 - INFO - gravity found
+2014-05-11 22:14:09,342 - INFO - air_resistance found
+2014-05-11 22:14:09,342 - INFO - air_density found
+2014-05-11 22:14:09,342 - INFO - frontal_area found
+2014-05-11 22:14:09,342 - INFO - rolling_resistance found
+2014-05-11 22:14:09,342 - INFO - top_torque found
+2014-05-11 22:14:09,342 - INFO - top_rpm found
+2014-05-11 22:14:09,342 - INFO - motor_top_power found
+2014-05-11 22:14:09,342 - INFO - chain_efficiency found
+2014-05-11 22:14:09,342 - INFO - battery_efficiency found
+2014-05-11 22:14:09,342 - INFO - motor_torque_constant found
+2014-05-11 22:14:09,342 - INFO - motor_rpm_constant found
+2014-05-11 22:14:09,342 - INFO - motor_thermal_conductivity
+2014-05-11 22:14:09,342 - INFO - motor_heat_capacity
+2014-05-11 22:14:09,342 - INFO - coolant_temp
+2014-05-11 22:14:09,342 - INFO - max_motor_temp
+2014-05-11 22:14:09,342 - INFO - series_cells found
+2014-05-11 22:14:09,342 - INFO - max_amphour
+2014-05-11 22:14:09,342 - INFO - batt_max_current
+2014-05-11 22:14:09,342 - INFO - max_distance_travel found
+2014-05-11 22:14:09,342 - INFO - dist_to_speed_lookup found
+2014-05-11 22:14:09,342 - INFO - dist_to_alt_lookup found
+2014-05-11 22:14:09,342 - INFO - motor_controller_eff_lookup found
+2014-05-11 22:14:09,342 - INFO - motor_eff_lookup found
+2014-05-11 22:14:09,342 - INFO - soc_to_voltage_lookup found
+2014-05-11 22:14:09,342 - INFO - throttlemap_lookup found
+2014-05-11 22:14:09,344 - INFO - lean_angle_lookup found
+2014-05-11 22:14:09,344 - INFO - tyreA found
+2014-05-11 22:14:09,344 - INFO - tyreB found
+2014-05-11 22:14:09,344 - INFO - tyreC found
+2014-05-11 22:14:09,344 - INFO - top_lean_angle found
+2014-05-11 22:14:09,749 - INFO - Lookup Files\disttospeed.csv loaded
+2014-05-11 22:14:09,895 - INFO - Lookup Files\aee.csv loaded
+2014-05-11 22:14:10,009 - INFO - Lookup Files\disttoalt.csv loaded
+2014-05-11 22:14:10,075 - INFO - Lookup Files\throttle.csv loaded
+2014-05-11 22:14:10,155 - INFO - Lookup Files\lean_IOM_video_data.csv loaded
+2014-05-11 22:14:10,220 - INFO - Lookup Files\Tritium_ws200_eff.csv loaded
+2014-05-11 22:14:10,349 - INFO - Lookup Files\Emrax_eff.csv loaded
+2014-05-11 22:14:16,209 - INFO - Converted 51014_RW2Xgearcheck_1.8261_.5ts_b_output.csv to a dictionary successfully
+2014-05-11 22:14:16,209 - INFO - Checking to make sure file 51014_RW2Xgearcheck_1.9091_.5ts_b_output.csv has needed parameters...
+2014-05-11 22:14:16,209 - INFO - Step found
+2014-05-11 22:14:16,209 - INFO - total_time found
+2014-05-11 22:14:16,209 - INFO - gearing found
+2014-05-11 22:14:16,209 - INFO - rider_mass found
+2014-05-11 22:14:16,209 - INFO - bike_mass found
+2014-05-11 22:14:16,209 - INFO - gravity found
+2014-05-11 22:14:16,209 - INFO - air_resistance found
+2014-05-11 22:14:16,209 - INFO - air_density found
+2014-05-11 22:14:16,210 - INFO - frontal_area found
+2014-05-11 22:14:16,210 - INFO - rolling_resistance found
+2014-05-11 22:14:16,210 - INFO - top_torque found
+2014-05-11 22:14:16,210 - INFO - top_rpm found
+2014-05-11 22:14:16,210 - INFO - motor_top_power found
+2014-05-11 22:14:16,210 - INFO - chain_efficiency found
+2014-05-11 22:14:16,210 - INFO - battery_efficiency found
+2014-05-11 22:14:16,210 - INFO - motor_torque_constant found
+2014-05-11 22:14:16,210 - INFO - motor_rpm_constant found
+2014-05-11 22:14:16,210 - INFO - motor_thermal_conductivity
+2014-05-11 22:14:16,210 - INFO - motor_heat_capacity
+2014-05-11 22:14:16,210 - INFO - coolant_temp
+2014-05-11 22:14:16,210 - INFO - max_motor_temp
+2014-05-11 22:14:16,210 - INFO - series_cells found
+2014-05-11 22:14:16,210 - INFO - max_amphour
+2014-05-11 22:14:16,210 - INFO - batt_max_current
+2014-05-11 22:14:16,210 - INFO - max_distance_travel found
+2014-05-11 22:14:16,210 - INFO - dist_to_speed_lookup found
+2014-05-11 22:14:16,210 - INFO - dist_to_alt_lookup found
+2014-05-11 22:14:16,210 - INFO - motor_controller_eff_lookup found
+2014-05-11 22:14:16,210 - INFO - motor_eff_lookup found
+2014-05-11 22:14:16,210 - INFO - soc_to_voltage_lookup found
+2014-05-11 22:14:16,210 - INFO - throttlemap_lookup found
+2014-05-11 22:14:16,210 - INFO - lean_angle_lookup found
+2014-05-11 22:14:16,210 - INFO - tyreA found
+2014-05-11 22:14:16,210 - INFO - tyreB found
+2014-05-11 22:14:16,210 - INFO - tyreC found
+2014-05-11 22:14:16,210 - INFO - top_lean_angle found
+2014-05-11 22:14:16,621 - INFO - Lookup Files\disttospeed.csv loaded
+2014-05-11 22:14:16,811 - INFO - Lookup Files\aee.csv loaded
+2014-05-11 22:14:16,953 - INFO - Lookup Files\disttoalt.csv loaded
+2014-05-11 22:14:17,061 - INFO - Lookup Files\throttle.csv loaded
+2014-05-11 22:14:17,174 - INFO - Lookup Files\lean_IOM_video_data.csv loaded
+2014-05-11 22:14:17,267 - INFO - Lookup Files\Tritium_ws200_eff.csv loaded
+2014-05-11 22:14:17,430 - INFO - Lookup Files\Emrax_eff.csv loaded
+2014-05-11 22:16:15,286 - INFO - Converted 51014_RW2Xgearcheck_1.9091_.5ts_b_output.csv to a dictionary successfully
+2014-05-11 22:16:15,288 - INFO - Checking to make sure file 51014_RW2Xgearcheck_2.0000_.5ts_b_output.csv has needed parameters...
+2014-05-11 22:16:15,288 - INFO - Step found
+2014-05-11 22:16:15,288 - INFO - total_time found
+2014-05-11 22:16:15,288 - INFO - gearing found
+2014-05-11 22:16:15,288 - INFO - rider_mass found
+2014-05-11 22:16:15,288 - INFO - bike_mass found
+2014-05-11 22:16:15,288 - INFO - gravity found
+2014-05-11 22:16:15,288 - INFO - air_resistance found
+2014-05-11 22:16:15,288 - INFO - air_density found
+2014-05-11 22:16:15,288 - INFO - frontal_area found
+2014-05-11 22:16:15,288 - INFO - rolling_resistance found
+2014-05-11 22:16:15,288 - INFO - top_torque found
+2014-05-11 22:16:15,289 - INFO - top_rpm found
+2014-05-11 22:16:15,289 - INFO - motor_top_power found
+2014-05-11 22:16:15,289 - INFO - chain_efficiency found
+2014-05-11 22:16:15,289 - INFO - battery_efficiency found
+2014-05-11 22:16:15,289 - INFO - motor_torque_constant found
+2014-05-11 22:16:15,289 - INFO - motor_rpm_constant found
+2014-05-11 22:16:15,289 - INFO - motor_thermal_conductivity
+2014-05-11 22:16:15,289 - INFO - motor_heat_capacity
+2014-05-11 22:16:15,289 - INFO - coolant_temp
+2014-05-11 22:16:15,289 - INFO - max_motor_temp
+2014-05-11 22:16:15,289 - INFO - series_cells found
+2014-05-11 22:16:15,289 - INFO - max_amphour
+2014-05-11 22:16:15,289 - INFO - batt_max_current
+2014-05-11 22:16:15,289 - INFO - max_distance_travel found
+2014-05-11 22:16:15,289 - INFO - dist_to_speed_lookup found
+2014-05-11 22:16:15,289 - INFO - dist_to_alt_lookup found
+2014-05-11 22:16:15,289 - INFO - motor_controller_eff_lookup found
+2014-05-11 22:16:15,289 - INFO - motor_eff_lookup found
+2014-05-11 22:16:15,289 - INFO - soc_to_voltage_lookup found
+2014-05-11 22:16:15,289 - INFO - throttlemap_lookup found
+2014-05-11 22:16:15,289 - INFO - lean_angle_lookup found
+2014-05-11 22:16:15,289 - INFO - tyreA found
+2014-05-11 22:16:15,289 - INFO - tyreB found
+2014-05-11 22:16:15,289 - INFO - tyreC found
+2014-05-11 22:16:15,289 - INFO - top_lean_angle found
+2014-05-11 22:16:16,598 - INFO - Lookup Files\disttospeed.csv loaded
+2014-05-11 22:16:17,000 - INFO - Lookup Files\aee.csv loaded
+2014-05-11 22:16:17,220 - INFO - Lookup Files\disttoalt.csv loaded
+2014-05-11 22:16:17,371 - INFO - Lookup Files\throttle.csv loaded
+2014-05-11 22:16:17,585 - INFO - Lookup Files\lean_IOM_video_data.csv loaded
+2014-05-11 22:16:17,730 - INFO - Lookup Files\Tritium_ws200_eff.csv loaded
+2014-05-11 22:16:17,940 - INFO - Lookup Files\Emrax_eff.csv loaded
+2014-05-11 22:16:24,058 - INFO - Converted 51014_RW2Xgearcheck_2.0000_.5ts_b_output.csv to a dictionary successfully
+2014-05-11 22:16:24,058 - INFO - Checking to make sure file 51014_RW2Xgearcheck_2.1740_.5ts_b_output.csv has needed parameters...
+2014-05-11 22:16:24,058 - INFO - Step found
+2014-05-11 22:16:24,058 - INFO - total_time found
+2014-05-11 22:16:24,058 - INFO - gearing found
+2014-05-11 22:16:24,058 - INFO - rider_mass found
+2014-05-11 22:16:24,059 - INFO - bike_mass found
+2014-05-11 22:16:24,059 - INFO - gravity found
+2014-05-11 22:16:24,059 - INFO - air_resistance found
+2014-05-11 22:16:24,059 - INFO - air_density found
+2014-05-11 22:16:24,059 - INFO - frontal_area found
+2014-05-11 22:16:24,059 - INFO - rolling_resistance found
+2014-05-11 22:16:24,059 - INFO - top_torque found
+2014-05-11 22:16:24,059 - INFO - top_rpm found
+2014-05-11 22:16:24,059 - INFO - motor_top_power found
+2014-05-11 22:16:24,059 - INFO - chain_efficiency found
+2014-05-11 22:16:24,059 - INFO - battery_efficiency found
+2014-05-11 22:16:24,059 - INFO - motor_torque_constant found
+2014-05-11 22:16:24,059 - INFO - motor_rpm_constant found
+2014-05-11 22:16:24,059 - INFO - motor_thermal_conductivity
+2014-05-11 22:16:24,059 - INFO - motor_heat_capacity
+2014-05-11 22:16:24,059 - INFO - coolant_temp
+2014-05-11 22:16:24,059 - INFO - max_motor_temp
+2014-05-11 22:16:24,059 - INFO - series_cells found
+2014-05-11 22:16:24,059 - INFO - max_amphour
+2014-05-11 22:16:24,059 - INFO - batt_max_current
+2014-05-11 22:16:24,059 - INFO - max_distance_travel found
+2014-05-11 22:16:24,059 - INFO - dist_to_speed_lookup found
+2014-05-11 22:16:24,059 - INFO - dist_to_alt_lookup found
+2014-05-11 22:16:24,059 - INFO - motor_controller_eff_lookup found
+2014-05-11 22:16:24,059 - INFO - motor_eff_lookup found
+2014-05-11 22:16:24,059 - INFO - soc_to_voltage_lookup found
+2014-05-11 22:16:24,061 - INFO - throttlemap_lookup found
+2014-05-11 22:16:24,061 - INFO - lean_angle_lookup found
+2014-05-11 22:16:24,061 - INFO - tyreA found
+2014-05-11 22:16:24,061 - INFO - tyreB found
+2014-05-11 22:16:24,061 - INFO - tyreC found
+2014-05-11 22:16:24,061 - INFO - top_lean_angle found
+2014-05-11 22:16:24,349 - INFO - Lookup Files\disttospeed.csv loaded
+2014-05-11 22:16:24,483 - INFO - Lookup Files\aee.csv loaded
+2014-05-11 22:16:24,591 - INFO - Lookup Files\disttoalt.csv loaded
+2014-05-11 22:16:24,651 - INFO - Lookup Files\throttle.csv loaded
+2014-05-11 22:16:24,720 - INFO - Lookup Files\lean_IOM_video_data.csv loaded
+2014-05-11 22:16:24,776 - INFO - Lookup Files\Tritium_ws200_eff.csv loaded
+2014-05-11 22:16:24,894 - INFO - Lookup Files\Emrax_eff.csv loaded
+2014-05-11 22:16:31,259 - INFO - Converted 51014_RW2Xgearcheck_2.1740_.5ts_b_output.csv to a dictionary successfully
+2014-05-11 22:16:31,259 - INFO - Checking to make sure file 51014_RW2Xgearcheck_2.2727_.5ts_b_output.csv has needed parameters...
+2014-05-11 22:16:31,259 - INFO - Step found
+2014-05-11 22:16:31,259 - INFO - total_time found
+2014-05-11 22:16:31,259 - INFO - gearing found
+2014-05-11 22:16:31,259 - INFO - rider_mass found
+2014-05-11 22:16:31,259 - INFO - bike_mass found
+2014-05-11 22:16:31,259 - INFO - gravity found
+2014-05-11 22:16:31,260 - INFO - air_resistance found
+2014-05-11 22:16:31,260 - INFO - air_density found
+2014-05-11 22:16:31,260 - INFO - frontal_area found
+2014-05-11 22:16:31,260 - INFO - rolling_resistance found
+2014-05-11 22:16:31,260 - INFO - top_torque found
+2014-05-11 22:16:31,260 - INFO - top_rpm found
+2014-05-11 22:16:31,260 - INFO - motor_top_power found
+2014-05-11 22:16:31,260 - INFO - chain_efficiency found
+2014-05-11 22:16:31,260 - INFO - battery_efficiency found
+2014-05-11 22:16:31,260 - INFO - motor_torque_constant found
+2014-05-11 22:16:31,260 - INFO - motor_rpm_constant found
+2014-05-11 22:16:31,260 - INFO - motor_thermal_conductivity
+2014-05-11 22:16:31,260 - INFO - motor_heat_capacity
+2014-05-11 22:16:31,260 - INFO - coolant_temp
+2014-05-11 22:16:31,262 - INFO - max_motor_temp
+2014-05-11 22:16:31,262 - INFO - series_cells found
+2014-05-11 22:16:31,262 - INFO - max_amphour
+2014-05-11 22:16:31,262 - INFO - batt_max_current
+2014-05-11 22:16:31,262 - INFO - max_distance_travel found
+2014-05-11 22:16:31,262 - INFO - dist_to_speed_lookup found
+2014-05-11 22:16:31,262 - INFO - dist_to_alt_lookup found
+2014-05-11 22:16:31,262 - INFO - motor_controller_eff_lookup found
+2014-05-11 22:16:31,262 - INFO - motor_eff_lookup found
+2014-05-11 22:16:31,262 - INFO - soc_to_voltage_lookup found
+2014-05-11 22:16:31,262 - INFO - throttlemap_lookup found
+2014-05-11 22:16:31,262 - INFO - lean_angle_lookup found
+2014-05-11 22:16:31,262 - INFO - tyreA found
+2014-05-11 22:16:31,262 - INFO - tyreB found
+2014-05-11 22:16:31,263 - INFO - tyreC found
+2014-05-11 22:16:31,263 - INFO - top_lean_angle found
+2014-05-11 22:16:31,671 - INFO - Lookup Files\disttospeed.csv loaded
+2014-05-11 22:16:31,861 - INFO - Lookup Files\aee.csv loaded
+2014-05-11 22:16:32,009 - INFO - Lookup Files\disttoalt.csv loaded
+2014-05-11 22:16:32,118 - INFO - Lookup Files\throttle.csv loaded
+2014-05-11 22:16:32,240 - INFO - Lookup Files\lean_IOM_video_data.csv loaded
+2014-05-11 22:16:32,351 - INFO - Lookup Files\Tritium_ws200_eff.csv loaded
+2014-05-11 22:16:32,517 - INFO - Lookup Files\Emrax_eff.csv loaded
+2014-05-11 22:16:39,357 - INFO - Converted 51014_RW2Xgearcheck_2.2727_.5ts_b_output.csv to a dictionary successfully
+2014-05-11 22:16:39,358 - INFO - ENDING Simulation.py
+2014-05-11 22:16:39,359 - DEBUG - Entered out path: Z:\Design files (technical)\RW-2x Gearing\051014_leanangle_gearing\test_out_bestaero_.5ts
+2014-05-11 22:16:39,359 - INFO - STARTING FUNCTION OutputFile
+2014-05-11 22:16:39,361 - INFO - Converting dictionary 51014_RW2Xgearcheck_1.6522_.5ts_b_output.csv to file
+2014-05-11 22:16:39,361 - DEBUG - File will be saved at Z:\Design files (technical)\RW-2x Gearing\051014_leanangle_gearing\test_out_bestaero_.5ts\51014_RW2Xgearcheck_1.6522_.5ts_b_output.csv
+2014-05-11 22:17:15,836 - INFO - Data converted and saved to Z:\Design files (technical)\RW-2x Gearing\051014_leanangle_gearing\test_out_bestaero_.5ts\51014_RW2Xgearcheck_1.6522_.5ts_b_output.csv
+2014-05-11 22:17:15,838 - INFO - Converting dictionary 51014_RW2Xgearcheck_1.7273_.5ts_b_output.csv to file
+2014-05-11 22:17:15,838 - DEBUG - File will be saved at Z:\Design files (technical)\RW-2x Gearing\051014_leanangle_gearing\test_out_bestaero_.5ts\51014_RW2Xgearcheck_1.7273_.5ts_b_output.csv
+2014-05-11 22:17:52,717 - INFO - Data converted and saved to Z:\Design files (technical)\RW-2x Gearing\051014_leanangle_gearing\test_out_bestaero_.5ts\51014_RW2Xgearcheck_1.7273_.5ts_b_output.csv
+2014-05-11 22:17:52,719 - INFO - Converting dictionary 51014_RW2Xgearcheck_1.8095_.5ts_b_output.csv to file
+2014-05-11 22:17:52,719 - DEBUG - File will be saved at Z:\Design files (technical)\RW-2x Gearing\051014_leanangle_gearing\test_out_bestaero_.5ts\51014_RW2Xgearcheck_1.8095_.5ts_b_output.csv
+2014-05-11 22:18:29,638 - INFO - Data converted and saved to Z:\Design files (technical)\RW-2x Gearing\051014_leanangle_gearing\test_out_bestaero_.5ts\51014_RW2Xgearcheck_1.8095_.5ts_b_output.csv
+2014-05-11 22:18:29,638 - INFO - Converting dictionary 51014_RW2Xgearcheck_1.8261_.5ts_b_output.csv to file
+2014-05-11 22:18:29,640 - DEBUG - File will be saved at Z:\Design files (technical)\RW-2x Gearing\051014_leanangle_gearing\test_out_bestaero_.5ts\51014_RW2Xgearcheck_1.8261_.5ts_b_output.csv
+2014-05-11 22:19:06,598 - INFO - Data converted and saved to Z:\Design files (technical)\RW-2x Gearing\051014_leanangle_gearing\test_out_bestaero_.5ts\51014_RW2Xgearcheck_1.8261_.5ts_b_output.csv
+2014-05-11 22:19:06,598 - INFO - Converting dictionary 51014_RW2Xgearcheck_1.9091_.5ts_b_output.csv to file
+2014-05-11 22:19:06,599 - DEBUG - File will be saved at Z:\Design files (technical)\RW-2x Gearing\051014_leanangle_gearing\test_out_bestaero_.5ts\51014_RW2Xgearcheck_1.9091_.5ts_b_output.csv
+2014-05-11 22:19:45,030 - INFO - Data converted and saved to Z:\Design files (technical)\RW-2x Gearing\051014_leanangle_gearing\test_out_bestaero_.5ts\51014_RW2Xgearcheck_1.9091_.5ts_b_output.csv
+2014-05-11 22:19:45,030 - INFO - Converting dictionary 51014_RW2Xgearcheck_2.0000_.5ts_b_output.csv to file
+2014-05-11 22:19:45,032 - DEBUG - File will be saved at Z:\Design files (technical)\RW-2x Gearing\051014_leanangle_gearing\test_out_bestaero_.5ts\51014_RW2Xgearcheck_2.0000_.5ts_b_output.csv
+2014-05-11 22:20:23,487 - INFO - Data converted and saved to Z:\Design files (technical)\RW-2x Gearing\051014_leanangle_gearing\test_out_bestaero_.5ts\51014_RW2Xgearcheck_2.0000_.5ts_b_output.csv
+2014-05-11 22:20:23,489 - INFO - Converting dictionary 51014_RW2Xgearcheck_2.1740_.5ts_b_output.csv to file
+2014-05-11 22:20:23,489 - DEBUG - File will be saved at Z:\Design files (technical)\RW-2x Gearing\051014_leanangle_gearing\test_out_bestaero_.5ts\51014_RW2Xgearcheck_2.1740_.5ts_b_output.csv
+2014-05-11 22:21:02,960 - INFO - Data converted and saved to Z:\Design files (technical)\RW-2x Gearing\051014_leanangle_gearing\test_out_bestaero_.5ts\51014_RW2Xgearcheck_2.1740_.5ts_b_output.csv
+2014-05-11 22:21:02,960 - INFO - Converting dictionary 51014_RW2Xgearcheck_2.2727_.5ts_b_output.csv to file
+2014-05-11 22:21:02,960 - DEBUG - File will be saved at Z:\Design files (technical)\RW-2x Gearing\051014_leanangle_gearing\test_out_bestaero_.5ts\51014_RW2Xgearcheck_2.2727_.5ts_b_output.csv
+2014-05-11 22:21:43,760 - INFO - Data converted and saved to Z:\Design files (technical)\RW-2x Gearing\051014_leanangle_gearing\test_out_bestaero_.5ts\51014_RW2Xgearcheck_2.2727_.5ts_b_output.csv
+2014-05-11 22:21:43,947 - INFO - Data extraction from <type 'file'> complete
+2014-05-11 22:21:44,275 - INFO - Z:\Design files (technical)\RW-2x Gearing\051014_leanangle_gearing\test_in_bestaero_.5ts\OPTIONS_bestaero_.5ts.csv successfully edited
+2014-05-11 22:24:55,285 - INFO - STARTING FUNCTIONS FileToParams
+2014-05-11 22:24:55,286 - DEBUG - Options file location passed: Z:\Design files (technical)\RW-2x Gearing\051014_leanangle_gearing\test_in_worstaero_.5ts\OPTIONS_worstaero_.5ts.csv
+2014-05-11 22:24:55,424 - INFO - Current file to search for data: 51014_RW2Xgearcheck_1.6522_.5ts.csv
+2014-05-11 22:24:55,566 - INFO - Data extraction from 51014_RW2Xgearcheck_1.6522_.5ts.csv complete
+2014-05-11 22:24:55,569 - INFO - Current file to search for data: 51014_RW2Xgearcheck_1.7273_.5ts.csv
+2014-05-11 22:24:55,714 - INFO - Data extraction from 51014_RW2Xgearcheck_1.7273_.5ts.csv complete
+2014-05-11 22:24:55,716 - INFO - Current file to search for data: 51014_RW2Xgearcheck_1.8095_.5ts.csv
+2014-05-11 22:24:55,869 - INFO - Data extraction from 51014_RW2Xgearcheck_1.8095_.5ts.csv complete
+2014-05-11 22:24:55,871 - INFO - Current file to search for data: 51014_RW2Xgearcheck_1.8261_.5ts.csv
+2014-05-11 22:24:56,017 - INFO - Data extraction from 51014_RW2Xgearcheck_1.8261_.5ts.csv complete
+2014-05-11 22:24:56,019 - INFO - Current file to search for data: 51014_RW2Xgearcheck_1.9091_.5ts.csv
+2014-05-11 22:24:56,203 - INFO - Data extraction from 51014_RW2Xgearcheck_1.9091_.5ts.csv complete
+2014-05-11 22:24:56,206 - INFO - Current file to search for data: 51014_RW2Xgearcheck_2.0000_.5ts.csv
+2014-05-11 22:24:56,354 - INFO - Data extraction from 51014_RW2Xgearcheck_2.0000_.5ts.csv complete
+2014-05-11 22:24:56,357 - INFO - Current file to search for data: 51014_RW2Xgearcheck_2.1740_.5ts.csv
+2014-05-11 22:24:56,513 - INFO - Data extraction from 51014_RW2Xgearcheck_2.1740_.5ts.csv complete
+2014-05-11 22:24:56,515 - INFO - Current file to search for data: 51014_RW2Xgearcheck_2.2727_.5ts.csv
+2014-05-11 22:24:56,673 - INFO - Data extraction from 51014_RW2Xgearcheck_2.2727_.5ts.csv complete
+2014-05-11 22:24:56,674 - INFO - Files have been converted to dictionaries
+2014-05-11 22:25:23,447 - INFO - STARTING FUNCTIONS FileToParams
+2014-05-11 22:25:23,448 - DEBUG - Options file location passed: Z:\Design files (technical)\RW-2x Gearing\051014_leanangle_gearing\test_in_worstaero_.5ts\OPTIONS_worstaero_.5ts.csv
+2014-05-11 22:25:23,588 - INFO - Current file to search for data: 51014_RW2Xgearcheck_1.6522_.5ts.csv
+2014-05-11 22:25:23,720 - INFO - Data extraction from 51014_RW2Xgearcheck_1.6522_.5ts.csv complete
+2014-05-11 22:25:23,723 - INFO - Current file to search for data: 51014_RW2Xgearcheck_1.7273_.5ts.csv
+2014-05-11 22:25:23,891 - INFO - Data extraction from 51014_RW2Xgearcheck_1.7273_.5ts.csv complete
+2014-05-11 22:25:23,892 - INFO - Current file to search for data: 51014_RW2Xgearcheck_1.8095_.5ts.csv
+2014-05-11 22:25:24,030 - INFO - Data extraction from 51014_RW2Xgearcheck_1.8095_.5ts.csv complete
+2014-05-11 22:25:24,033 - INFO - Current file to search for data: 51014_RW2Xgearcheck_1.8261_.5ts.csv
+2014-05-11 22:25:24,168 - INFO - Data extraction from 51014_RW2Xgearcheck_1.8261_.5ts.csv complete
+2014-05-11 22:25:24,171 - INFO - Current file to search for data: 51014_RW2Xgearcheck_1.9091_.5ts.csv
+2014-05-11 22:25:24,309 - INFO - Data extraction from 51014_RW2Xgearcheck_1.9091_.5ts.csv complete
+2014-05-11 22:25:24,311 - INFO - Current file to search for data: 51014_RW2Xgearcheck_2.0000_.5ts.csv
+2014-05-11 22:25:24,459 - INFO - Data extraction from 51014_RW2Xgearcheck_2.0000_.5ts.csv complete
+2014-05-11 22:25:24,460 - INFO - Current file to search for data: 51014_RW2Xgearcheck_2.1740_.5ts.csv
+2014-05-11 22:25:24,596 - INFO - Data extraction from 51014_RW2Xgearcheck_2.1740_.5ts.csv complete
+2014-05-11 22:25:24,598 - INFO - Current file to search for data: 51014_RW2Xgearcheck_2.2727_.5ts.csv
+2014-05-11 22:25:24,740 - INFO - Data extraction from 51014_RW2Xgearcheck_2.2727_.5ts.csv complete
+2014-05-11 22:25:24,742 - INFO - Files have been converted to dictionaries
+2014-05-11 22:26:04,607 - DEBUG - Entered path: Z:\Design files (technical)\RW-2x Gearing\051014_leanangle_gearing\test_in_worstaero_.5ts\OPTIONS_worstaero_.5ts.csv
+2014-05-11 22:26:04,607 - INFO - STARTING FUNCTIONS FileToParams
+2014-05-11 22:26:04,607 - DEBUG - Options file location passed: Z:\Design files (technical)\RW-2x Gearing\051014_leanangle_gearing\test_in_worstaero_.5ts\OPTIONS_worstaero_.5ts.csv
+2014-05-11 22:26:04,801 - INFO - Current file to search for data: 51014_RW2Xgearcheck_1.6522_.5ts.csv
+2014-05-11 22:26:04,948 - INFO - Data extraction from 51014_RW2Xgearcheck_1.6522_.5ts.csv complete
+2014-05-11 22:26:04,950 - INFO - Current file to search for data: 51014_RW2Xgearcheck_1.7273_.5ts.csv
+2014-05-11 22:26:05,084 - INFO - Data extraction from 51014_RW2Xgearcheck_1.7273_.5ts.csv complete
+2014-05-11 22:26:05,085 - INFO - Current file to search for data: 51014_RW2Xgearcheck_1.8095_.5ts.csv
+2014-05-11 22:26:05,220 - INFO - Data extraction from 51014_RW2Xgearcheck_1.8095_.5ts.csv complete
+2014-05-11 22:26:05,221 - INFO - Current file to search for data: 51014_RW2Xgearcheck_1.8261_.5ts.csv
+2014-05-11 22:26:05,358 - INFO - Data extraction from 51014_RW2Xgearcheck_1.8261_.5ts.csv complete
+2014-05-11 22:26:05,359 - INFO - Current file to search for data: 51014_RW2Xgearcheck_1.9091_.5ts.csv
+2014-05-11 22:26:05,496 - INFO - Data extraction from 51014_RW2Xgearcheck_1.9091_.5ts.csv complete
+2014-05-11 22:26:05,497 - INFO - Current file to search for data: 51014_RW2Xgearcheck_2.0000_.5ts.csv
+2014-05-11 22:26:05,631 - INFO - Data extraction from 51014_RW2Xgearcheck_2.0000_.5ts.csv complete
+2014-05-11 22:26:05,632 - INFO - Current file to search for data: 51014_RW2Xgearcheck_2.1740_.5ts.csv
+2014-05-11 22:26:05,773 - INFO - Data extraction from 51014_RW2Xgearcheck_2.1740_.5ts.csv complete
+2014-05-11 22:26:05,776 - INFO - Current file to search for data: 51014_RW2Xgearcheck_2.2727_.5ts.csv
+2014-05-11 22:26:05,918 - INFO - Data extraction from 51014_RW2Xgearcheck_2.2727_.5ts.csv complete
+2014-05-11 22:26:05,920 - INFO - Files have been converted to dictionaries
+2014-05-11 22:26:06,073 - INFO - STARTING Simulation.py
+2014-05-11 22:26:06,075 - INFO - Checking to make sure file 51014_RW2Xgearcheck_1.6522_.5ts_output.csv has needed parameters...
+2014-05-11 22:26:06,075 - INFO - Step found
+2014-05-11 22:26:06,075 - INFO - total_time found
+2014-05-11 22:26:06,076 - INFO - gearing found
+2014-05-11 22:26:06,076 - INFO - rider_mass found
+2014-05-11 22:26:06,076 - INFO - bike_mass found
+2014-05-11 22:26:06,076 - INFO - gravity found
+2014-05-11 22:26:06,078 - INFO - air_resistance found
+2014-05-11 22:26:06,078 - INFO - air_density found
+2014-05-11 22:26:06,078 - INFO - frontal_area found
+2014-05-11 22:26:06,078 - INFO - rolling_resistance found
+2014-05-11 22:26:06,078 - INFO - top_torque found
+2014-05-11 22:26:06,078 - INFO - top_rpm found
+2014-05-11 22:26:06,078 - INFO - motor_top_power found
+2014-05-11 22:26:06,078 - INFO - chain_efficiency found
+2014-05-11 22:26:06,078 - INFO - battery_efficiency found
+2014-05-11 22:26:06,079 - INFO - motor_torque_constant found
+2014-05-11 22:26:06,079 - INFO - motor_rpm_constant found
+2014-05-11 22:26:06,079 - INFO - motor_thermal_conductivity
+2014-05-11 22:26:06,079 - INFO - motor_heat_capacity
+2014-05-11 22:26:06,079 - INFO - coolant_temp
+2014-05-11 22:26:06,081 - INFO - max_motor_temp
+2014-05-11 22:26:06,081 - INFO - series_cells found
+2014-05-11 22:26:06,081 - INFO - max_amphour
+2014-05-11 22:26:06,081 - INFO - batt_max_current
+2014-05-11 22:26:06,082 - INFO - max_distance_travel found
+2014-05-11 22:26:06,082 - INFO - dist_to_speed_lookup found
+2014-05-11 22:26:06,082 - INFO - dist_to_alt_lookup found
+2014-05-11 22:26:06,082 - INFO - motor_controller_eff_lookup found
+2014-05-11 22:26:06,082 - INFO - motor_eff_lookup found
+2014-05-11 22:26:06,082 - INFO - soc_to_voltage_lookup found
+2014-05-11 22:26:06,082 - INFO - throttlemap_lookup found
+2014-05-11 22:26:06,082 - INFO - lean_angle_lookup found
+2014-05-11 22:26:06,082 - INFO - tyreA found
+2014-05-11 22:26:06,084 - INFO - tyreB found
+2014-05-11 22:26:06,084 - INFO - tyreC found
+2014-05-11 22:26:06,084 - INFO - top_lean_angle found
+2014-05-11 22:26:07,641 - INFO - Lookup Files\disttospeed.csv loaded
+2014-05-11 22:26:08,030 - INFO - Lookup Files\aee.csv loaded
+2014-05-11 22:26:08,260 - INFO - Lookup Files\disttoalt.csv loaded
+2014-05-11 22:26:08,410 - INFO - Lookup Files\throttle.csv loaded
+2014-05-11 22:26:08,642 - INFO - Lookup Files\lean_IOM_video_data.csv loaded
+2014-05-11 22:26:08,803 - INFO - Lookup Files\Tritium_ws200_eff.csv loaded
+2014-05-11 22:26:09,016 - INFO - Lookup Files\Emrax_eff.csv loaded
+2014-05-11 22:26:16,700 - INFO - Converted 51014_RW2Xgearcheck_1.6522_.5ts_output.csv to a dictionary successfully
+2014-05-11 22:26:16,700 - INFO - Checking to make sure file 51014_RW2Xgearcheck_1.7273_.5ts_output.csv has needed parameters...
+2014-05-11 22:26:16,701 - INFO - Step found
+2014-05-11 22:26:16,701 - INFO - total_time found
+2014-05-11 22:26:16,701 - INFO - gearing found
+2014-05-11 22:26:16,701 - INFO - rider_mass found
+2014-05-11 22:26:16,701 - INFO - bike_mass found
+2014-05-11 22:26:16,701 - INFO - gravity found
+2014-05-11 22:26:16,701 - INFO - air_resistance found
+2014-05-11 22:26:16,701 - INFO - air_density found
+2014-05-11 22:26:16,701 - INFO - frontal_area found
+2014-05-11 22:26:16,701 - INFO - rolling_resistance found
+2014-05-11 22:26:16,701 - INFO - top_torque found
+2014-05-11 22:26:16,701 - INFO - top_rpm found
+2014-05-11 22:26:16,701 - INFO - motor_top_power found
+2014-05-11 22:26:16,703 - INFO - chain_efficiency found
+2014-05-11 22:26:16,703 - INFO - battery_efficiency found
+2014-05-11 22:26:16,703 - INFO - motor_torque_constant found
+2014-05-11 22:26:16,703 - INFO - motor_rpm_constant found
+2014-05-11 22:26:16,703 - INFO - motor_thermal_conductivity
+2014-05-11 22:26:16,703 - INFO - motor_heat_capacity
+2014-05-11 22:26:16,703 - INFO - coolant_temp
+2014-05-11 22:26:16,703 - INFO - max_motor_temp
+2014-05-11 22:26:16,703 - INFO - series_cells found
+2014-05-11 22:26:16,703 - INFO - max_amphour
+2014-05-11 22:26:16,703 - INFO - batt_max_current
+2014-05-11 22:26:16,703 - INFO - max_distance_travel found
+2014-05-11 22:26:16,703 - INFO - dist_to_speed_lookup found
+2014-05-11 22:26:16,703 - INFO - dist_to_alt_lookup found
+2014-05-11 22:26:16,703 - INFO - motor_controller_eff_lookup found
+2014-05-11 22:26:16,703 - INFO - motor_eff_lookup found
+2014-05-11 22:26:16,703 - INFO - soc_to_voltage_lookup found
+2014-05-11 22:26:16,703 - INFO - throttlemap_lookup found
+2014-05-11 22:26:16,703 - INFO - lean_angle_lookup found
+2014-05-11 22:26:16,703 - INFO - tyreA found
+2014-05-11 22:26:16,703 - INFO - tyreB found
+2014-05-11 22:26:16,703 - INFO - tyreC found
+2014-05-11 22:26:16,703 - INFO - top_lean_angle found
+2014-05-11 22:26:17,204 - INFO - Lookup Files\disttospeed.csv loaded
+2014-05-11 22:26:17,328 - INFO - Lookup Files\aee.csv loaded
+2014-05-11 22:26:17,421 - INFO - Lookup Files\disttoalt.csv loaded
+2014-05-11 22:26:17,476 - INFO - Lookup Files\throttle.csv loaded
+2014-05-11 22:26:17,548 - INFO - Lookup Files\lean_IOM_video_data.csv loaded
+2014-05-11 22:26:17,604 - INFO - Lookup Files\Tritium_ws200_eff.csv loaded
+2014-05-11 22:26:17,721 - INFO - Lookup Files\Emrax_eff.csv loaded
+2014-05-11 22:26:29,085 - INFO - Converted 51014_RW2Xgearcheck_1.7273_.5ts_output.csv to a dictionary successfully
+2014-05-11 22:26:29,085 - INFO - Checking to make sure file 51014_RW2Xgearcheck_1.8095_.5ts_output.csv has needed parameters...
+2014-05-11 22:26:29,085 - INFO - Step found
+2014-05-11 22:26:29,085 - INFO - total_time found
+2014-05-11 22:26:29,085 - INFO - gearing found
+2014-05-11 22:26:29,085 - INFO - rider_mass found
+2014-05-11 22:26:29,085 - INFO - bike_mass found
+2014-05-11 22:26:29,085 - INFO - gravity found
+2014-05-11 22:26:29,085 - INFO - air_resistance found
+2014-05-11 22:26:29,085 - INFO - air_density found
+2014-05-11 22:26:29,085 - INFO - frontal_area found
+2014-05-11 22:26:29,085 - INFO - rolling_resistance found
+2014-05-11 22:26:29,085 - INFO - top_torque found
+2014-05-11 22:26:29,085 - INFO - top_rpm found
+2014-05-11 22:26:29,085 - INFO - motor_top_power found
+2014-05-11 22:26:29,085 - INFO - chain_efficiency found
+2014-05-11 22:26:29,085 - INFO - battery_efficiency found
+2014-05-11 22:26:29,085 - INFO - motor_torque_constant found
+2014-05-11 22:26:29,085 - INFO - motor_rpm_constant found
+2014-05-11 22:26:29,085 - INFO - motor_thermal_conductivity
+2014-05-11 22:26:29,085 - INFO - motor_heat_capacity
+2014-05-11 22:26:29,085 - INFO - coolant_temp
+2014-05-11 22:26:29,085 - INFO - max_motor_temp
+2014-05-11 22:26:29,085 - INFO - series_cells found
+2014-05-11 22:26:29,086 - INFO - max_amphour
+2014-05-11 22:26:29,086 - INFO - batt_max_current
+2014-05-11 22:26:29,086 - INFO - max_distance_travel found
+2014-05-11 22:26:29,086 - INFO - dist_to_speed_lookup found
+2014-05-11 22:26:29,086 - INFO - dist_to_alt_lookup found
+2014-05-11 22:26:29,086 - INFO - motor_controller_eff_lookup found
+2014-05-11 22:26:29,086 - INFO - motor_eff_lookup found
+2014-05-11 22:26:29,086 - INFO - soc_to_voltage_lookup found
+2014-05-11 22:26:29,086 - INFO - throttlemap_lookup found
+2014-05-11 22:26:29,086 - INFO - lean_angle_lookup found
+2014-05-11 22:26:29,086 - INFO - tyreA found
+2014-05-11 22:26:29,086 - INFO - tyreB found
+2014-05-11 22:26:29,086 - INFO - tyreC found
+2014-05-11 22:26:29,086 - INFO - top_lean_angle found
+2014-05-11 22:26:29,490 - INFO - Lookup Files\disttospeed.csv loaded
+2014-05-11 22:26:29,671 - INFO - Lookup Files\aee.csv loaded
+2014-05-11 22:26:29,809 - INFO - Lookup Files\disttoalt.csv loaded
+2014-05-11 22:26:29,918 - INFO - Lookup Files\throttle.csv loaded
+2014-05-11 22:26:30,043 - INFO - Lookup Files\lean_IOM_video_data.csv loaded
+2014-05-11 22:26:30,151 - INFO - Lookup Files\Tritium_ws200_eff.csv loaded
+2014-05-11 22:26:30,323 - INFO - Lookup Files\Emrax_eff.csv loaded
+2014-05-11 22:26:39,625 - INFO - Converted 51014_RW2Xgearcheck_1.8095_.5ts_output.csv to a dictionary successfully
+2014-05-11 22:26:39,625 - INFO - Checking to make sure file 51014_RW2Xgearcheck_1.8261_.5ts_output.csv has needed parameters...
+2014-05-11 22:26:39,625 - INFO - Step found
+2014-05-11 22:26:39,625 - INFO - total_time found
+2014-05-11 22:26:39,625 - INFO - gearing found
+2014-05-11 22:26:39,625 - INFO - rider_mass found
+2014-05-11 22:26:39,625 - INFO - bike_mass found
+2014-05-11 22:26:39,625 - INFO - gravity found
+2014-05-11 22:26:39,625 - INFO - air_resistance found
+2014-05-11 22:26:39,625 - INFO - air_density found
+2014-05-11 22:26:39,625 - INFO - frontal_area found
+2014-05-11 22:26:39,625 - INFO - rolling_resistance found
+2014-05-11 22:26:39,625 - INFO - top_torque found
+2014-05-11 22:26:39,625 - INFO - top_rpm found
+2014-05-11 22:26:39,625 - INFO - motor_top_power found
+2014-05-11 22:26:39,625 - INFO - chain_efficiency found
+2014-05-11 22:26:39,625 - INFO - battery_efficiency found
+2014-05-11 22:26:39,625 - INFO - motor_torque_constant found
+2014-05-11 22:26:39,627 - INFO - motor_rpm_constant found
+2014-05-11 22:26:39,627 - INFO - motor_thermal_conductivity
+2014-05-11 22:26:39,627 - INFO - motor_heat_capacity
+2014-05-11 22:26:39,627 - INFO - coolant_temp
+2014-05-11 22:26:39,627 - INFO - max_motor_temp
+2014-05-11 22:26:39,627 - INFO - series_cells found
+2014-05-11 22:26:39,627 - INFO - max_amphour
+2014-05-11 22:26:39,627 - INFO - batt_max_current
+2014-05-11 22:26:39,627 - INFO - max_distance_travel found
+2014-05-11 22:26:39,627 - INFO - dist_to_speed_lookup found
+2014-05-11 22:26:39,627 - INFO - dist_to_alt_lookup found
+2014-05-11 22:26:39,627 - INFO - motor_controller_eff_lookup found
+2014-05-11 22:26:39,627 - INFO - motor_eff_lookup found
+2014-05-11 22:26:39,627 - INFO - soc_to_voltage_lookup found
+2014-05-11 22:26:39,628 - INFO - throttlemap_lookup found
+2014-05-11 22:26:39,628 - INFO - lean_angle_lookup found
+2014-05-11 22:26:39,628 - INFO - tyreA found
+2014-05-11 22:26:39,628 - INFO - tyreB found
+2014-05-11 22:26:39,628 - INFO - tyreC found
+2014-05-11 22:26:39,628 - INFO - top_lean_angle found
+2014-05-11 22:26:40,032 - INFO - Lookup Files\disttospeed.csv loaded
+2014-05-11 22:26:40,221 - INFO - Lookup Files\aee.csv loaded
+2014-05-11 22:26:40,348 - INFO - Lookup Files\disttoalt.csv loaded
+2014-05-11 22:26:40,441 - INFO - Lookup Files\throttle.csv loaded
+2014-05-11 22:26:40,572 - INFO - Lookup Files\lean_IOM_video_data.csv loaded
+2014-05-11 22:26:40,687 - INFO - Lookup Files\Tritium_ws200_eff.csv loaded
+2014-05-11 22:26:40,859 - INFO - Lookup Files\Emrax_eff.csv loaded
+2014-05-11 22:26:47,730 - INFO - Converted 51014_RW2Xgearcheck_1.8261_.5ts_output.csv to a dictionary successfully
+2014-05-11 22:26:47,730 - INFO - Checking to make sure file 51014_RW2Xgearcheck_1.9091_.5ts_output.csv has needed parameters...
+2014-05-11 22:26:47,730 - INFO - Step found
+2014-05-11 22:26:47,730 - INFO - total_time found
+2014-05-11 22:26:47,730 - INFO - gearing found
+2014-05-11 22:26:47,730 - INFO - rider_mass found
+2014-05-11 22:26:47,730 - INFO - bike_mass found
+2014-05-11 22:26:47,730 - INFO - gravity found
+2014-05-11 22:26:47,730 - INFO - air_resistance found
+2014-05-11 22:26:47,730 - INFO - air_density found
+2014-05-11 22:26:47,730 - INFO - frontal_area found
+2014-05-11 22:26:47,730 - INFO - rolling_resistance found
+2014-05-11 22:26:47,730 - INFO - top_torque found
+2014-05-11 22:26:47,730 - INFO - top_rpm found
+2014-05-11 22:26:47,730 - INFO - motor_top_power found
+2014-05-11 22:26:47,730 - INFO - chain_efficiency found
+2014-05-11 22:26:47,730 - INFO - battery_efficiency found
+2014-05-11 22:26:47,730 - INFO - motor_torque_constant found
+2014-05-11 22:26:47,730 - INFO - motor_rpm_constant found
+2014-05-11 22:26:47,730 - INFO - motor_thermal_conductivity
+2014-05-11 22:26:47,730 - INFO - motor_heat_capacity
+2014-05-11 22:26:47,732 - INFO - coolant_temp
+2014-05-11 22:26:47,732 - INFO - max_motor_temp
+2014-05-11 22:26:47,732 - INFO - series_cells found
+2014-05-11 22:26:47,732 - INFO - max_amphour
+2014-05-11 22:26:47,732 - INFO - batt_max_current
+2014-05-11 22:26:47,732 - INFO - max_distance_travel found
+2014-05-11 22:26:47,732 - INFO - dist_to_speed_lookup found
+2014-05-11 22:26:47,732 - INFO - dist_to_alt_lookup found
+2014-05-11 22:26:47,732 - INFO - motor_controller_eff_lookup found
+2014-05-11 22:26:47,732 - INFO - motor_eff_lookup found
+2014-05-11 22:26:47,732 - INFO - soc_to_voltage_lookup found
+2014-05-11 22:26:47,732 - INFO - throttlemap_lookup found
+2014-05-11 22:26:47,732 - INFO - lean_angle_lookup found
+2014-05-11 22:26:47,732 - INFO - tyreA found
+2014-05-11 22:26:47,733 - INFO - tyreB found
+2014-05-11 22:26:47,733 - INFO - tyreC found
+2014-05-11 22:26:47,733 - INFO - top_lean_angle found
+2014-05-11 22:26:48,036 - INFO - Lookup Files\disttospeed.csv loaded
+2014-05-11 22:26:48,158 - INFO - Lookup Files\aee.csv loaded
+2014-05-11 22:26:48,246 - INFO - Lookup Files\disttoalt.csv loaded
+2014-05-11 22:26:48,303 - INFO - Lookup Files\throttle.csv loaded
+2014-05-11 22:26:48,384 - INFO - Lookup Files\lean_IOM_video_data.csv loaded
+2014-05-11 22:26:48,453 - INFO - Lookup Files\Tritium_ws200_eff.csv loaded
+2014-05-11 22:26:48,562 - INFO - Lookup Files\Emrax_eff.csv loaded
+2014-05-11 22:26:55,364 - INFO - Converted 51014_RW2Xgearcheck_1.9091_.5ts_output.csv to a dictionary successfully
+2014-05-11 22:26:55,364 - INFO - Checking to make sure file 51014_RW2Xgearcheck_2.0000_.5ts_output.csv has needed parameters...
+2014-05-11 22:26:55,364 - INFO - Step found
+2014-05-11 22:26:55,364 - INFO - total_time found
+2014-05-11 22:26:55,364 - INFO - gearing found
+2014-05-11 22:26:55,365 - INFO - rider_mass found
+2014-05-11 22:26:55,365 - INFO - bike_mass found
+2014-05-11 22:26:55,365 - INFO - gravity found
+2014-05-11 22:26:55,365 - INFO - air_resistance found
+2014-05-11 22:26:55,365 - INFO - air_density found
+2014-05-11 22:26:55,365 - INFO - frontal_area found
+2014-05-11 22:26:55,365 - INFO - rolling_resistance found
+2014-05-11 22:26:55,365 - INFO - top_torque found
+2014-05-11 22:26:55,365 - INFO - top_rpm found
+2014-05-11 22:26:55,365 - INFO - motor_top_power found
+2014-05-11 22:26:55,365 - INFO - chain_efficiency found
+2014-05-11 22:26:55,365 - INFO - battery_efficiency found
+2014-05-11 22:26:55,365 - INFO - motor_torque_constant found
+2014-05-11 22:26:55,365 - INFO - motor_rpm_constant found
+2014-05-11 22:26:55,365 - INFO - motor_thermal_conductivity
+2014-05-11 22:26:55,365 - INFO - motor_heat_capacity
+2014-05-11 22:26:55,365 - INFO - coolant_temp
+2014-05-11 22:26:55,365 - INFO - max_motor_temp
+2014-05-11 22:26:55,365 - INFO - series_cells found
+2014-05-11 22:26:55,365 - INFO - max_amphour
+2014-05-11 22:26:55,365 - INFO - batt_max_current
+2014-05-11 22:26:55,365 - INFO - max_distance_travel found
+2014-05-11 22:26:55,365 - INFO - dist_to_speed_lookup found
+2014-05-11 22:26:55,365 - INFO - dist_to_alt_lookup found
+2014-05-11 22:26:55,365 - INFO - motor_controller_eff_lookup found
+2014-05-11 22:26:55,365 - INFO - motor_eff_lookup found
+2014-05-11 22:26:55,365 - INFO - soc_to_voltage_lookup found
+2014-05-11 22:26:55,367 - INFO - throttlemap_lookup found
+2014-05-11 22:26:55,367 - INFO - lean_angle_lookup found
+2014-05-11 22:26:55,367 - INFO - tyreA found
+2014-05-11 22:26:55,367 - INFO - tyreB found
+2014-05-11 22:26:55,367 - INFO - tyreC found
+2014-05-11 22:26:55,367 - INFO - top_lean_angle found
+2014-05-11 22:26:55,756 - INFO - Lookup Files\disttospeed.csv loaded
+2014-05-11 22:26:55,943 - INFO - Lookup Files\aee.csv loaded
+2014-05-11 22:26:56,079 - INFO - Lookup Files\disttoalt.csv loaded
+2014-05-11 22:26:56,193 - INFO - Lookup Files\throttle.csv loaded
+2014-05-11 22:26:56,319 - INFO - Lookup Files\lean_IOM_video_data.csv loaded
+2014-05-11 22:26:56,431 - INFO - Lookup Files\Tritium_ws200_eff.csv loaded
+2014-05-11 22:26:56,608 - INFO - Lookup Files\Emrax_eff.csv loaded
+2014-05-11 22:27:03,487 - INFO - Converted 51014_RW2Xgearcheck_2.0000_.5ts_output.csv to a dictionary successfully
+2014-05-11 22:27:03,487 - INFO - Checking to make sure file 51014_RW2Xgearcheck_2.1740_.5ts_output.csv has needed parameters...
+2014-05-11 22:27:03,487 - INFO - Step found
+2014-05-11 22:27:03,487 - INFO - total_time found
+2014-05-11 22:27:03,487 - INFO - gearing found
+2014-05-11 22:27:03,487 - INFO - rider_mass found
+2014-05-11 22:27:03,487 - INFO - bike_mass found
+2014-05-11 22:27:03,489 - INFO - gravity found
+2014-05-11 22:27:03,489 - INFO - air_resistance found
+2014-05-11 22:27:03,489 - INFO - air_density found
+2014-05-11 22:27:03,489 - INFO - frontal_area found
+2014-05-11 22:27:03,489 - INFO - rolling_resistance found
+2014-05-11 22:27:03,489 - INFO - top_torque found
+2014-05-11 22:27:03,489 - INFO - top_rpm found
+2014-05-11 22:27:03,489 - INFO - motor_top_power found
+2014-05-11 22:27:03,489 - INFO - chain_efficiency found
+2014-05-11 22:27:03,489 - INFO - battery_efficiency found
+2014-05-11 22:27:03,489 - INFO - motor_torque_constant found
+2014-05-11 22:27:03,489 - INFO - motor_rpm_constant found
+2014-05-11 22:27:03,489 - INFO - motor_thermal_conductivity
+2014-05-11 22:27:03,489 - INFO - motor_heat_capacity
+2014-05-11 22:27:03,490 - INFO - coolant_temp
+2014-05-11 22:27:03,490 - INFO - max_motor_temp
+2014-05-11 22:27:03,490 - INFO - series_cells found
+2014-05-11 22:27:03,490 - INFO - max_amphour
+2014-05-11 22:27:03,490 - INFO - batt_max_current
+2014-05-11 22:27:03,490 - INFO - max_distance_travel found
+2014-05-11 22:27:03,490 - INFO - dist_to_speed_lookup found
+2014-05-11 22:27:03,490 - INFO - dist_to_alt_lookup found
+2014-05-11 22:27:03,490 - INFO - motor_controller_eff_lookup found
+2014-05-11 22:27:03,490 - INFO - motor_eff_lookup found
+2014-05-11 22:27:03,490 - INFO - soc_to_voltage_lookup found
+2014-05-11 22:27:03,490 - INFO - throttlemap_lookup found
+2014-05-11 22:27:03,490 - INFO - lean_angle_lookup found
+2014-05-11 22:27:03,490 - INFO - tyreA found
+2014-05-11 22:27:03,490 - INFO - tyreB found
+2014-05-11 22:27:03,490 - INFO - tyreC found
+2014-05-11 22:27:03,490 - INFO - top_lean_angle found
+2014-05-11 22:27:03,767 - INFO - Lookup Files\disttospeed.csv loaded
+2014-05-11 22:27:03,904 - INFO - Lookup Files\aee.csv loaded
+2014-05-11 22:27:03,997 - INFO - Lookup Files\disttoalt.csv loaded
+2014-05-11 22:27:04,055 - INFO - Lookup Files\throttle.csv loaded
+2014-05-11 22:27:04,141 - INFO - Lookup Files\lean_IOM_video_data.csv loaded
+2014-05-11 22:27:04,210 - INFO - Lookup Files\Tritium_ws200_eff.csv loaded
+2014-05-11 22:27:04,354 - INFO - Lookup Files\Emrax_eff.csv loaded
+2014-05-11 22:27:16,710 - INFO - Converted 51014_RW2Xgearcheck_2.1740_.5ts_output.csv to a dictionary successfully
+2014-05-11 22:27:16,710 - INFO - Checking to make sure file 51014_RW2Xgearcheck_2.2727_.5ts_output.csv has needed parameters...
+2014-05-11 22:27:16,710 - INFO - Step found
+2014-05-11 22:27:16,710 - INFO - total_time found
+2014-05-11 22:27:16,710 - INFO - gearing found
+2014-05-11 22:27:16,710 - INFO - rider_mass found
+2014-05-11 22:27:16,711 - INFO - bike_mass found
+2014-05-11 22:27:16,711 - INFO - gravity found
+2014-05-11 22:27:16,711 - INFO - air_resistance found
+2014-05-11 22:27:16,711 - INFO - air_density found
+2014-05-11 22:27:16,711 - INFO - frontal_area found
+2014-05-11 22:27:16,711 - INFO - rolling_resistance found
+2014-05-11 22:27:16,711 - INFO - top_torque found
+2014-05-11 22:27:16,711 - INFO - top_rpm found
+2014-05-11 22:27:16,711 - INFO - motor_top_power found
+2014-05-11 22:27:16,711 - INFO - chain_efficiency found
+2014-05-11 22:27:16,711 - INFO - battery_efficiency found
+2014-05-11 22:27:16,711 - INFO - motor_torque_constant found
+2014-05-11 22:27:16,711 - INFO - motor_rpm_constant found
+2014-05-11 22:27:16,713 - INFO - motor_thermal_conductivity
+2014-05-11 22:27:16,713 - INFO - motor_heat_capacity
+2014-05-11 22:27:16,713 - INFO - coolant_temp
+2014-05-11 22:27:16,713 - INFO - max_motor_temp
+2014-05-11 22:27:16,713 - INFO - series_cells found
+2014-05-11 22:27:16,713 - INFO - max_amphour
+2014-05-11 22:27:16,713 - INFO - batt_max_current
+2014-05-11 22:27:16,713 - INFO - max_distance_travel found
+2014-05-11 22:27:16,713 - INFO - dist_to_speed_lookup found
+2014-05-11 22:27:16,713 - INFO - dist_to_alt_lookup found
+2014-05-11 22:27:16,713 - INFO - motor_controller_eff_lookup found
+2014-05-11 22:27:16,713 - INFO - motor_eff_lookup found
+2014-05-11 22:27:16,713 - INFO - soc_to_voltage_lookup found
+2014-05-11 22:27:16,713 - INFO - throttlemap_lookup found
+2014-05-11 22:27:16,713 - INFO - lean_angle_lookup found
+2014-05-11 22:27:16,713 - INFO - tyreA found
+2014-05-11 22:27:16,713 - INFO - tyreB found
+2014-05-11 22:27:16,713 - INFO - tyreC found
+2014-05-11 22:27:16,713 - INFO - top_lean_angle found
+2014-05-11 22:27:17,976 - INFO - Lookup Files\disttospeed.csv loaded
+2014-05-11 22:27:18,384 - INFO - Lookup Files\aee.csv loaded
+2014-05-11 22:27:18,607 - INFO - Lookup Files\disttoalt.csv loaded
+2014-05-11 22:27:18,760 - INFO - Lookup Files\throttle.csv loaded
+2014-05-11 22:27:18,992 - INFO - Lookup Files\lean_IOM_video_data.csv loaded
+2014-05-11 22:27:19,154 - INFO - Lookup Files\Tritium_ws200_eff.csv loaded
+2014-05-11 22:27:19,381 - INFO - Lookup Files\Emrax_eff.csv loaded
+2014-05-11 22:27:27,085 - INFO - Converted 51014_RW2Xgearcheck_2.2727_.5ts_output.csv to a dictionary successfully
+2014-05-11 22:27:27,085 - INFO - ENDING Simulation.py
+2014-05-11 22:27:27,088 - DEBUG - Entered out path: Z:\Design files (technical)\RW-2x Gearing\051014_leanangle_gearing\test_out_worstaero_.5ts
+2014-05-11 22:27:27,088 - INFO - STARTING FUNCTION OutputFile
+2014-05-11 22:27:27,088 - INFO - Converting dictionary 51014_RW2Xgearcheck_1.6522_.5ts_output.csv to file
+2014-05-11 22:27:27,088 - DEBUG - File will be saved at Z:\Design files (technical)\RW-2x Gearing\051014_leanangle_gearing\test_out_worstaero_.5ts\51014_RW2Xgearcheck_1.6522_.5ts_output.csv
+2014-05-11 22:28:03,440 - INFO - Data converted and saved to Z:\Design files (technical)\RW-2x Gearing\051014_leanangle_gearing\test_out_worstaero_.5ts\51014_RW2Xgearcheck_1.6522_.5ts_output.csv
+2014-05-11 22:28:03,441 - INFO - Converting dictionary 51014_RW2Xgearcheck_1.7273_.5ts_output.csv to file
+2014-05-11 22:28:03,441 - DEBUG - File will be saved at Z:\Design files (technical)\RW-2x Gearing\051014_leanangle_gearing\test_out_worstaero_.5ts\51014_RW2Xgearcheck_1.7273_.5ts_output.csv
+2014-05-11 22:28:41,361 - INFO - Data converted and saved to Z:\Design files (technical)\RW-2x Gearing\051014_leanangle_gearing\test_out_worstaero_.5ts\51014_RW2Xgearcheck_1.7273_.5ts_output.csv
+2014-05-11 22:28:41,361 - INFO - Converting dictionary 51014_RW2Xgearcheck_1.8095_.5ts_output.csv to file
+2014-05-11 22:28:41,361 - DEBUG - File will be saved at Z:\Design files (technical)\RW-2x Gearing\051014_leanangle_gearing\test_out_worstaero_.5ts\51014_RW2Xgearcheck_1.8095_.5ts_output.csv
+2014-05-11 22:29:18,448 - INFO - Data converted and saved to Z:\Design files (technical)\RW-2x Gearing\051014_leanangle_gearing\test_out_worstaero_.5ts\51014_RW2Xgearcheck_1.8095_.5ts_output.csv
+2014-05-11 22:29:18,448 - INFO - Converting dictionary 51014_RW2Xgearcheck_1.8261_.5ts_output.csv to file
+2014-05-11 22:29:18,450 - DEBUG - File will be saved at Z:\Design files (technical)\RW-2x Gearing\051014_leanangle_gearing\test_out_worstaero_.5ts\51014_RW2Xgearcheck_1.8261_.5ts_output.csv
+2014-05-11 22:29:56,371 - INFO - Data converted and saved to Z:\Design files (technical)\RW-2x Gearing\051014_leanangle_gearing\test_out_worstaero_.5ts\51014_RW2Xgearcheck_1.8261_.5ts_output.csv
+2014-05-11 22:29:56,372 - INFO - Converting dictionary 51014_RW2Xgearcheck_1.9091_.5ts_output.csv to file
+2014-05-11 22:29:56,372 - DEBUG - File will be saved at Z:\Design files (technical)\RW-2x Gearing\051014_leanangle_gearing\test_out_worstaero_.5ts\51014_RW2Xgearcheck_1.9091_.5ts_output.csv
+2014-05-11 22:30:35,483 - INFO - Data converted and saved to Z:\Design files (technical)\RW-2x Gearing\051014_leanangle_gearing\test_out_worstaero_.5ts\51014_RW2Xgearcheck_1.9091_.5ts_output.csv
+2014-05-11 22:30:35,483 - INFO - Converting dictionary 51014_RW2Xgearcheck_2.0000_.5ts_output.csv to file
+2014-05-11 22:30:35,483 - DEBUG - File will be saved at Z:\Design files (technical)\RW-2x Gearing\051014_leanangle_gearing\test_out_worstaero_.5ts\51014_RW2Xgearcheck_2.0000_.5ts_output.csv
+2014-05-11 22:31:14,301 - INFO - Data converted and saved to Z:\Design files (technical)\RW-2x Gearing\051014_leanangle_gearing\test_out_worstaero_.5ts\51014_RW2Xgearcheck_2.0000_.5ts_output.csv
+2014-05-11 22:31:14,302 - INFO - Converting dictionary 51014_RW2Xgearcheck_2.1740_.5ts_output.csv to file
+2014-05-11 22:31:14,302 - DEBUG - File will be saved at Z:\Design files (technical)\RW-2x Gearing\051014_leanangle_gearing\test_out_worstaero_.5ts\51014_RW2Xgearcheck_2.1740_.5ts_output.csv
+2014-05-11 22:31:54,062 - INFO - Data converted and saved to Z:\Design files (technical)\RW-2x Gearing\051014_leanangle_gearing\test_out_worstaero_.5ts\51014_RW2Xgearcheck_2.1740_.5ts_output.csv
+2014-05-11 22:31:54,063 - INFO - Converting dictionary 51014_RW2Xgearcheck_2.2727_.5ts_output.csv to file
+2014-05-11 22:31:54,063 - DEBUG - File will be saved at Z:\Design files (technical)\RW-2x Gearing\051014_leanangle_gearing\test_out_worstaero_.5ts\51014_RW2Xgearcheck_2.2727_.5ts_output.csv
+2014-05-11 22:32:34,627 - INFO - Data converted and saved to Z:\Design files (technical)\RW-2x Gearing\051014_leanangle_gearing\test_out_worstaero_.5ts\51014_RW2Xgearcheck_2.2727_.5ts_output.csv
+2014-05-11 22:32:34,767 - INFO - Data extraction from <type 'file'> complete
+2014-05-11 22:32:34,769 - INFO - Z:\Design files (technical)\RW-2x Gearing\051014_leanangle_gearing\test_in_worstaero_.5ts\OPTIONS_worstaero_.5ts.csv NOT successfully edited
+2014-05-11 22:32:50,762 - CRITICAL - Could not save project at the end of the simulation
+2014-05-12 21:54:49,697 - INFO - STARTING automation.py
+2014-05-12 21:59:12,454 - INFO - STARTING FUNCTIONS FileToParams
+2014-05-12 21:59:12,454 - DEBUG - Options file location passed: C:\Users\Sean\Desktop\Buckeye Current\Simba\Deployment Package\test_in\RW2-IOMCheck\OPTIONS.csv
+2014-05-12 21:59:12,457 - INFO - Current file to search for data: IOM_check.csv
+2014-05-12 21:59:12,459 - INFO - Data extraction from IOM_check.csv complete
+2014-05-12 21:59:12,460 - INFO - Files have been converted to dictionaries
+2014-05-12 21:59:48,006 - INFO - STARTING FUNCTION SaveInput
+2014-05-12 21:59:48,006 - INFO - Converting dictionary IOM_check.csv to file
+2014-05-12 21:59:48,006 - DEBUG - File will be saved at C:\Users\Sean\Desktop\Buckeye Current\Simba\Deployment Package\test_in\RW2-IOMCheck\IOM_check.csv
+2014-05-12 21:59:48,009 - INFO - Data converted and saved to C:\Users\Sean\Desktop\Buckeye Current\Simba\Deployment Package\test_in\RW2-IOMCheck\IOM_check.csv
+2014-05-12 21:59:52,193 - DEBUG - Entered path: C:\Users\Sean\Desktop\Buckeye Current\Simba\Deployment Package\test_in\RW2-IOMCheck\OPTIONS.csv
+2014-05-12 21:59:52,193 - INFO - STARTING FUNCTIONS FileToParams
+2014-05-12 21:59:52,193 - DEBUG - Options file location passed: C:\Users\Sean\Desktop\Buckeye Current\Simba\Deployment Package\test_in\RW2-IOMCheck\OPTIONS.csv
+2014-05-12 21:59:52,194 - INFO - Current file to search for data: IOM_check.csv
+2014-05-12 21:59:52,194 - INFO - Data extraction from IOM_check.csv complete
+2014-05-12 21:59:52,194 - INFO - Files have been converted to dictionaries
+2014-05-12 21:59:52,196 - INFO - STARTING Simulation.py
+2014-05-12 21:59:52,196 - INFO - Checking to make sure file IOM_check_output.csv has needed parameters...
+2014-05-12 21:59:52,196 - INFO - Step found
+2014-05-12 21:59:52,196 - INFO - total_time found
+2014-05-12 21:59:52,197 - INFO - gearing found
+2014-05-12 21:59:52,197 - INFO - rider_mass found
+2014-05-12 21:59:52,197 - INFO - bike_mass found
+2014-05-12 21:59:52,197 - INFO - gravity found
+2014-05-12 21:59:52,197 - INFO - air_resistance found
+2014-05-12 21:59:52,197 - INFO - air_density found
+2014-05-12 21:59:52,197 - INFO - frontal_area found
+2014-05-12 21:59:52,197 - INFO - rolling_resistance found
+2014-05-12 21:59:52,197 - INFO - top_torque found
+2014-05-12 21:59:52,197 - INFO - top_rpm found
+2014-05-12 21:59:52,197 - INFO - motor_top_power found
+2014-05-12 21:59:52,197 - INFO - chain_efficiency found
+2014-05-12 21:59:52,197 - INFO - battery_efficiency found
+2014-05-12 21:59:52,197 - INFO - motor_torque_constant found
+2014-05-12 21:59:52,197 - INFO - motor_rpm_constant found
+2014-05-12 21:59:52,197 - INFO - motor_thermal_conductivity
+2014-05-12 21:59:52,197 - INFO - motor_heat_capacity
+2014-05-12 21:59:52,197 - INFO - coolant_temp
+2014-05-12 21:59:52,197 - INFO - max_motor_temp
+2014-05-12 21:59:52,197 - INFO - series_cells found
+2014-05-12 21:59:52,197 - INFO - max_amphour
+2014-05-12 21:59:52,197 - INFO - batt_max_current
+2014-05-12 21:59:52,197 - INFO - max_distance_travel found
+2014-05-12 21:59:52,197 - INFO - dist_to_speed_lookup found
+2014-05-12 21:59:52,197 - INFO - dist_to_alt_lookup found
+2014-05-12 21:59:52,197 - INFO - motor_controller_eff_lookup found
+2014-05-12 21:59:52,197 - INFO - motor_eff_lookup found
+2014-05-12 21:59:52,197 - INFO - soc_to_voltage_lookup found
+2014-05-12 21:59:52,197 - INFO - throttlemap_lookup found
+2014-05-12 21:59:52,198 - INFO - lean_angle_lookup found
+2014-05-12 21:59:52,198 - INFO - tyreA found
+2014-05-12 21:59:52,198 - INFO - tyreB found
+2014-05-12 21:59:52,198 - INFO - tyreC found
+2014-05-12 21:59:52,198 - INFO - top_lean_angle found
+2014-05-12 21:59:52,812 - INFO - Lookup Files\IOM_data.csv loaded
+2014-05-12 21:59:52,904 - INFO - Lookup Files\aee.csv loaded
+2014-05-12 21:59:52,924 - INFO - Lookup Files\disttoalt.csv loaded
+2014-05-12 21:59:52,930 - INFO - Lookup Files\throttle.csv loaded
+2014-05-12 21:59:52,934 - INFO - Lookup Files\lean.csv loaded
+2014-05-12 21:59:52,938 - INFO - Lookup Files\Tritium_ws200_eff.csv loaded
+2014-05-12 21:59:52,971 - INFO - Lookup Files\Emrax_eff.csv loaded
+2014-05-12 21:59:59,911 - INFO - Converted IOM_check_output.csv to a dictionary successfully
+2014-05-12 21:59:59,913 - INFO - ENDING Simulation.py
+2014-05-12 21:59:59,915 - DEBUG - Entered out path: C:\Users\Sean\Desktop
+2014-05-12 21:59:59,915 - INFO - STARTING FUNCTION OutputFile
+2014-05-12 21:59:59,915 - INFO - Converting dictionary IOM_check_output.csv to file
+2014-05-12 21:59:59,915 - DEBUG - File will be saved at C:\Users\Sean\Desktop\IOM_check_output.csv
+2014-05-12 22:00:00,114 - INFO - Data converted and saved to C:\Users\Sean\Desktop\IOM_check_output.csv
+2014-05-12 22:00:00,115 - INFO - Data extraction from <type 'file'> complete
+2014-05-12 22:00:00,117 - INFO - C:\Users\Sean\Desktop\Buckeye Current\Simba\Deployment Package\test_in\RW2-IOMCheck\OPTIONS.csv successfully edited
+2014-05-12 22:51:50,019 - INFO - STARTING automation.py
+2014-05-12 22:54:07,094 - INFO - STARTING FUNCTIONS FileToParams
+2014-05-12 22:54:07,094 - DEBUG - Options file location passed: C:\Users\Sean\Desktop\Buckeye Current\Simba\Deployment Package\test_in\IOM_ts_0.5\OPTIONS.csv
+2014-05-12 22:54:07,098 - INFO - Current file to search for data: IOM_check.csv
+2014-05-12 22:54:07,098 - INFO - Data extraction from IOM_check.csv complete
+2014-05-12 22:54:07,099 - INFO - Files have been converted to dictionaries
+2014-05-12 22:54:14,605 - DEBUG - Entered path: C:\Users\Sean\Desktop\Buckeye Current\Simba\Deployment Package\test_in\IOM_ts_0.5\OPTIONS.csv
+2014-05-12 22:54:14,607 - INFO - STARTING FUNCTIONS FileToParams
+2014-05-12 22:54:14,607 - DEBUG - Options file location passed: C:\Users\Sean\Desktop\Buckeye Current\Simba\Deployment Package\test_in\IOM_ts_0.5\OPTIONS.csv
+2014-05-12 22:54:14,607 - INFO - Current file to search for data: IOM_check.csv
+2014-05-12 22:54:14,608 - INFO - Data extraction from IOM_check.csv complete
+2014-05-12 22:54:14,608 - INFO - Files have been converted to dictionaries
+2014-05-12 22:54:14,609 - INFO - STARTING Simulation.py
+2014-05-12 22:54:14,609 - INFO - Checking to make sure file IOM_output_ts_0.5.csv has needed parameters...
+2014-05-12 22:54:14,609 - INFO - Step found
+2014-05-12 22:54:14,609 - INFO - total_time found
+2014-05-12 22:54:14,609 - INFO - gearing found
+2014-05-12 22:54:14,609 - INFO - rider_mass found
+2014-05-12 22:54:14,609 - INFO - bike_mass found
+2014-05-12 22:54:14,609 - INFO - gravity found
+2014-05-12 22:54:14,609 - INFO - air_resistance found
+2014-05-12 22:54:14,611 - INFO - air_density found
+2014-05-12 22:54:14,611 - INFO - frontal_area found
+2014-05-12 22:54:14,611 - INFO - rolling_resistance found
+2014-05-12 22:54:14,611 - INFO - top_torque found
+2014-05-12 22:54:14,611 - INFO - top_rpm found
+2014-05-12 22:54:14,611 - INFO - motor_top_power found
+2014-05-12 22:54:14,611 - INFO - chain_efficiency found
+2014-05-12 22:54:14,611 - INFO - battery_efficiency found
+2014-05-12 22:54:14,611 - INFO - motor_torque_constant found
+2014-05-12 22:54:14,611 - INFO - motor_rpm_constant found
+2014-05-12 22:54:14,611 - INFO - motor_thermal_conductivity
+2014-05-12 22:54:14,611 - INFO - motor_heat_capacity
+2014-05-12 22:54:14,611 - INFO - coolant_temp
+2014-05-12 22:54:14,611 - INFO - max_motor_temp
+2014-05-12 22:54:14,611 - INFO - series_cells found
+2014-05-12 22:54:14,611 - INFO - max_amphour
+2014-05-12 22:54:14,611 - INFO - batt_max_current
+2014-05-12 22:54:14,611 - INFO - max_distance_travel found
+2014-05-12 22:54:14,611 - INFO - dist_to_speed_lookup found
+2014-05-12 22:54:14,611 - INFO - dist_to_alt_lookup found
+2014-05-12 22:54:14,611 - INFO - motor_controller_eff_lookup found
+2014-05-12 22:54:14,611 - INFO - motor_eff_lookup found
+2014-05-12 22:54:14,611 - INFO - soc_to_voltage_lookup found
+2014-05-12 22:54:14,611 - INFO - throttlemap_lookup found
+2014-05-12 22:54:14,611 - INFO - lean_angle_lookup found
+2014-05-12 22:54:14,611 - INFO - tyreA found
+2014-05-12 22:54:14,611 - INFO - tyreB found
+2014-05-12 22:54:14,611 - INFO - tyreC found
+2014-05-12 22:54:14,611 - INFO - top_lean_angle found
+2014-05-12 22:54:15,223 - INFO - Lookup Files\IOM_data.csv loaded
+2014-05-12 22:54:15,309 - INFO - Lookup Files\aee.csv loaded
+2014-05-12 22:54:15,329 - INFO - Lookup Files\disttoalt.csv loaded
+2014-05-12 22:54:15,332 - INFO - Lookup Files\limitlessthrottle.csv loaded
+2014-05-12 22:54:15,335 - INFO - Lookup Files\lean.csv loaded
+2014-05-12 22:54:15,338 - INFO - Lookup Files\Tritium_ws200_eff.csv loaded
+2014-05-12 22:54:15,369 - INFO - Lookup Files\Emrax_eff.csv loaded
+2014-05-12 22:54:20,237 - INFO - Converted IOM_output_ts_0.5.csv to a dictionary successfully
+2014-05-12 22:54:20,237 - INFO - ENDING Simulation.py
+2014-05-12 22:54:20,240 - DEBUG - Entered out path: C:\Users\Sean\Desktop
+2014-05-12 22:54:20,240 - INFO - STARTING FUNCTION OutputFile
+2014-05-12 22:54:20,240 - INFO - Converting dictionary IOM_output_ts_0.5.csv to file
+2014-05-12 22:54:20,240 - DEBUG - File will be saved at C:\Users\Sean\Desktop\IOM_output_ts_0.5.csv
+2014-05-12 22:54:20,411 - INFO - Data converted and saved to C:\Users\Sean\Desktop\IOM_output_ts_0.5.csv
+2014-05-12 22:54:20,413 - INFO - Data extraction from <type 'file'> complete
+2014-05-12 22:54:20,414 - INFO - C:\Users\Sean\Desktop\Buckeye Current\Simba\Deployment Package\test_in\IOM_ts_0.5\OPTIONS.csv successfully edited
+2014-05-14 14:03:28,013 - INFO - STARTING automation.py
+2014-05-14 14:03:40,378 - INFO - STARTING FUNCTIONS FileToParams
+2014-05-14 14:03:40,378 - DEBUG - Options file location passed: C:\Users\Sean\Desktop\Buckeye Current\Simba\Deployment Package\test_in\IOM_ts_0.5\OPTIONS.csv
+2014-05-14 14:03:40,381 - INFO - Current file to search for data: IOM_check.csv
+2014-05-14 14:03:40,381 - INFO - Data extraction from IOM_check.csv complete
+2014-05-14 14:03:40,381 - INFO - Files have been converted to dictionaries

@@ -22,36 +22,46 @@ from copy import deepcopy
 from datetime import datetime
 
 import sys, subprocess
+import traceback
 
 def dependencies_for_automation():  #Missing imports needed to convert to .exe
     from scipy.sparse.csgraph import _validation
 
 
-def AdjustParams(dictionary, percentChange):  
+def SensitivityAnalysis(dictionary):  
+
+    parameterDict = collections.OrderedDict()
     
-    resultDict = dict()
-    dictionary = deepcopy(dictionary)
-    percentChange = float(percentChange) / 100
-    
-    for file in dictionary:
-        
-        currentData = deepcopy(dictionary[file])
-        percentDown = deepcopy(dictionary[file])
-        percentUp = deepcopy(dictionary[file])
-        file = file[:-4]
-        
-        for key in currentData:
-            if not isinstance(currentData[key][0], str):
-                
-                originalValue = currentData[key][0]
-                percentDown[key] = originalValue - (originalValue * percentChange)
-                resultDict[file + "." + key + ".down.csv"] = percentDown.copy()
-                percentUp[key] = originalValue + (originalValue * percentChange)
-                resultDict[file + "." + key + ".up.csv"] = percentUp.copy()
-                percentDown[key] = originalValue
-                percentUp[key] = originalValue
+    # Take any file since they all have the same input parameters
+    for key in dictionary[dictionary.keys()[0]]:
+        print dictionary[dictionary.keys()[0]][key][0]
+        if not isinstance(dictionary[dictionary.keys()[0]][key][0],basestring) and key != 'motor_torque_constant':
+            outputFiles = []
+            originalDictionary = deepcopy(dictionary)
             
-    return resultDict
+            # Plus x% from the current key in each file
+            for file in dictionary:
+                originalData = dictionary[file][key]
+                dictionary[file][key] = originalData * 1.15
+            
+            outputFiles.append(sim.Simulation(dictionary))
+            dictionary = deepcopy(originalDictionary)
+            
+            # Minus x% from the current key in each file
+            for file in dictionary:
+                originalData = dictionary[file][key]
+                dictionary[file][key] = originalData * 0.85
+
+            outputFiles.append(sim.Simulation(dictionary))
+            dictionary = deepcopy(originalDictionary)
+        else:
+            print key
+            print " caused a pass"
+        
+        parameterDict[key] = outputFiles
+        
+    print parameterDict.keys()
+    
     
 def ProjectToParams(inFiles):
     
@@ -243,7 +253,7 @@ def WriteFolder(optionsFile, folderName):
     except:
         logging.info("%s NOT successfully edited", optionsFile)
     
-    
+
 ##############################################################################
 # GUI Starts Here
 ##############################################################################
@@ -797,8 +807,7 @@ class MainFrame(wx.Frame):
         inFiles[1,3] = self.folderControl.GetValue()
         # Sensitivity Analysis Function calls
         #percentChange = 15
-        #senseAnalysis = AdjustParams(dictionary, percentChange)
-        #senseAnalysisDict = sim.Simulation(senseAnalysis)
+        SensitivityAnalysis(deepcopy(dictionary))
         outputDict = sim.Simulation(deepcopy(dictionary))
         
         outputDirectory = self.folderControl.GetValue()
