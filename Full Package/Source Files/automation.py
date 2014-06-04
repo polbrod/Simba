@@ -12,7 +12,8 @@ import Simulation as sim
 import win32com.client
 import wx
 import wx.grid as gridlib
-import  wx.lib.scrolledpanel as scrolled
+import wx.lib.scrolledpanel as scrolled
+import wx.lib.masked as mask
 import collections
 import shutil
 
@@ -28,7 +29,7 @@ def dependencies_for_automation():  #Missing imports needed to convert to .exe
     from scipy.sparse.csgraph import _validation
 
 
-def SensitivityAnalysis(dictionary):  
+def SensitivityAnalysis(dictionary, sensitivityValue):  
 
     parameterDict = collections.OrderedDict()
     
@@ -42,7 +43,7 @@ def SensitivityAnalysis(dictionary):
             # Plus x% from the current key in each file
             for file in dictionary:
                 originalData = dictionary[file][key]
-                dictionary[file][key] = originalData * 1.15
+                dictionary[file][key] = originalData * (1.0 + sensitivityValue)
             
             outputFiles.append(sim.Simulation(dictionary))
             dictionary = deepcopy(originalDictionary)
@@ -50,7 +51,7 @@ def SensitivityAnalysis(dictionary):
             # Minus x% from the current key in each file
             for file in dictionary:
                 originalData = dictionary[file][key]
-                dictionary[file][key] = originalData * 0.85
+                dictionary[file][key] = originalData * (1.0 - sensitivityValue)
 
             outputFiles.append(sim.Simulation(dictionary))
             dictionary = deepcopy(originalDictionary)
@@ -61,6 +62,11 @@ def SensitivityAnalysis(dictionary):
         parameterDict[key] = outputFiles
         
     print parameterDict.keys()
+    print "\n\n\n\n\n"
+    print parameterDict[parameterDict.keys()[0]][0]['TestTemplateOutput.csv']['Max MPH']
+    print parameterDict[parameterDict.keys()[0]][1]['TestTemplateOutput.csv']['Max MPH']
+
+    
     
     
 def ProjectToParams(inFiles):
@@ -330,7 +336,8 @@ class MainFrame(wx.Frame):
         
         self.fileToFile = dict()
         self.currentFiles = np.empty(shape=(0,0))
-        self.currentFile = dict()        
+        self.currentFile = dict()   
+        self.performSensitivityAnalysis = False
         # Load icon
         if hasattr(sys, 'frozen'):
             iconLoc = os.path.join(os.path.dirname(sys.executable),"SIMBA.exe")
@@ -394,7 +401,17 @@ class MainFrame(wx.Frame):
         self.toolbar.AddControl(TransparentText(self.toolbar, wx.ID_ANY, " Output Directory  "))
         self.folderControl = wx.TextCtrl(self.toolbar, size = (300,-1))
         self.toolbar.AddControl(self.folderControl) 
+        self.toolbar.AddControl(TransparentText(self.toolbar, wx.ID_ANY, "  "))
+        self.toolbar.AddSeparator()        
         
+        self.sensitivityCheckbox = wx.CheckBox(self.toolbar, wx.ID_ANY, label = "Perform sensitivity analysis  ")
+        self.toolbar.AddControl(self.sensitivityCheckbox)
+        
+        self.toolbar.AddSeparator()
+        self.toolbar.AddControl(TransparentText(self.toolbar, wx.ID_ANY, " Sensitivity Adjustment Value: "))
+        self.sensitivityControl = mask.NumCtrl(self.toolbar, wx.ID_ANY, integerWidth = 2, allowNegative = False)
+        self.toolbar.AddControl(self.sensitivityControl)
+        self.toolbar.AddControl(TransparentText(self.toolbar, wx.ID_ANY, " %"))        
         
         # Setting up menu
         filemenu = wx.Menu()
@@ -429,7 +446,8 @@ class MainFrame(wx.Frame):
         self.Bind(wx.EVT_MENU, self.OnExit, self.menuExit)
         self.Bind(wx.EVT_MENU, self.OnNewProject, self.menuNewProject)
 #        self.Bind(wx.EVT_MENU, self.OnNewFile, self.menuNewFile)
-        self.Bind(wx.EVT_MENU, self.OnSaveAll, self.menuSaveAll)        
+        self.Bind(wx.EVT_MENU, self.OnSaveAll, self.menuSaveAll)
+        self.Bind(wx.EVT_CHECKBOX, self.SA_Checkbox_Event, self.sensitivityCheckbox)        
         
         ################################################################
         # Define mainsplitter as child of Frame and add IOSplitterPanel and StatusPanel as children
@@ -807,7 +825,10 @@ class MainFrame(wx.Frame):
         inFiles[1,3] = self.folderControl.GetValue()
         # Sensitivity Analysis Function calls
         #percentChange = 15
-        SensitivityAnalysis(deepcopy(dictionary))
+        if self.performSensitivityAnalysis:
+            decimalEquiv = self.sensitivityControl.GetValue() / 100.0
+            SensitivityAnalysis(deepcopy(dictionary), decimalEquiv)
+            
         outputDict = sim.Simulation(deepcopy(dictionary))
         
         outputDirectory = self.folderControl.GetValue()
@@ -866,6 +887,11 @@ class MainFrame(wx.Frame):
         logging.shutdown()
         self.Close(True)
     
+    def SA_Checkbox_Event(self, e):
+        if e.IsChecked():
+            self.performSensitivityAnalysis = True
+        else:
+            self.performSensitivityAnalysis = False
 
     
     
