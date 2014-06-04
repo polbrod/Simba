@@ -321,6 +321,56 @@ class IOSplitterPanel(wx.Panel):
 
 ########################################################################
 
+class SensitivityAnalysisFrame(wx.Frame):
+    """Constructor"""
+    #----------------------------------------------------------------------
+    def __init__(self, parent, id):
+        wx.Frame.__init__(self, None, title="Sensitivity Analysis Results", size = (1100,700))
+        
+        ################################################################
+        # Define mainsplitter as child of Frame and add IOSplitterPanel and StatusPanel as children
+        mainsplitter = wx.SplitterWindow(self, style = wx.SP_3D| wx.SP_LIVE_UPDATE)
+        mainsplitter.SetSashGravity(0.5)
+        mainsplitter.SetMinimumPaneSize(20)
+
+        #splitterpanel = IOSplitterPanel(mainsplitter)
+        #statusPanel = StatusPanel(mainsplitter, style = wx.BORDER_SIMPLE)
+        leftPanel = OptionsPanel(mainsplitter, style = wx.BORDER_SIMPLE | wx.TAB_TRAVERSAL)
+        rightPanel = SAResultsPanel(mainsplitter, style = wx.BORDER_SIMPLE | wx.TAB_TRAVERSAL)
+
+        mainsplitter.SplitVertically(leftPanel, rightPanel)
+        windowW, windowH = wx.DisplaySize()
+        newH = windowH/3.5
+        mainsplitter.SetSashPosition(windowH - newH, True)
+        
+        MainSizer = wx.BoxSizer(wx.VERTICAL)
+        MainSizer.Add(mainsplitter, 1, wx.EXPAND | wx.ALL)
+        self.SetSizer(MainSizer)
+        #################################################################        
+        
+        self.Refresh()
+        self.Show()
+        
+class OptionsPanel(scrolled.ScrolledPanel):
+    """Left panel in WIP GUI window that manages all the sorting and filtering"""
+    def __init__(self, parent, *args, **kwargs):
+        scrolled.ScrolledPanel.__init__(self, parent, *args, **kwargs)
+        self.parent = parent
+        
+        self.Layout()
+        self.SetAutoLayout(1)
+        self.SetupScrolling(scroll_x = False, scroll_y = True, rate_x=20, rate_y=20, scrollToTop=True)
+        
+class SAResultsPanel(scrolled.ScrolledPanel):
+    """Left panel in WIP GUI window that manages all the sorting and filtering"""
+    def __init__(self, parent, *args, **kwargs):
+        scrolled.ScrolledPanel.__init__(self, parent, *args, **kwargs)
+        self.parent = parent
+        
+        self.Layout()
+        self.SetAutoLayout(1)
+        self.SetupScrolling(scroll_x = False, scroll_y = True, rate_x=20, rate_y=20, scrollToTop=True)
+
 class MainFrame(wx.Frame):
     """Constructor"""
     #----------------------------------------------------------------------
@@ -828,6 +878,7 @@ class MainFrame(wx.Frame):
         if self.performSensitivityAnalysis:
             decimalEquiv = self.sensitivityControl.GetValue() / 100.0
             SensitivityAnalysis(deepcopy(dictionary), decimalEquiv)
+            SA_Frame = SensitivityAnalysisFrame(None, "Sensitivity Analysis Results")
             
         outputDict = sim.Simulation(deepcopy(dictionary))
         
