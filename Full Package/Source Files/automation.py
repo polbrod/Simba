@@ -12,7 +12,9 @@ import Simulation as sim
 import win32com.client
 import wx
 import wx.grid as gridlib
-import  wx.lib.scrolledpanel as scrolled
+import wx.lib.scrolledpanel as scrolled
+import wx.lib.masked as mask
+import wx.lib.customtreectrl as ct
 import collections
 import shutil
 
@@ -28,7 +30,7 @@ def dependencies_for_automation():  #Missing imports needed to convert to .exe
     from scipy.sparse.csgraph import _validation
 
 
-def SensitivityAnalysis(dictionary):  
+def SensitivityAnalysis(dictionary, sensitivityValue):  
 
     parameterDict = collections.OrderedDict()
     
@@ -42,7 +44,7 @@ def SensitivityAnalysis(dictionary):
             # Plus x% from the current key in each file
             for file in dictionary:
                 originalData = dictionary[file][key]
-                dictionary[file][key] = originalData * 1.15
+                dictionary[file][key] = originalData * (1.0 + sensitivityValue)
             
             outputFiles.append(sim.Simulation(dictionary))
             dictionary = deepcopy(originalDictionary)
@@ -50,17 +52,23 @@ def SensitivityAnalysis(dictionary):
             # Minus x% from the current key in each file
             for file in dictionary:
                 originalData = dictionary[file][key]
-                dictionary[file][key] = originalData * 0.85
+                dictionary[file][key] = originalData * (1.0 - sensitivityValue)
 
             outputFiles.append(sim.Simulation(dictionary))
             dictionary = deepcopy(originalDictionary)
+            parameterDict[key] = outputFiles
         else:
             print key
             print " caused a pass"
         
-        parameterDict[key] = outputFiles
         
+    
     print parameterDict.keys()
+    print "\n\n\n\n\n"
+    print parameterDict[parameterDict.keys()[0]][0]['TestTemplateOutput.csv']['Max MPH']
+    print parameterDict[parameterDict.keys()[0]][1]['TestTemplateOutput.csv']['Max MPH']
+    return parameterDict
+    
     
     
 def ProjectToParams(inFiles):
@@ -315,6 +323,207 @@ class IOSplitterPanel(wx.Panel):
 
 ########################################################################
 
+class SensitivityAnalysisFrame(wx.Frame):
+    """Constructor"""
+    #----------------------------------------------------------------------
+    def __init__(self, parent, id):
+        wx.Frame.__init__(self, None, title="Sensitivity Analysis Results", size = (1100,700))
+        
+        ################################################################
+        # Define mainsplitter as child of Frame and add IOSplitterPanel and StatusPanel as children
+        mainsplitter = wx.SplitterWindow(self, style = wx.SP_3D| wx.SP_LIVE_UPDATE)
+        mainsplitter.SetSashGravity(0.2)
+        mainsplitter.SetMinimumPaneSize(20)
+
+        #splitterpanel = IOSplitterPanel(mainsplitter)
+        #statusPanel = StatusPanel(mainsplitter, style = wx.BORDER_SIMPLE)
+        leftPanel = OptionsPanel(mainsplitter, style = wx.BORDER_SIMPLE | wx.TAB_TRAVERSAL)
+        rightPanel = SAResultsPanel(mainsplitter, style = wx.BORDER_SIMPLE | wx.TAB_TRAVERSAL)
+
+        mainsplitter.SplitVertically(leftPanel, rightPanel)
+        windowW, windowH = wx.DisplaySize()
+        mainsplitter.SetSashPosition(30, True)
+        newW = windowW/0.6
+        #mainsplitter.SetSashPosition(windowW - newW, True)
+        #mainsplitter.SetSashPosition(-50, True)
+        MainSizer = wx.BoxSizer(wx.VERTICAL)
+        MainSizer.Add(mainsplitter, 1, wx.EXPAND | wx.ALL)
+        self.SetSizer(MainSizer)
+        #################################################################        
+        
+        self.Refresh()
+        self.Show()
+        
+class OptionsPanel(scrolled.ScrolledPanel):
+    """Left panel in WIP GUI window that manages all the sorting and filtering"""
+    def __init__(self, parent, *args, **kwargs):
+        scrolled.ScrolledPanel.__init__(self, parent, *args, **kwargs)
+        self.parent = parent
+
+        self.SADict = collections.OrderedDict()
+        pub.subscribe(self.TransferSADict, ("TransferSADictionary")) 
+        
+        self.panel = wx.Panel(self)
+        #Create Sizers    
+        
+        #self.hSizer.AddSpacer(20)
+        self.inputs = []  
+        self.vSizer = wx.BoxSizer(wx.VERTICAL)
+        
+        
+        self.topSpeedItem = wx.RadioButton(self.panel, -1, pos=(20,10), label='Top Speed', style=wx.RB_GROUP)
+        self.averageSpeedItem = wx.RadioButton(self.panel, -1, pos=(20,25), label='Average Speed')
+        self.topPowerItem = wx.RadioButton(self.panel, -1, pos=(20,40), label='Top Power')
+        self.averagePowerItem = wx.RadioButton(self.panel, -1, pos=(20,55), label='Average Power')
+        self.energyItem = wx.RadioButton(self.panel, -1, pos=(20,70), label='Energy')
+        
+        self.SetAutoLayout(1)
+        self.vSizer.Fit(self)
+        self.Layout()
+        self.SetAutoLayout(1)
+        self.SetSizer(self.vSizer)
+        self.SetupScrolling(scroll_x = False, scroll_y = True, rate_x=20, rate_y=20, scrollToTop=True)
+        
+    def TransferSADict(self, msg):
+        self.SADict = msg.data
+       
+        for key in self.SADict.keys():
+            self.inputs.append(wx.CheckBox(self, wx.ID_ANY, label = key))
+                
+        for inputItem in self.inputs:    
+            self.vSizer.Add(inputItem, 0, wx.ALL, 1) 
+        
+        self.vSizer.Add(self.panel)
+
+        #self.hSizer.Add(self.vSizer1, -1, wx.EXPAND)
+        self.Layout()
+        
+        
+    
+class SAResultsPanel(scrolled.ScrolledPanel):
+    """Left panel in WIP GUI window that manages all the sorting and filtering"""
+    def __init__(self, parent, *args, **kwargs):
+        scrolled.ScrolledPanel.__init__(self, parent, *args, **kwargs)
+        self.parent = parent
+
+        self.SADict = collections.OrderedDict()
+        self.notebook = wx.Notebook(self)
+        pub.subscribe(self.InsertPages, ("TransferSADictionary")) 
+        sizer = wx.BoxSizer(wx.VERTICAL)
+        sizer.Add(self.notebook, 1, wx.ALL|wx.EXPAND)
+        self.SetSizer(sizer)       
+
+        self.notebook.Bind(wx.EVT_MOTION, self.onMouseMove)        
+        
+        self.Layout()
+        self.SetAutoLayout(1)
+        self.SetupScrolling(scroll_x = False, scroll_y = True, rate_x=20, rate_y=20, scrollToTop=True)
+        
+    def onMouseMove(self, e):
+        self.notebook.GetCurrentPage.Focus()
+        
+    def InsertPages(self, msg):
+        self.SADict = msg.data
+        
+        print self.SADict['gearing'][0]
+        for file in self.SADict['gearing'][0]:
+            self.page = NewTabPanel(self.notebook)
+            self.pageSizer = wx.GridSizer(cols = 3, vgap= 10, hgap = 10)
+                    
+            plusStaticText = wx.StaticText(self.page, wx.ID_ANY, "+X%")
+            negativeStaticText = wx.StaticText(self.page, wx.ID_ANY, "-X%")
+            diffStaticText = wx.StaticText(self.page, wx.ID_ANY, "Diff")
+            pdStaticText = wx.StaticText(self.page, wx.ID_ANY, "% Diff")
+            for parameter in self.SADict.keys():
+                self.parameterSizer = wx.FlexGridSizer(cols = 5, vgap = 5, hgap = 5)
+                parameterName = wx.StaticText(self.page, wx.ID_ANY, parameter)
+                self.parameterSizer.Add(parameterName)
+                self.parameterSizer.AddSpacer(0)
+                self.parameterSizer.AddSpacer(0)
+                self.parameterSizer.AddSpacer(0)
+                self.parameterSizer.AddSpacer(0)
+                # Row 2, Col 1
+                self.parameterSizer.AddSpacer(0)
+                self.parameterSizer.Add(plusStaticText)
+                self.parameterSizer.Add(negativeStaticText)
+                self.parameterSizer.Add(diffStaticText)
+                self.parameterSizer.Add(pdStaticText)
+                # Row 3, Col 1
+                self.parameterSizer.Add(wx.StaticText(self.page, wx.ID_ANY, "Max MPH"))
+                plusValue = self.SADict[parameter][0][file]['Max MPH']
+                self.parameterSizer.Add(wx.StaticText(self.page, -1, str(plusValue)))
+                minusValue = self.SADict[parameter][1][file]['Max MPH']
+                self.parameterSizer.Add(wx.StaticText(self.page, -1, str(minusValue)))
+                diff = abs(plusValue - minusValue)
+                self.parameterSizer.Add(wx.StaticText(self.page, -1, str(diff)))
+                percentDiff = diff/(plusValue + minusValue)
+                self.parameterSizer.Add(wx.StaticText(self.page, -1, str(percentDiff)))
+                
+                # Row 4, Col 2
+                self.parameterSizer.Add(wx.StaticText(self.page, wx.ID_ANY, "Average MPH"))
+                plusValue = self.SADict[parameter][0][file]['Average MPH']
+                self.parameterSizer.Add(wx.StaticText(self.page, -1, str(plusValue)))
+                minusValue = self.SADict[parameter][1][file]['Average MPH']
+                self.parameterSizer.Add(wx.StaticText(self.page, -1, str(minusValue)))
+                diff = abs(plusValue - minusValue)
+                self.parameterSizer.Add(wx.StaticText(self.page, -1, str(diff)))
+                percentDiff = diff/(plusValue + minusValue)
+                self.parameterSizer.Add(wx.StaticText(self.page, -1, str(percentDiff)))                
+                
+                
+                # Row 5, Col 1
+                self.parameterSizer.Add(wx.StaticText(self.page, wx.ID_ANY, "Max Power"))
+                plusValue = self.SADict[parameter][0][file]['Max Power (Watts)']
+                self.parameterSizer.Add(wx.StaticText(self.page, -1, str(plusValue)))
+                minusValue = self.SADict[parameter][1][file]['Max Power (Watts)']
+                self.parameterSizer.Add(wx.StaticText(self.page, -1, str(minusValue)))
+                diff = abs(plusValue - minusValue)
+                self.parameterSizer.Add(wx.StaticText(self.page, -1, str(diff)))
+                percentDiff = diff/(plusValue + minusValue)
+                self.parameterSizer.Add(wx.StaticText(self.page, -1, str(percentDiff)))
+
+                # Row 6, Col 1
+                self.parameterSizer.Add(wx.StaticText(self.page, wx.ID_ANY, "Average Power"))
+                plusValue = self.SADict[parameter][0][file]['Average Power (Watts)']
+                self.parameterSizer.Add(wx.StaticText(self.page, -1, str(plusValue)))
+                minusValue = self.SADict[parameter][1][file]['Average Power (Watts)']
+                self.parameterSizer.Add(wx.StaticText(self.page, -1, str(minusValue)))
+                diff = abs(plusValue - minusValue)
+                self.parameterSizer.Add(wx.StaticText(self.page, -1, str(diff)))
+                percentDiff = diff/(plusValue + minusValue)
+                self.parameterSizer.Add(wx.StaticText(self.page, -1, str(percentDiff)))
+                
+                # Row 7, Col 1
+                self.parameterSizer.Add(wx.StaticText(self.page, wx.ID_ANY, "Energy"))
+                plusValue = self.SADict[parameter][0][file]['Max Energy (Wh)']
+                self.parameterSizer.Add(wx.StaticText(self.page, -1, str(plusValue)))
+                minusValue = self.SADict[parameter][1][file]['Max Energy (Wh)']
+                self.parameterSizer.Add(wx.StaticText(self.page, -1, str(minusValue)))
+                diff = abs(plusValue - minusValue)
+                self.parameterSizer.Add(wx.StaticText(self.page, -1, str(diff)))
+                percentDiff = diff/(plusValue + minusValue)
+                self.parameterSizer.Add(wx.StaticText(self.page, -1, str(percentDiff)))
+                
+                self.pageSizer.Add(self.parameterSizer)
+            '''
+            i = 0
+            while i < 20:
+                self.currentSizer = wx.BoxSizer(wx.VERTICAL)
+                self.currentSizer.Add(wx.StaticText(self.page, wx.ID_ANY, "TEST",size=(180,25)))
+                self.currentSizer.Add(wx.StaticText(self.page, wx.ID_ANY, "TEST",size=(180,25)))
+                self.currentSizer.Add(wx.StaticText(self.page, wx.ID_ANY, "TEST",size=(180,25)))
+                self.currentSizer.Add(wx.StaticText(self.page, wx.ID_ANY, "TEST",size=(180,25)))
+                self.currentSizer.Add(wx.StaticText(self.page, wx.ID_ANY, "TEST",size=(180,25)))
+                self.pageSizer.Add(self.currentSizer)
+                i += 1
+            '''    
+            
+            self.page.SetSizer(self.pageSizer)
+            self.page.Layout()
+            self.notebook.AddPage(self.page, file)
+
+        
+
 class MainFrame(wx.Frame):
     """Constructor"""
     #----------------------------------------------------------------------
@@ -330,7 +539,8 @@ class MainFrame(wx.Frame):
         
         self.fileToFile = dict()
         self.currentFiles = np.empty(shape=(0,0))
-        self.currentFile = dict()        
+        self.currentFile = dict()   
+        self.performSensitivityAnalysis = False
         # Load icon
         if hasattr(sys, 'frozen'):
             iconLoc = os.path.join(os.path.dirname(sys.executable),"SIMBA.exe")
@@ -391,10 +601,23 @@ class MainFrame(wx.Frame):
         
         self.toolbar.AddSeparator()
         
-        self.toolbar.AddControl(TransparentText(self.toolbar, wx.ID_ANY, " Output Directory  "))
+        #self.toolbar.AddControl(TransparentText(self.toolbar, wx.ID_ANY, " Output Directory  "))
+        self.textTest = wx.StaticText(self.toolbar, wx.ID_ANY, " Output Directory  ")
+        self.toolbar.AddControl(self.textTest)
+        #self.textTest.SetBackgroundColour(wx.TRANSPARENT)
         self.folderControl = wx.TextCtrl(self.toolbar, size = (300,-1))
         self.toolbar.AddControl(self.folderControl) 
+        self.toolbar.AddControl(TransparentText(self.toolbar, wx.ID_ANY, "  "))
+        self.toolbar.AddSeparator()        
         
+        self.sensitivityCheckbox = wx.CheckBox(self.toolbar, wx.ID_ANY, label = "Perform sensitivity analysis  ")
+        self.toolbar.AddControl(self.sensitivityCheckbox)
+        
+        self.toolbar.AddSeparator()
+        self.toolbar.AddControl(TransparentText(self.toolbar, wx.ID_ANY, " Sensitivity Adjustment Value: "))
+        self.sensitivityControl = mask.NumCtrl(self.toolbar, wx.ID_ANY, integerWidth = 2, allowNegative = False)
+        self.toolbar.AddControl(self.sensitivityControl)
+        self.toolbar.AddControl(TransparentText(self.toolbar, wx.ID_ANY, " %"))        
         
         # Setting up menu
         filemenu = wx.Menu()
@@ -429,7 +652,8 @@ class MainFrame(wx.Frame):
         self.Bind(wx.EVT_MENU, self.OnExit, self.menuExit)
         self.Bind(wx.EVT_MENU, self.OnNewProject, self.menuNewProject)
 #        self.Bind(wx.EVT_MENU, self.OnNewFile, self.menuNewFile)
-        self.Bind(wx.EVT_MENU, self.OnSaveAll, self.menuSaveAll)        
+        self.Bind(wx.EVT_MENU, self.OnSaveAll, self.menuSaveAll)
+        self.Bind(wx.EVT_CHECKBOX, self.SA_Checkbox_Event, self.sensitivityCheckbox)        
         
         ################################################################
         # Define mainsplitter as child of Frame and add IOSplitterPanel and StatusPanel as children
@@ -442,7 +666,7 @@ class MainFrame(wx.Frame):
 
         mainsplitter.SplitHorizontally(splitterpanel, statusPanel)
         windowW, windowH = wx.DisplaySize()
-        newH = windowH/3.5
+        newH = windowH/2
         mainsplitter.SetSashPosition(windowH - newH, True)
         MainSizer = wx.BoxSizer(wx.VERTICAL)
         MainSizer.Add(mainsplitter, 1, wx.EXPAND | wx.ALL)
@@ -807,9 +1031,15 @@ class MainFrame(wx.Frame):
         inFiles[1,3] = self.folderControl.GetValue()
         # Sensitivity Analysis Function calls
         #percentChange = 15
-        SensitivityAnalysis(deepcopy(dictionary))
-        outputDict = sim.Simulation(deepcopy(dictionary))
+        if self.performSensitivityAnalysis:
+            decimalEquiv = self.sensitivityControl.GetValue() / 100.0
+            saDict = collections.OrderedDict()            
+            saDict = SensitivityAnalysis(deepcopy(dictionary), decimalEquiv)
+            pub.sendMessage(("TransferSADictionary"), saDict)
+            
         
+        outputDict = sim.Simulation(deepcopy(dictionary))
+                
         outputDirectory = self.folderControl.GetValue()
         logging.debug("Entered out path: %s",outputDirectory)
         OutputFile(outputDirectory, outputDict)
@@ -850,7 +1080,8 @@ class MainFrame(wx.Frame):
         excel.Visible = True
         workbook.Close(SaveChanges=1)
         excel.Quit
-        
+        SA_Frame.Show()
+
         
         
     
@@ -866,6 +1097,11 @@ class MainFrame(wx.Frame):
         logging.shutdown()
         self.Close(True)
     
+    def SA_Checkbox_Event(self, e):
+        if e.IsChecked():
+            self.performSensitivityAnalysis = True
+        else:
+            self.performSensitivityAnalysis = False
 
     
     
@@ -1774,7 +2010,7 @@ class TransparentText(wx.StaticText):
 
         self.Bind(wx.EVT_PAINT, self.on_paint)
         self.Bind(wx.EVT_ERASE_BACKGROUND, lambda event: None)
-        self.Bind(wx.EVT_SIZE, self.on_size)
+        #self.Bind(wx.EVT_SIZE, self.on_size)
 
     def on_paint(self, event):
         bdc = wx.PaintDC(self)
@@ -1785,6 +2021,7 @@ class TransparentText(wx.StaticText):
 
         dc.SetFont(font_face)
         dc.SetTextForeground(font_color)
+        dc.SetBackgroundMode(wx.TRANSPARENT)
         dc.DrawText(self.GetLabel(), 0, 0)
 
     def on_size(self, event):
@@ -1818,6 +2055,8 @@ logging.info("STARTING automation.py")
 
 app = wx.App(False)
 testWindow = MainFrame(None, "SIMBA")
+SA_Frame = SensitivityAnalysisFrame(None, "Sensitivity Analysis Results")
+#SA_Frame.Hide()
 #quickWindow = QuickResultsWindow(None, "Quick Results")
 
 msg = datetime.now().strftime('%H:%M:%S') + ": " + "Welcome to SIMBA! Start by creating a new project or opening one that has already been generated"

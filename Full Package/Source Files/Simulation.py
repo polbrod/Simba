@@ -273,10 +273,11 @@ def Simulation(dict_in):
         dist_to_speed_lookup = "Lookup Files\\" + dist_to_speed_lookup
         try:
             n = np.loadtxt(dist_to_speed_lookup,dtype = 'string',delimiter = ',', skiprows = 1)
+            '''
             logging.info("%s loaded", dist_to_speed_lookup)
             msg = datetime.now().strftime('%H:%M:%S') + ": " + dist_to_speed_lookup + " loaded"
             pub.sendMessage(("AddStatus"), msg)             
-            
+            '''
         except IOError:
             logging.critical("Unable to load %s", dist_to_speed_lookup)
             msg = datetime.now().strftime('%H:%M:%S') + ": " + "Unable to load " + dist_to_speed_lookup + ". Make sure the file exists and is not open."
@@ -295,9 +296,11 @@ def Simulation(dict_in):
         soc_to_voltage_lookup = "Lookup Files\\" + soc_to_voltage_lookup
         try:
             n = np.loadtxt(soc_to_voltage_lookup,dtype = 'string',delimiter = ',', skiprows = 1)
+            '''
             logging.info("%s loaded", soc_to_voltage_lookup)
             msg = datetime.now().strftime('%H:%M:%S') + ": " + soc_to_voltage_lookup + " loaded"
             pub.sendMessage(("AddStatus"), msg) 
+            '''
         except IOError:
             logging.critical("Unable to load %s", soc_to_voltage_lookup)
             msg = datetime.now().strftime('%H:%M:%S') + ": " + "Unable to load " + soc_to_voltage_lookup + ". Make sure the file exists and is not open."
@@ -314,10 +317,11 @@ def Simulation(dict_in):
         dist_to_alt_lookup = "Lookup Files\\" + dist_to_alt_lookup
         try:
             n = np.loadtxt(dist_to_alt_lookup,dtype = 'string',delimiter = ',', skiprows = 1)
+            '''
             logging.info("%s loaded", dist_to_alt_lookup)
             msg = datetime.now().strftime('%H:%M:%S') + ": " + dist_to_alt_lookup + " loaded"
             pub.sendMessage(("AddStatus"), msg) 
-            
+            '''
         except IOError:
             logging.critical("Unable to load %s", dist_to_alt_lookup)
             msg = datetime.now().strftime('%H:%M:%S') + ": " + "Unable to load " + dist_to_alt_lookup + ". Make sure the file exists and is not open."
@@ -332,10 +336,11 @@ def Simulation(dict_in):
         throttlemap_lookup = "Lookup Files\\" + throttlemap_lookup
         try:
             n = np.loadtxt(throttlemap_lookup,dtype = 'string',delimiter = ',', skiprows = 1)
+            '''
             logging.info("%s loaded", throttlemap_lookup)
             msg = datetime.now().strftime('%H:%M:%S') + ": " + throttlemap_lookup + " loaded"
             pub.sendMessage(("AddStatus"), msg) 
-            
+            '''
         except IOError:
             logging.critical("Unable to load %s", throttlemap_lookup)
             msg = datetime.now().strftime('%H:%M:%S') + ": " + "Unable to load " + throttlemap_lookup + ". Make sure the file exists and is not open."
@@ -349,10 +354,11 @@ def Simulation(dict_in):
         lean_angle_lookup = "Lookup Files\\" + lean_angle_lookup
         try:
             n = np.loadtxt(lean_angle_lookup,dtype = 'string',delimiter = ',', skiprows = 1)
+            '''
             logging.info("%s loaded", lean_angle_lookup)
             msg = datetime.now().strftime('%H:%M:%S') + ": " + lean_angle_lookup + " loaded"
             pub.sendMessage(("AddStatus"), msg) 
-            
+            '''
         except IOError:
             logging.critical("Unable to load %s", lean_angle_lookup)
             msg = datetime.now().strftime('%H:%M:%S') + ": " + "Unable to load " + lean_angle_lookup + ". Make sure the file exists and is not open."
@@ -365,10 +371,11 @@ def Simulation(dict_in):
         motor_controller_eff_lookup = "Lookup Files\\" + motor_controller_eff_lookup
         try:
             n = np.loadtxt(motor_controller_eff_lookup,dtype = 'string',delimiter = ',', skiprows = 1)
+            '''
             logging.info("%s loaded", motor_controller_eff_lookup)
             msg = datetime.now().strftime('%H:%M:%S') + ": " + motor_controller_eff_lookup + " loaded"
             pub.sendMessage(("AddStatus"), msg) 
-            
+            '''
         except IOError:
             logging.critical("Unable to load %s", motor_controller_eff_lookup)
             msg = datetime.now().strftime('%H:%M:%S') + ": " + "Unable to load " + motor_controller_eff_lookup + ". Make sure the file exists and is not open."
@@ -388,10 +395,11 @@ def Simulation(dict_in):
         motor_eff_lookup = "Lookup Files\\" + motor_eff_lookup
         try:
             n = np.loadtxt(motor_eff_lookup,dtype = 'string',delimiter = ',', skiprows = 1)
+            '''
             logging.info("%s loaded", motor_eff_lookup)
             msg = datetime.now().strftime('%H:%M:%S') + ": " + motor_eff_lookup + " loaded"
             pub.sendMessage(("AddStatus"), msg) 
-            
+            '''
         except IOError:
             logging.critical("Unable to load %s", motor_eff_lookup)
             msg = datetime.now().strftime('%H:%M:%S') + ": " + "Unable to load " + motor_eff_lookup + ". Make sure the file exists and is not open."
@@ -412,53 +420,68 @@ def Simulation(dict_in):
         #Make sure parameters don't extend lookups
         if np.max(distancetospeed_lookup.x) < max_distance_travel:
             max_distance_travel =  np.max(distancetospeed_lookup.x)  
+            message = datetime.now().strftime('%H:%M:%S') + ": "
             message += 'max_distance_travel greater than speed to distance look up --- '
-            message += 'max_distance_travel changed to ' + repr(max_distance_travel) + linesep
+            message += 'max_distance_travel changed to ' + repr(max_distance_travel)
+            pub.sendMessage(("AddStatus"), message) 
 
         if np.max(distancetoaltitude_lookup.x) < max_distance_travel:
             max_distance_travel =  np.max(distancetoaltitude_lookup.x)  
+            message = datetime.now().strftime('%H:%M:%S') + ": "
             message += 'max_distance_travel greater than altitude to distance look up --- '
-            message += 'max_distance_travel changed to ' + repr(max_distance_travel) + linesep
+            message += 'max_distance_travel changed to ' + repr(max_distance_travel)
+            pub.sendMessage(("AddStatus"), message)
             
         if np.max(throttlemap.x) < top_rpm:
             top_rpm = np.max(throttlemap.x)
+            message = datetime.now().strftime('%H:%M:%S') + ": "
             message += 'top rpm is greater than throttle map look up --- '
             message += 'top rpm changed to ' + repr(top_rpm)
-            message += linesep
+            pub.sendMessage(("AddStatus"), message)
             
         (x,y) = motor_eff_grid.shape
         if y-1 <  top_torque:
             top_torque = y-1
+            message = datetime.now().strftime('%H:%M:%S') + ": "
             message += 'top_torque greater than motor efficiency look up --- '
-            message += 'top_torque changed to ' + repr(top_torque) + linesep
-
+            message += 'top_torque changed to ' + repr(top_torque)
+            pub.sendMessage(("AddStatus"), message)
+            
         if x-1 <  top_rpm:
             top_rpm = x-1
+            message = datetime.now().strftime('%H:%M:%S') + ": "
             message += 'top_rpm greater than motor efficiency look up --- '
-            message += 'top_rpm changed to ' + repr(top_rpm) + linesep
+            message += 'top_rpm changed to ' + repr(top_rpm)
+            pub.sendMessage(("AddStatus"), message)
 
         (x,y) = motor_controller_eff_grid.shape
         if y-1 <  top_torque/motor_torque_constant:
             top_torque = (y-1) * motor_torque_constant
+            message = datetime.now().strftime('%H:%M:%S') + ": "
             message += 'possible arms (from top_torque and motor torque constant) is greater than motor controller efficiency look up --- '
-            message += 'top_torque changed to ' + repr(top_torque) + linesep
-
+            message += 'top_torque changed to ' + repr(top_torque)
+            pub.sendMessage(("AddStatus"), message)
+    
         if x-1 <  (top_rpm/(motor_rpm_constant)*(1/(sqrt2))) :
             top_rpm = (x-1)*(motor_rpm_constant)*(1/(sqrt2)) 
+            message = datetime.now().strftime('%H:%M:%S') + ": "
             message += 'possible Vrms (from top_rpm and motor rpm constant) is greater than motor controller efficiency look up --- '
-            message += 'top_rpm changed to ' + repr(top_rpm) + linesep
+            message += 'top_rpm changed to ' + repr(top_rpm)
+            pub.sendMessage(("AddStatus"), message)
             
         if np.max(lean_angle_lookup.x) < max_distance_travel:
             max_distance_travel =  np.max(lean_angle_lookup.x)  
+            message = datetime.now().strftime('%H:%M:%S') + ": "
             message += 'max_distance_travel greater than lean angle to distance look up'
             message += 'max_distance_travel changed to ' + repr(max_distance_travel)
-            message += linesep
+            pub.sendMessage(("AddStatus"), message)
             
+        '''
         if len(message) > 1:
             GUIdialog = wx.MessageDialog(None, message, "Warning", wx.OK)
             GUIdialog.ShowModal()
             GUIdialog.Destroy()     
-         
+        '''
         
         #functions
         #Find power at point n+1
@@ -717,13 +740,16 @@ def Simulation(dict_in):
         newData["Max Energy (Wh)"] = (round(np.max(energy),3))
         newData["Max Amphours"] = (round(np.max(amphour),3))
         
-        msg = datetime.now().strftime('%H:%M:%S') + ": " + "Finished storing simulation data"
+        #msg = datetime.now().strftime('%H:%M:%S') + ": " + "Finished storing simulation data"
         pub.sendMessage(("AddStatus"), msg) 
 
         dict_in[file] = newData
         logging.info("Converted %s to a dictionary successfully", file)
         
     logging.info("ENDING Simulation.py")
+    msg = datetime.now().strftime('%H:%M:%S') + ": " + "Done"
+    pub.sendMessage(("AddStatus"), msg) 
+
     return dict_in
 
 
