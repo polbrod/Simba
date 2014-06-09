@@ -367,7 +367,8 @@ class OptionsPanel(scrolled.ScrolledPanel):
         #Create Sizers    
         
         #self.hSizer.AddSpacer(20)
-        self.inputs = []  
+        self.inputs = []
+        self.outputs = []
         self.vSizer = wx.BoxSizer(wx.VERTICAL)
         
         
@@ -388,17 +389,39 @@ class OptionsPanel(scrolled.ScrolledPanel):
         self.SADict = msg.data
        
         for key in self.SADict.keys():
-            self.inputs.append(wx.CheckBox(self, wx.ID_ANY, label = key))
+            trigger = wx.CheckBox(self, wx.ID_ANY, label = key)
+            trigger.SetValue(True)
+            self.outputs.append(key)
+            pub.sendMessage(("DisplayOutputs"), self.outputs)
+            self.Bind(wx.EVT_CHECKBOX, self.configureOutput, id = trigger.GetId())
+            self.inputs.append(trigger)
                 
-        for inputItem in self.inputs:    
+        for inputItem in self.inputs: 
             self.vSizer.Add(inputItem, 0, wx.ALL, 1) 
         
         self.vSizer.Add(self.panel)
 
         #self.hSizer.Add(self.vSizer1, -1, wx.EXPAND)
         self.Layout()
+    
+    def configureOutput(self, e):
         
-        
+        for cb in self.inputs:
+            value = cb.GetValue()
+            try:
+                name = cb.GetLabel()
+            except:
+                print 'unable to get label'
+                
+            if value == True:
+                if name not in self.outputs:
+                    self.outputs.append(name)
+            else:
+                # If outputs doesn't contain name already, skip
+                if name in self.outputs:
+                    self.outputs.remove(name)
+                
+        pub.sendMessage(("DisplayOutputs"), self.outputs)
     
 class SAResultsPanel(wx.Panel):
     """Right panel in WIP GUI window that shows all the results after running the simulation"""
@@ -406,6 +429,9 @@ class SAResultsPanel(wx.Panel):
         wx.Panel.__init__(self, parent, *args, **kwargs)
         self.parent = parent  
 
+        pub.subscribe(self.UpdateNotebook, ("DisplayOutputs"))
+        self.pages = []
+        self.outputs = []
         self.SADict = collections.OrderedDict()
         self.notebook = wx.Notebook(self)
         pub.subscribe(self.InsertPages, ("TransferSADictionary")) 
@@ -413,113 +439,119 @@ class SAResultsPanel(wx.Panel):
         sizer.Add(self.notebook, 1, wx.ALL|wx.EXPAND)
         self.SetSizer(sizer)       
 
+        self.outputs = []
+
         #self.notebook.Bind(wx.EVT_MOTION, self.onMouseMove)        
         
         self.Layout()
         self.SetAutoLayout(1)
     
-    '''
-    def onMouseMove(self, e):
-        self.notebook.GetCurrentPage.Focus()
-    '''
+    def UpdateNotebook(self, msg):
+        self.outputs = msg.data
+        pageNum = 0
+        for page in self.pages:
+            page.myGrid.ClearGrid()
+            self.CreateOutputGrid(page, self.notebook.GetPageText(pageNum))
     
     def InsertPages(self, msg):
         self.SADict = msg.data
         
         for file in self.SADict['gearing'][0]:    
             self.page = NewTabPanel(self.notebook)
-        
+            self.pages.append(self.page)
             self.page.myGrid.CreateGrid(300,12)
             self.page.myGrid.HideColLabels()
             self.page.myGrid.HideRowLabels()
             self.page.myGrid.EnableGridLines(False)
-            
-            row = 0
-            for parameter in self.SADict.keys():
-                col = 0
-                if self.page.myGrid.GetCellValue(row, 0) != "" and self.page.myGrid.GetCellValue(row, 6) == "":
-                    col = 6
-                # Row 0, Col 0 or 8
-                self.page.myGrid.SetCellValue(row, col, parameter)
-                self.page.myGrid.SetCellFont(row, col, wx.Font(10, wx.FONTFAMILY_DEFAULT, wx.NORMAL, wx.BOLD))
-    
-                # Row 1, Col 0 or 8
-                #self.parameterSizer.AddSpacer(0)
-                #self.parameterSizer.Add(plusStaticText)
-                self.page.myGrid.SetCellValue(row+1, col+1, "+X%")
-                #self.parameterSizer.Add(negativeStaticText)
-                self.page.myGrid.SetCellValue(row+1, col+2, "-X%")
-                #self.parameterSizer.Add(diffStaticText)
-                self.page.myGrid.SetCellValue(row+1, col+3, "Diff")
-                #self.parameterSizer.Add(pdStaticText)
-                self.page.myGrid.SetCellValue(row+1, col+4, "% Diff")
-                
-                # Row 2, Col 0 or 8
-                self.page.myGrid.SetCellValue(row+2, col, "Max MPH")
-                plusValue = self.SADict[parameter][0][file]['Max MPH']
-                self.page.myGrid.SetCellValue(row+2, col+1, repr(round(plusValue,2)))
-                minusValue = self.SADict[parameter][1][file]['Max MPH']
-                self.page.myGrid.SetCellValue(row+2, col+2, repr(round(minusValue,2)))
-                diff = abs(plusValue - minusValue)
-                self.page.myGrid.SetCellValue(row+2, col+3, repr(round(diff,2)))
-                percentDiff = diff/(plusValue + minusValue)
-                self.page.myGrid.SetCellValue(row+2, col+4, repr(round(percentDiff,2)))
-                
-                
-                # Row 3, Col 0 or 8
-                self.page.myGrid.SetCellValue(row+3, col, "Average MPH")
-                plusValue = self.SADict[parameter][0][file]['Average MPH']
-                self.page.myGrid.SetCellValue(row+3, col+1, repr(round(plusValue,2)))
-                minusValue = self.SADict[parameter][1][file]['Average MPH']
-                self.page.myGrid.SetCellValue(row+3, col+2, repr(round(minusValue,2)))
-                diff = abs(plusValue - minusValue)
-                self.page.myGrid.SetCellValue(row+3, col+3, repr(round(diff,2)))
-                percentDiff = diff/(plusValue + minusValue)
-                self.page.myGrid.SetCellValue(row+3, col+4, repr(round(percentDiff,2)))
-                
-                
-                # Row 4, Col 0 or 8
-                self.page.myGrid.SetCellValue(row+4, col, "Max Power")
-                plusValue = self.SADict[parameter][0][file]['Max Power (Watts)']
-                self.page.myGrid.SetCellValue(row+4, col+1, repr(round(plusValue,2)))
-                minusValue = self.SADict[parameter][1][file]['Max Power (Watts)']
-                self.page.myGrid.SetCellValue(row+4, col+2, repr(round(minusValue,2)))
-                diff = abs(plusValue - minusValue)
-                self.page.myGrid.SetCellValue(row+4, col+3, repr(round(diff,2)))
-                percentDiff = diff/(plusValue + minusValue)
-                self.page.myGrid.SetCellValue(row+4, col+4, repr(round(percentDiff,2)))
-
-                # Row 5, Col 0 or 8
-                self.page.myGrid.SetCellValue(row+5, col, "Average Power")
-                plusValue = self.SADict[parameter][0][file]['Average Power (Watts)']
-                self.page.myGrid.SetCellValue(row+5, col+1, repr(round(plusValue,2)))
-                minusValue = self.SADict[parameter][1][file]['Average Power (Watts)']
-                self.page.myGrid.SetCellValue(row+5, col+2, repr(round(minusValue,2)))
-                diff = abs(plusValue - minusValue)
-                self.page.myGrid.SetCellValue(row+5, col+3, repr(round(diff,2)))
-                percentDiff = diff/(plusValue + minusValue)
-                self.page.myGrid.SetCellValue(row+5, col+4, repr(round(percentDiff,2)))
-                        
-                # Row 6, Col 0 or 8
-                self.page.myGrid.SetCellValue(row+6, col, "Max Energy")
-                plusValue = self.SADict[parameter][0][file]['Max Energy (Wh)']
-                self.page.myGrid.SetCellValue(row+6, col+1, repr(round(plusValue,2)))
-                minusValue = self.SADict[parameter][1][file]['Max Energy (Wh)']
-                self.page.myGrid.SetCellValue(row+6, col+2, repr(round(minusValue,2)))
-                diff = abs(plusValue - minusValue)
-                self.page.myGrid.SetCellValue(row+6, col+3, repr(round(diff,2)))
-                percentDiff = diff/(plusValue + minusValue)
-                self.page.myGrid.SetCellValue(row+6, col+4, repr(round(percentDiff,2)))
-                
-                if self.page.myGrid.GetCellValue(row, 6) != "":
-                    row += 8
-                
+            self.CreateOutputGrid(self.page, file)
             self.notebook.AddPage(self.page, file)
-            
+
         self.page.myGrid.AutoSizeColumns()
         self.page.Update()
         
-        
+    def CreateOutputGrid(self, page, file):
+        print 'In CreateOutputGrid'
+        print self.outputs        
+        row = 0
+        for parameter in self.outputs:
+            col = 0
+            if page.myGrid.GetCellValue(row, 0) != "" and page.myGrid.GetCellValue(row, 6) == "":
+                col = 6
+            # Row 0, Col 0 or 8
+            page.myGrid.SetCellValue(row, col, parameter)
+            page.myGrid.SetCellFont(row, col, wx.Font(10, wx.FONTFAMILY_DEFAULT, wx.NORMAL, wx.BOLD))
+
+            # Row 1, Col 0 or 8
+            #self.parameterSizer.AddSpacer(0)
+            #self.parameterSizer.Add(plusStaticText)
+            page.myGrid.SetCellValue(row+1, col+1, "+X%")
+            #self.parameterSizer.Add(negativeStaticText)
+            page.myGrid.SetCellValue(row+1, col+2, "-X%")
+            #self.parameterSizer.Add(diffStaticText)
+            page.myGrid.SetCellValue(row+1, col+3, "Diff")
+            #self.parameterSizer.Add(pdStaticText)
+            page.myGrid.SetCellValue(row+1, col+4, "% Diff")
+            
+            # Row 2, Col 0 or 8
+            page.myGrid.SetCellValue(row+2, col, "Max MPH")
+            plusValue = self.SADict[parameter][0][file]['Max MPH']
+            page.myGrid.SetCellValue(row+2, col+1, repr(round(plusValue,2)))
+            minusValue = self.SADict[parameter][1][file]['Max MPH']
+            page.myGrid.SetCellValue(row+2, col+2, repr(round(minusValue,2)))
+            diff = abs(plusValue - minusValue)
+            page.myGrid.SetCellValue(row+2, col+3, repr(round(diff,2)))
+            percentDiff = diff/(plusValue + minusValue)
+            page.myGrid.SetCellValue(row+2, col+4, repr(round(percentDiff,2)))
+            
+            
+            # Row 3, Col 0 or 8
+            page.myGrid.SetCellValue(row+3, col, "Average MPH")
+            plusValue = self.SADict[parameter][0][file]['Average MPH']
+            page.myGrid.SetCellValue(row+3, col+1, repr(round(plusValue,2)))
+            minusValue = self.SADict[parameter][1][file]['Average MPH']
+            page.myGrid.SetCellValue(row+3, col+2, repr(round(minusValue,2)))
+            diff = abs(plusValue - minusValue)
+            page.myGrid.SetCellValue(row+3, col+3, repr(round(diff,2)))
+            percentDiff = diff/(plusValue + minusValue)
+            page.myGrid.SetCellValue(row+3, col+4, repr(round(percentDiff,2)))
+            
+            
+            # Row 4, Col 0 or 8
+            page.myGrid.SetCellValue(row+4, col, "Max Power")
+            plusValue = self.SADict[parameter][0][file]['Max Power (Watts)']
+            page.myGrid.SetCellValue(row+4, col+1, repr(round(plusValue,2)))
+            minusValue = self.SADict[parameter][1][file]['Max Power (Watts)']
+            page.myGrid.SetCellValue(row+4, col+2, repr(round(minusValue,2)))
+            diff = abs(plusValue - minusValue)
+            page.myGrid.SetCellValue(row+4, col+3, repr(round(diff,2)))
+            percentDiff = diff/(plusValue + minusValue)
+            page.myGrid.SetCellValue(row+4, col+4, repr(round(percentDiff,2)))
+
+            # Row 5, Col 0 or 8
+            page.myGrid.SetCellValue(row+5, col, "Average Power")
+            plusValue = self.SADict[parameter][0][file]['Average Power (Watts)']
+            page.myGrid.SetCellValue(row+5, col+1, repr(round(plusValue,2)))
+            minusValue = self.SADict[parameter][1][file]['Average Power (Watts)']
+            page.myGrid.SetCellValue(row+5, col+2, repr(round(minusValue,2)))
+            diff = abs(plusValue - minusValue)
+            page.myGrid.SetCellValue(row+5, col+3, repr(round(diff,2)))
+            percentDiff = diff/(plusValue + minusValue)
+            page.myGrid.SetCellValue(row+5, col+4, repr(round(percentDiff,2)))
+                    
+            # Row 6, Col 0 or 8
+            page.myGrid.SetCellValue(row+6, col, "Max Energy")
+            plusValue = self.SADict[parameter][0][file]['Max Energy (Wh)']
+            page.myGrid.SetCellValue(row+6, col+1, repr(round(plusValue,2)))
+            minusValue = self.SADict[parameter][1][file]['Max Energy (Wh)']
+            page.myGrid.SetCellValue(row+6, col+2, repr(round(minusValue,2)))
+            diff = abs(plusValue - minusValue)
+            page.myGrid.SetCellValue(row+6, col+3, repr(round(diff,2)))
+            percentDiff = diff/(plusValue + minusValue)
+            page.myGrid.SetCellValue(row+6, col+4, repr(round(percentDiff,2)))
+            
+            if page.myGrid.GetCellValue(row, 6) != "":
+                row += 8
+            
 
 class MainFrame(wx.Frame):
     """Constructor"""
