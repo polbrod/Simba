@@ -17,6 +17,7 @@ import wx.lib.masked as mask
 import wx.lib.customtreectrl as ct
 import collections
 import shutil
+from operator import itemgetter
 
 from wx.lib.pubsub import setuparg1
 from wx.lib.pubsub import pub
@@ -69,7 +70,198 @@ def SensitivityAnalysis(dictionary, sensitivityValue):
     print parameterDict[parameterDict.keys()[0]][1]['TestTemplateOutput.csv']['Max MPH']
     return parameterDict
     
+def CreateSortArrays(dictionary):
+    # Sorting lists
+    # Should rename plus to largest
+    TS_plus_dict = collections.OrderedDict()
+    # Should rename minus to smallest
+    TS_minus_dict = collections.OrderedDict()
+    TS_large_diff_dict = collections.OrderedDict()
+    TS_small_diff_dict = collections.OrderedDict()
+    TS_large_perc_diff_dict = collections.OrderedDict()
+    TS_small_perc_diff_dict = collections.OrderedDict()
     
+    AS_plus_dict = collections.OrderedDict()
+    AS_minus_dict = collections.OrderedDict()
+    AS_large_diff_dict = collections.OrderedDict()
+    AS_small_diff_dict = collections.OrderedDict()
+    AS_large_perc_diff_dict = collections.OrderedDict()
+    AS_small_perc_diff_dict = collections.OrderedDict()
+    
+    TP_plus_dict = collections.OrderedDict()
+    TP_minus_dict = collections.OrderedDict()
+    TP_large_diff_dict = collections.OrderedDict()
+    TP_small_diff_dict = collections.OrderedDict()
+    TP_large_perc_diff_dict = collections.OrderedDict()
+    TP_small_perc_diff_dict = collections.OrderedDict()
+    
+    AP_plus_dict = collections.OrderedDict()
+    AP_minus_dict = collections.OrderedDict()
+    AP_large_diff_dict = collections.OrderedDict()
+    AP_small_diff_dict = collections.OrderedDict()
+    AP_large_perc_diff_dict = collections.OrderedDict()
+    AP_small_perc_diff_dict = collections.OrderedDict()
+    
+    E_plus_dict = collections.OrderedDict()
+    E_minus_dict = collections.OrderedDict()
+    E_large_diff_dict = collections.OrderedDict()
+    E_small_diff_dict = collections.OrderedDict()
+    E_large_perc_diff_dict = collections.OrderedDict()
+    E_small_perc_diff_dict = collections.OrderedDict()    
+    
+    for file in dictionary['gearing'][0].keys():
+                
+        TS_plus_list = []
+        TS_minus_list = []
+        TS_diff_list = []
+        TS_perc_diff_list = []
+        AS_plus_list = []
+        AS_minus_list = []
+        AS_diff_list = []
+        AS_perc_diff_list = []
+        TP_plus_list = []
+        TP_minus_list = []
+        TP_diff_list = []
+        TP_perc_diff_list = []
+        AP_plus_list = []
+        AP_minus_list = []
+        AP_diff_list = []
+        AP_perc_diff_list = []
+        E_plus_list = []
+        E_minus_list = []
+        E_diff_list = []
+        E_perc_diff_list = []
+        
+        
+        for parameter in dictionary.keys():
+            TS_plus_value = dictionary[parameter][0][file]['Max MPH']
+            TS_plus_list.append((TS_plus_value,parameter))
+            AS_plus_value = dictionary[parameter][0][file]['Average MPH']
+            AS_plus_list.append((AS_plus_value,parameter))
+            TP_plus_value = dictionary[parameter][0][file]['Max Power (Watts)']
+            TP_plus_list.append((TP_plus_value,parameter))
+            AP_plus_value = dictionary[parameter][0][file]['Average Power (Watts)']
+            AP_plus_list.append((AP_plus_value,parameter))
+            E_plus_value = dictionary[parameter][0][file]['Max Energy (Wh)']
+            E_plus_list.append((E_plus_value,parameter))
+            
+            TS_minus_value = dictionary[parameter][1][file]['Max MPH']
+            TS_minus_list.append((TS_minus_value,parameter))
+            AS_minus_value = dictionary[parameter][1][file]['Average MPH']
+            AS_minus_list.append((AS_minus_value,parameter))
+            TP_minus_value = dictionary[parameter][1][file]['Max Power (Watts)']
+            TP_minus_list.append((TP_minus_value,parameter))
+            AP_minus_value = dictionary[parameter][1][file]['Average Power (Watts)']
+            AP_minus_list.append((AP_minus_value,parameter))
+            E_minus_value = dictionary[parameter][1][file]['Max Energy (Wh)']
+            E_minus_list.append((E_minus_value,parameter))
+            
+            diff = abs(TS_plus_value - TS_minus_value)
+            diffPercent = diff / (TS_plus_value + TS_minus_value)
+            TS_diff_list.append((diff,parameter))
+            TS_perc_diff_list.append((diffPercent,parameter))
+            
+            diff = abs(AS_plus_value - AS_minus_value)
+            diffPercent = diff / (AS_plus_value + AS_minus_value)
+            AS_diff_list.append((diff,parameter))
+            AS_perc_diff_list.append((diffPercent, parameter))
+            
+            diff = abs(TP_plus_value - TP_minus_value)
+            diffPercent = diff / (TP_plus_value + TP_minus_value)
+            TP_diff_list.append((diff,parameter))
+            TP_perc_diff_list.append((diffPercent,parameter))
+            
+            diff = abs(AP_plus_value - AP_minus_value)
+            diffPercent = diff / (AP_plus_value + AP_minus_value)
+            AP_diff_list.append((diff, parameter))
+            AP_perc_diff_list.append((diffPercent, parameter))
+            
+            diff = abs(E_plus_value - E_minus_value)
+            diffPercent = diff / (E_plus_value + E_minus_value)
+            E_diff_list.append((diff, parameter))
+            E_perc_diff_list.append((diffPercent, parameter))
+      
+              
+      
+        # Largest value first
+        TS_plus_dict[file] = sorted(TS_plus_list, key=itemgetter(0), reverse = True)
+        AS_plus_dict[file] = sorted(AS_plus_list, key=itemgetter(0), reverse = True)
+        TP_plus_dict[file] = sorted(TP_plus_list, key=itemgetter(0), reverse = True)
+        AP_plus_dict[file] = sorted(AP_plus_list, key=itemgetter(0), reverse = True)
+        E_plus_dict[file] = sorted(E_plus_list, key=itemgetter(0), reverse = True)
+        
+        # Smallest value first
+        TS_minus_dict[file] = sorted(TS_minus_list, key=itemgetter(0))
+        AS_minus_dict[file] = sorted(AS_minus_list, key=itemgetter(0))
+        TP_minus_dict[file] = sorted(TP_minus_list, key=itemgetter(0))
+        AP_minus_dict[file] = sorted(AP_minus_list, key=itemgetter(0))
+        E_minus_dict[file] = sorted(E_minus_list, key=itemgetter(0))
+        
+        # Largest diff first
+        TS_large_diff_dict[file] = sorted(TS_diff_list, key=itemgetter(0), reverse = True)
+        AS_large_diff_dict[file] = sorted(AS_diff_list, key=itemgetter(0), reverse = True)
+        TP_large_diff_dict[file] = sorted(TP_diff_list, key=itemgetter(0), reverse = True)
+        AP_large_diff_dict[file] = sorted(AP_diff_list, key=itemgetter(0), reverse = True)
+        E_large_diff_dict[file] = sorted(E_diff_list, key=itemgetter(0), reverse = True)
+        
+        # Smallest diff first
+        TS_small_diff_dict[file] = sorted(TS_diff_list, key=itemgetter(0))
+        AS_small_diff_dict[file] = sorted(AS_diff_list, key=itemgetter(0))
+        TP_small_diff_dict[file] = sorted(TP_diff_list, key=itemgetter(0))
+        AP_small_diff_dict[file] = sorted(AP_diff_list, key=itemgetter(0))
+        E_small_diff_dict[file] = sorted(E_diff_list, key=itemgetter(0))
+        
+        TS_large_perc_diff_dict[file] = sorted(TS_perc_diff_list, key=itemgetter(0), reverse = True)
+        AS_large_perc_diff_dict[file] = sorted(AS_perc_diff_list, key=itemgetter(0), reverse = True)
+        TP_large_perc_diff_dict[file] = sorted(TP_perc_diff_list, key=itemgetter(0), reverse = True)
+        AP_large_perc_diff_dict[file] = sorted(AP_perc_diff_list, key=itemgetter(0), reverse = True)
+        E_large_perc_diff_dict[file] = sorted(E_perc_diff_list, key=itemgetter(0), reverse = True)
+    
+        TS_small_perc_diff_dict[file] = sorted(TS_perc_diff_list, key=itemgetter(0))
+        AS_small_perc_diff_dict[file] = sorted(AS_perc_diff_list, key=itemgetter(0))
+        TP_small_perc_diff_dict[file] = sorted(TP_perc_diff_list, key=itemgetter(0))
+        AP_small_perc_diff_dict[file] = sorted(AP_perc_diff_list, key=itemgetter(0))
+        E_small_perc_diff_dict[file] = sorted(E_perc_diff_list, key=itemgetter(0))
+
+    
+    sorting_arrays = dict()
+    sorting_arrays["TS_large_dict"] = TS_plus_dict
+    sorting_arrays["TS_small_dict"] = TS_minus_dict
+    sorting_arrays["TS_large_diff_dict"] = TS_large_diff_dict
+    sorting_arrays["TS_small_diff_dict"] = TS_small_diff_dict
+    sorting_arrays["TS_large_perc_diff_dict"] = TS_large_perc_diff_dict
+    sorting_arrays["TS_small_perc_diff_dict"] = TS_small_perc_diff_dict
+    
+    sorting_arrays["AS_large_dict"] = AS_plus_dict
+    sorting_arrays["AS_small_dict"] = AS_minus_dict
+    sorting_arrays["AS_large_diff_dict"] = AS_large_diff_dict
+    sorting_arrays["AS_small_diff_dict"] = AS_small_diff_dict
+    sorting_arrays["AS_large_perc_diff_dict"] = AS_large_perc_diff_dict
+    sorting_arrays["AS_small_perc_diff_dict"] = AS_small_perc_diff_dict
+    
+    sorting_arrays["TP_large_dict"] = TP_plus_dict
+    sorting_arrays["TP_small_dict"] = TP_minus_dict
+    sorting_arrays["TP_large_diff_dict"] = TP_large_diff_dict
+    sorting_arrays["TP_small_diff_dict"] = TP_small_diff_dict
+    sorting_arrays["TP_large_perc_diff_dict"] = TP_large_perc_diff_dict
+    sorting_arrays["TP_small_perc_diff_dict"] = TP_small_perc_diff_dict
+    
+    sorting_arrays["AP_large_dict"] = AP_plus_dict
+    sorting_arrays["AP_small_dict"] = AP_minus_dict
+    sorting_arrays["AP_large_diff_dict"] = AP_large_diff_dict
+    sorting_arrays["AP_small_diff_dict"] = AP_small_diff_dict
+    sorting_arrays["AP_large_perc_diff_dict"] = AP_large_perc_diff_dict
+    sorting_arrays["AP_small_perc_diff_dict"] = AP_small_perc_diff_dict
+    
+    sorting_arrays["E_large_dict"] = E_plus_dict
+    sorting_arrays["E_small_dict"] = E_minus_dict
+    sorting_arrays["E_large_diff_dict"] = E_large_diff_dict
+    sorting_arrays["E_small_diff_dict"] = E_small_diff_dict
+    sorting_arrays["E_large_perc_diff_dict"] = E_large_perc_diff_dict
+    sorting_arrays["E_small_perc_diff_dict"] = E_small_perc_diff_dict
+    
+    return sorting_arrays
+        
     
 def ProjectToParams(inFiles):
     
@@ -311,15 +503,19 @@ class IOSplitterPanel(wx.Panel):
         """Constructor"""
         wx.Panel.__init__(self, parent)
         splitter = wx.SplitterWindow(self, style = wx.SP_3D| wx.SP_LIVE_UPDATE)
-        splitter.SetSashGravity(0.2)
+        
+        #splitter.SetSashPosition(100)
         splitter.SetMinimumPaneSize(20)
-        leftPanel = InputPanel(splitter, style = wx.BORDER_SIMPLE | wx.TAB_TRAVERSAL)
+        #leftPanel = InputPanel(splitter, style = wx.BORDER_SIMPLE | wx.TAB_TRAVERSAL)
+        statusPanel = StatusPanel(splitter, style = wx.BORDER_SIMPLE)
         rightPanel = OutputPanel(splitter, style = wx.BORDER_SIMPLE)        
 
-        splitter.SplitVertically(leftPanel, rightPanel) 
+        splitter.SplitHorizontally(rightPanel, statusPanel) 
         PanelSizer=wx.BoxSizer(wx.VERTICAL)
         PanelSizer.Add(splitter, 1, wx.EXPAND | wx.ALL)
         self.SetSizer(PanelSizer)
+        splitter.SetSashPosition(800)
+
 
 ########################################################################
 
@@ -327,7 +523,8 @@ class SensitivityAnalysisFrame(wx.Frame):
     """Constructor"""
     #----------------------------------------------------------------------
     def __init__(self, parent, id):
-        wx.Frame.__init__(self, None, title="Sensitivity Analysis Results", size = (1100,700))
+        wx.Frame.__init__(self, None, title="Sensitivity Analysis Results", size = (1200,800))
+        
         
         ################################################################
         # Define mainsplitter as child of Frame and add IOSplitterPanel and StatusPanel as children
@@ -352,7 +549,7 @@ class SensitivityAnalysisFrame(wx.Frame):
         #################################################################        
         
         self.Refresh()
-        self.Show()
+
         
 class OptionsPanel(scrolled.ScrolledPanel):
     """Left panel in WIP GUI window that manages all the sorting and filtering"""
@@ -361,28 +558,57 @@ class OptionsPanel(scrolled.ScrolledPanel):
         self.parent = parent
 
         self.SADict = collections.OrderedDict()
+        self.sortArrays = collections.OrderedDict()
+        pub.subscribe(self.TransferSortArrays, ("TransferSortArrays"))
         pub.subscribe(self.TransferSADict, ("TransferSADictionary")) 
         
-        self.panel = wx.Panel(self)
+        self.leftPanel = wx.Panel(self)
+        self.rightPanel = wx.Panel(self)
         #Create Sizers    
         
         #self.hSizer.AddSpacer(20)
         self.inputs = []
         self.outputs = []
         self.vSizer = wx.BoxSizer(wx.VERTICAL)
+        self.vSizer1 = wx.BoxSizer(wx.VERTICAL)
+        self.hSizer1 = wx.BoxSizer(wx.HORIZONTAL)
+        self.hSortSizer = wx.BoxSizer(wx.HORIZONTAL)
+        
+        self.optionsText = wx.StaticText(self, wx.ID_ANY, "Toggle variables to display")
+        self.vSizer.Add(self.optionsText, wx.LEFT, 5)
+        self.vSizer.AddSpacer(5)
+        self.sortText = wx.StaticText(self, wx.ID_ANY, "Sorting options")
+        
+        self.topSpeedItem = wx.RadioButton(self.leftPanel, -1, pos=(5,10), label='Top Speed', style=wx.RB_GROUP)
+        self.averageSpeedItem = wx.RadioButton(self.leftPanel, -1, pos=(5,25), label='Average Speed')
+        self.topPowerItem = wx.RadioButton(self.leftPanel, -1, pos=(5,40), label='Top Power')
+        self.averagePowerItem = wx.RadioButton(self.leftPanel, -1, pos=(5,55), label='Average Power')
+        self.energyItem = wx.RadioButton(self.leftPanel, -1, pos=(5,70), label='Energy')
+
+        self.largest2Smallest = wx.RadioButton(self.rightPanel, -1, pos = (0,10), label='Largest to Smallest', style=wx.RB_GROUP)
+        self.smallest2Largest = wx.RadioButton(self.rightPanel, -1, pos = (0,25), label='Smallest to Largest')
+        self.smallestDiff = wx.RadioButton(self.rightPanel, -1, pos=(0,40), label='Smallest Difference')
+        self.largestDiff = wx.RadioButton(self.rightPanel, -1, pos=(0,55), label='Largest Difference')
+        self.smallestPerc = wx.RadioButton(self.rightPanel, -1, pos=(0,70), label='Smallest Percent Difference')
+        self.largestPerc = wx.RadioButton(self.rightPanel, -1, pos=(0,85), label='Largest Percent Difference')
         
         
-        self.topSpeedItem = wx.RadioButton(self.panel, -1, pos=(20,10), label='Top Speed', style=wx.RB_GROUP)
-        self.averageSpeedItem = wx.RadioButton(self.panel, -1, pos=(20,25), label='Average Speed')
-        self.topPowerItem = wx.RadioButton(self.panel, -1, pos=(20,40), label='Top Power')
-        self.averagePowerItem = wx.RadioButton(self.panel, -1, pos=(20,55), label='Average Power')
-        self.energyItem = wx.RadioButton(self.panel, -1, pos=(20,70), label='Energy')
+        self.Bind(wx.EVT_RADIOBUTTON, self.Sort, self.topSpeedItem)
+        self.Bind(wx.EVT_RADIOBUTTON, self.Sort, self.averageSpeedItem)
+        self.Bind(wx.EVT_RADIOBUTTON, self.Sort, self.topPowerItem)
+        self.Bind(wx.EVT_RADIOBUTTON, self.Sort, self.averagePowerItem)
+        self.Bind(wx.EVT_RADIOBUTTON, self.Sort, self.energyItem)
         
-        self.SetAutoLayout(1)
-        self.vSizer.Fit(self)
-        self.Layout()
-        self.SetAutoLayout(1)
+        self.Bind(wx.EVT_RADIOBUTTON, self.Sort, self.largest2Smallest)
+        self.Bind(wx.EVT_RADIOBUTTON, self.Sort, self.smallest2Largest)
+        self.Bind(wx.EVT_RADIOBUTTON, self.Sort, self.smallestDiff)
+        self.Bind(wx.EVT_RADIOBUTTON, self.Sort, self.largestDiff)
+        self.Bind(wx.EVT_RADIOBUTTON, self.Sort, self.smallestPerc)
+        self.Bind(wx.EVT_RADIOBUTTON, self.Sort, self.largestPerc)
+        
         self.SetSizer(self.vSizer)
+        #self.vSizer.Fit(self)
+        self.SetAutoLayout(1)
         self.SetupScrolling(scroll_x = False, scroll_y = True, rate_x=20, rate_y=20, scrollToTop=True)
         
     def TransferSADict(self, msg):
@@ -397,12 +623,27 @@ class OptionsPanel(scrolled.ScrolledPanel):
             self.inputs.append(trigger)
                 
         for inputItem in self.inputs: 
-            self.vSizer.Add(inputItem, 0, wx.ALL, 1) 
+            self.vSizer1.Add(inputItem, 0, wx.ALL, 1) 
+            
+        self.hSizer1.AddSpacer(15)
+        self.hSizer1.Add(self.vSizer1)
+        self.vSizer.Add(self.hSizer1)
         
-        self.vSizer.Add(self.panel)
+        self.vSizer.AddSpacer(10)
+        self.vSizer.Add(self.sortText, wx.LEFT, 5)
+        self.hSortSizer.Add(self.leftPanel)
+        self.hSortSizer.AddSpacer(5)
+        self.hSortSizer.Add(self.rightPanel)
+        self.hSortSizer.Layout()
+        self.vSizer.Add(self.hSortSizer)
 
-        #self.hSizer.Add(self.vSizer1, -1, wx.EXPAND)
+        self.vSizer.Fit(self)
         self.Layout()
+        
+        #self.Layout()
+        
+    def TransferSortArrays(self, msg):
+        self.sortArrays = msg.data
     
     def configureOutput(self, e):
         
@@ -422,14 +663,95 @@ class OptionsPanel(scrolled.ScrolledPanel):
                     self.outputs.remove(name)
                 
         pub.sendMessage(("DisplayOutputs"), self.outputs)
-    
+        
+    def Sort(self, e):
+        if self.topSpeedItem.GetValue() == True:
+            if self.largest2Smallest.GetValue() == True:
+                pub.sendMessage(("SortType"), "TS_large_dict")
+            elif self.smallest2Largest.GetValue() == True:
+                pub.sendMessage(("SortType"), "TS_small_dict")
+            elif self.largestDiff.GetValue() == True:
+                pub.sendMessage(("SortType"), "TS_large_diff_dict")
+            elif self.smallestDiff.GetValue() == True:
+                pub.sendMessage(("SortType"), "TS_small_diff_dict")
+            elif self.largestPerc.GetValue() == True:
+                pub.sendMessage(("SortType"), "TS_large_perc_diff_dict")
+            elif self.smallestPerc.GetValue() == True:
+                pub.sendMessage(("SortType"), "TS_small_perc_diff_dict")
+                
+        elif self.averageSpeedItem.GetValue() == True:
+            if self.largest2Smallest.GetValue() == True:
+                pub.sendMessage(("SortType"), "AS_large_dict")
+            elif self.smallest2Largest.GetValue() == True:
+                pub.sendMessage(("SortType"), "AS_small_dict")
+            elif self.largestDiff.GetValue() == True:
+                pub.sendMessage(("SortType"), "AS_large_diff_dict")
+            elif self.smallestDiff.GetValue() == True:
+                pub.sendMessage(("SortType"), "AS_small_diff_dict")
+            elif self.largestPerc.GetValue() == True:
+                pub.sendMessage(("SortType"), "AS_large_perc_diff_dict")
+            elif self.smallestPerc.GetValue() == True:
+                pub.sendMessage(("SortType"), "AS_small_perc_diff_dict")
+                
+        elif self.topPowerItem.GetValue() == True:
+            if self.largest2Smallest.GetValue() == True:
+                pub.sendMessage(("SortType"), "TP_large_dict")
+            elif self.smallest2Largest.GetValue() == True:
+                pub.sendMessage(("SortType"), "TP_small_dict")
+            elif self.largestDiff.GetValue() == True:
+                pub.sendMessage(("SortType"), "TP_large_diff_dict")
+            elif self.smallestDiff.GetValue() == True:
+                pub.sendMessage(("SortType"), "TP_small_diff_dict")
+            elif self.largestPerc.GetValue() == True:
+                pub.sendMessage(("SortType"), "TP_large_perc_diff_dict")
+            elif self.smallestPerc.GetValue() == True:
+                pub.sendMessage(("SortType"), "TP_small_perc_diff_dict")
+                
+        elif self.averagePowerItem.GetValue() == True:
+            if self.largest2Smallest.GetValue() == True:
+                pub.sendMessage(("SortType"), "AP_large_dict")
+            elif self.smallest2Largest.GetValue() == True:
+                pub.sendMessage(("SortType"), "AP_small_dict")
+            elif self.largestDiff.GetValue() == True:
+                pub.sendMessage(("SortType"), "AP_large_diff_dict")
+            elif self.smallestDiff.GetValue() == True:
+                pub.sendMessage(("SortType"), "AP_small_diff_dict")
+            elif self.largestPerc.GetValue() == True:
+                pub.sendMessage(("SortType"), "AP_large_perc_diff_dict")
+            elif self.smallestPerc.GetValue() == True:
+                pub.sendMessage(("SortType"), "AP_small_perc_diff_dict")
+                
+        elif self.energyItem.GetValue() == True:
+            if self.largest2Smallest.GetValue() == True:
+                pub.sendMessage(("SortType"), "E_large_dict")
+            elif self.smallest2Largest.GetValue() == True:
+                pub.sendMessage(("SortType"), "E_small_dict")
+            elif self.largestDiff.GetValue() == True:
+                pub.sendMessage(("SortType"), "E_large_diff_dict")
+            elif self.smallestDiff.GetValue() == True:
+                pub.sendMessage(("SortType"), "E_small_diff_dict")
+            elif self.largestPerc.GetValue() == True:
+                pub.sendMessage(("SortType"), "E_large_perc_diff_dict")
+            elif self.smallestPerc.GetValue() == True:
+                pub.sendMessage(("SortType"), "E_small_perc_diff_dict")
+                
+        else:
+            pass
+            
 class SAResultsPanel(wx.Panel):
     """Right panel in WIP GUI window that shows all the results after running the simulation"""
     def __init__(self, parent, *args, **kwargs):
         wx.Panel.__init__(self, parent, *args, **kwargs)
         self.parent = parent  
 
+        self.sortArrays = collections.OrderedDict()
+        pub.subscribe(self.TransferSortArrays, ("TransferSortArrays"))
         pub.subscribe(self.UpdateNotebook, ("DisplayOutputs"))
+        pub.subscribe(self.DetermineSortType, ("SortType"))
+        
+        # Default sort type
+        self.sortType = 'TS_large_dict'
+        
         self.pages = []
         self.outputs = []
         self.SADict = collections.OrderedDict()
@@ -437,22 +759,32 @@ class SAResultsPanel(wx.Panel):
         pub.subscribe(self.InsertPages, ("TransferSADictionary")) 
         sizer = wx.BoxSizer(wx.VERTICAL)
         sizer.Add(self.notebook, 1, wx.ALL|wx.EXPAND)
-        self.SetSizer(sizer)       
-
-        self.outputs = []
+        self.SetSizer(sizer)               
 
         #self.notebook.Bind(wx.EVT_MOTION, self.onMouseMove)        
         
         self.Layout()
         self.SetAutoLayout(1)
+
+    def TransferSortArrays(self, msg):
+        self.sortArrays = msg.data
+
+    def DetermineSortType(self, msg):
+        self.sortType = msg.data
+        self.RegeneratePages()
     
     def UpdateNotebook(self, msg):
         self.outputs = msg.data
+        self.RegeneratePages()
+    
+    def RegeneratePages(self):
         pageNum = 0
         for page in self.pages:
             page.myGrid.ClearGrid()
-            self.CreateOutputGrid(page, self.notebook.GetPageText(pageNum))
-    
+            tabName = self.notebook.GetPageText(pageNum)
+            self.CreateOutputGrid(page, tabName, self.sortArrays[self.sortType][tabName])
+            pageNum += 1        
+        
     def InsertPages(self, msg):
         self.SADict = msg.data
         
@@ -463,94 +795,99 @@ class SAResultsPanel(wx.Panel):
             self.page.myGrid.HideColLabels()
             self.page.myGrid.HideRowLabels()
             self.page.myGrid.EnableGridLines(False)
-            self.CreateOutputGrid(self.page, file)
+            sortedArray = self.sortArrays[self.sortType][file]
+            self.CreateOutputGrid(self.page, file, sortedArray)
             self.notebook.AddPage(self.page, file)
-
-        self.page.myGrid.AutoSizeColumns()
+            
+        
         self.page.Update()
         
-    def CreateOutputGrid(self, page, file):
-        print 'In CreateOutputGrid'
-        print self.outputs        
+    def CreateOutputGrid(self, page, file, sortedArray):   
+        
         row = 0
-        for parameter in self.outputs:
-            col = 0
-            if page.myGrid.GetCellValue(row, 0) != "" and page.myGrid.GetCellValue(row, 6) == "":
-                col = 6
-            # Row 0, Col 0 or 8
-            page.myGrid.SetCellValue(row, col, parameter)
-            page.myGrid.SetCellFont(row, col, wx.Font(10, wx.FONTFAMILY_DEFAULT, wx.NORMAL, wx.BOLD))
-
-            # Row 1, Col 0 or 8
-            #self.parameterSizer.AddSpacer(0)
-            #self.parameterSizer.Add(plusStaticText)
-            page.myGrid.SetCellValue(row+1, col+1, "+X%")
-            #self.parameterSizer.Add(negativeStaticText)
-            page.myGrid.SetCellValue(row+1, col+2, "-X%")
-            #self.parameterSizer.Add(diffStaticText)
-            page.myGrid.SetCellValue(row+1, col+3, "Diff")
-            #self.parameterSizer.Add(pdStaticText)
-            page.myGrid.SetCellValue(row+1, col+4, "% Diff")
-            
-            # Row 2, Col 0 or 8
-            page.myGrid.SetCellValue(row+2, col, "Max MPH")
-            plusValue = self.SADict[parameter][0][file]['Max MPH']
-            page.myGrid.SetCellValue(row+2, col+1, repr(round(plusValue,2)))
-            minusValue = self.SADict[parameter][1][file]['Max MPH']
-            page.myGrid.SetCellValue(row+2, col+2, repr(round(minusValue,2)))
-            diff = abs(plusValue - minusValue)
-            page.myGrid.SetCellValue(row+2, col+3, repr(round(diff,2)))
-            percentDiff = diff/(plusValue + minusValue)
-            page.myGrid.SetCellValue(row+2, col+4, repr(round(percentDiff,2)))
-            
-            
-            # Row 3, Col 0 or 8
-            page.myGrid.SetCellValue(row+3, col, "Average MPH")
-            plusValue = self.SADict[parameter][0][file]['Average MPH']
-            page.myGrid.SetCellValue(row+3, col+1, repr(round(plusValue,2)))
-            minusValue = self.SADict[parameter][1][file]['Average MPH']
-            page.myGrid.SetCellValue(row+3, col+2, repr(round(minusValue,2)))
-            diff = abs(plusValue - minusValue)
-            page.myGrid.SetCellValue(row+3, col+3, repr(round(diff,2)))
-            percentDiff = diff/(plusValue + minusValue)
-            page.myGrid.SetCellValue(row+3, col+4, repr(round(percentDiff,2)))
-            
-            
-            # Row 4, Col 0 or 8
-            page.myGrid.SetCellValue(row+4, col, "Max Power")
-            plusValue = self.SADict[parameter][0][file]['Max Power (Watts)']
-            page.myGrid.SetCellValue(row+4, col+1, repr(round(plusValue,2)))
-            minusValue = self.SADict[parameter][1][file]['Max Power (Watts)']
-            page.myGrid.SetCellValue(row+4, col+2, repr(round(minusValue,2)))
-            diff = abs(plusValue - minusValue)
-            page.myGrid.SetCellValue(row+4, col+3, repr(round(diff,2)))
-            percentDiff = diff/(plusValue + minusValue)
-            page.myGrid.SetCellValue(row+4, col+4, repr(round(percentDiff,2)))
-
-            # Row 5, Col 0 or 8
-            page.myGrid.SetCellValue(row+5, col, "Average Power")
-            plusValue = self.SADict[parameter][0][file]['Average Power (Watts)']
-            page.myGrid.SetCellValue(row+5, col+1, repr(round(plusValue,2)))
-            minusValue = self.SADict[parameter][1][file]['Average Power (Watts)']
-            page.myGrid.SetCellValue(row+5, col+2, repr(round(minusValue,2)))
-            diff = abs(plusValue - minusValue)
-            page.myGrid.SetCellValue(row+5, col+3, repr(round(diff,2)))
-            percentDiff = diff/(plusValue + minusValue)
-            page.myGrid.SetCellValue(row+5, col+4, repr(round(percentDiff,2)))
+        for parameter in sortedArray:
+            if parameter[1] in self.outputs:
+                print parameter[1]
+                parameter = parameter[1]
+                col = 0
+                if page.myGrid.GetCellValue(row, 0) != "" and page.myGrid.GetCellValue(row, 6) == "":
+                    col = 6
+                # Row 0, Col 0 or 8
+                page.myGrid.SetCellValue(row, col, parameter)
+                page.myGrid.SetCellFont(row, col, wx.Font(10, wx.FONTFAMILY_DEFAULT, wx.NORMAL, wx.BOLD))
+    
+                # Row 1, Col 0 or 8
+                #self.parameterSizer.AddSpacer(0)
+                #self.parameterSizer.Add(plusStaticText)
+                page.myGrid.SetCellValue(row+1, col+1, "+X%")
+                #self.parameterSizer.Add(negativeStaticText)
+                page.myGrid.SetCellValue(row+1, col+2, "-X%")
+                #self.parameterSizer.Add(diffStaticText)
+                page.myGrid.SetCellValue(row+1, col+3, "Diff")
+                #self.parameterSizer.Add(pdStaticText)
+                page.myGrid.SetCellValue(row+1, col+4, "% Diff")
+                
+                # Row 2, Col 0 or 8
+                page.myGrid.SetCellValue(row+2, col, "Max MPH")
+                plusValue = self.SADict[parameter][0][file]['Max MPH']
+                page.myGrid.SetCellValue(row+2, col+1, repr(round(plusValue,2)))
+                minusValue = self.SADict[parameter][1][file]['Max MPH']
+                page.myGrid.SetCellValue(row+2, col+2, repr(round(minusValue,2)))
+                diff = abs(plusValue - minusValue)
+                page.myGrid.SetCellValue(row+2, col+3, repr(round(diff,2)))
+                percentDiff = diff/(plusValue + minusValue)
+                page.myGrid.SetCellValue(row+2, col+4, repr(round(percentDiff,2)))
+                
+                
+                # Row 3, Col 0 or 8
+                page.myGrid.SetCellValue(row+3, col, "Average MPH")
+                plusValue = self.SADict[parameter][0][file]['Average MPH']
+                page.myGrid.SetCellValue(row+3, col+1, repr(round(plusValue,2)))
+                minusValue = self.SADict[parameter][1][file]['Average MPH']
+                page.myGrid.SetCellValue(row+3, col+2, repr(round(minusValue,2)))
+                diff = abs(plusValue - minusValue)
+                page.myGrid.SetCellValue(row+3, col+3, repr(round(diff,2)))
+                percentDiff = diff/(plusValue + minusValue)
+                page.myGrid.SetCellValue(row+3, col+4, repr(round(percentDiff,2)))
+                
+                
+                # Row 4, Col 0 or 8
+                page.myGrid.SetCellValue(row+4, col, "Max Power")
+                plusValue = self.SADict[parameter][0][file]['Max Power (Watts)']
+                page.myGrid.SetCellValue(row+4, col+1, repr(round(plusValue,2)))
+                minusValue = self.SADict[parameter][1][file]['Max Power (Watts)']
+                page.myGrid.SetCellValue(row+4, col+2, repr(round(minusValue,2)))
+                diff = abs(plusValue - minusValue)
+                page.myGrid.SetCellValue(row+4, col+3, repr(round(diff,2)))
+                percentDiff = diff/(plusValue + minusValue)
+                page.myGrid.SetCellValue(row+4, col+4, repr(round(percentDiff,2)))
+    
+                # Row 5, Col 0 or 8
+                page.myGrid.SetCellValue(row+5, col, "Average Power")
+                plusValue = self.SADict[parameter][0][file]['Average Power (Watts)']
+                page.myGrid.SetCellValue(row+5, col+1, repr(round(plusValue,2)))
+                minusValue = self.SADict[parameter][1][file]['Average Power (Watts)']
+                page.myGrid.SetCellValue(row+5, col+2, repr(round(minusValue,2)))
+                diff = abs(plusValue - minusValue)
+                page.myGrid.SetCellValue(row+5, col+3, repr(round(diff,2)))
+                percentDiff = diff/(plusValue + minusValue)
+                page.myGrid.SetCellValue(row+5, col+4, repr(round(percentDiff,2)))
+                        
+                # Row 6, Col 0 or 8
+                page.myGrid.SetCellValue(row+6, col, "Max Energy")
+                plusValue = self.SADict[parameter][0][file]['Max Energy (Wh)']
+                page.myGrid.SetCellValue(row+6, col+1, repr(round(plusValue,2)))
+                minusValue = self.SADict[parameter][1][file]['Max Energy (Wh)']
+                page.myGrid.SetCellValue(row+6, col+2, repr(round(minusValue,2)))
+                diff = abs(plusValue - minusValue)
+                page.myGrid.SetCellValue(row+6, col+3, repr(round(diff,2)))
+                percentDiff = diff/(plusValue + minusValue)
+                page.myGrid.SetCellValue(row+6, col+4, repr(round(percentDiff,2)))
+                
+                if page.myGrid.GetCellValue(row, 6) != "":
+                    row += 8
                     
-            # Row 6, Col 0 or 8
-            page.myGrid.SetCellValue(row+6, col, "Max Energy")
-            plusValue = self.SADict[parameter][0][file]['Max Energy (Wh)']
-            page.myGrid.SetCellValue(row+6, col+1, repr(round(plusValue,2)))
-            minusValue = self.SADict[parameter][1][file]['Max Energy (Wh)']
-            page.myGrid.SetCellValue(row+6, col+2, repr(round(minusValue,2)))
-            diff = abs(plusValue - minusValue)
-            page.myGrid.SetCellValue(row+6, col+3, repr(round(diff,2)))
-            percentDiff = diff/(plusValue + minusValue)
-            page.myGrid.SetCellValue(row+6, col+4, repr(round(percentDiff,2)))
-            
-            if page.myGrid.GetCellValue(row, 6) != "":
-                row += 8
+        page.myGrid.AutoSizeColumns()   
             
 
 class MainFrame(wx.Frame):
@@ -603,7 +940,7 @@ class MainFrame(wx.Frame):
         self.toolbar.AddSeparator()
 
         self.newParamName = wx.TextCtrl(self.toolbar, size = (200, -1))   
-        self.toolbar.AddControl(TransparentText(self.toolbar, wx.ID_ANY, " Parameter Filename  "))
+        self.toolbar.AddControl(wx.StaticText(self.toolbar, wx.ID_ANY, " Parameter Filename  "))
         self.toolbar.AddControl(self.newParamName)
         
         addParamFile_ico = wx.ArtProvider.GetBitmap(wx.ART_NEW, wx.ART_TOOLBAR, (20,20))
@@ -636,17 +973,17 @@ class MainFrame(wx.Frame):
         #self.textTest.SetBackgroundColour(wx.TRANSPARENT)
         self.folderControl = wx.TextCtrl(self.toolbar, size = (300,-1))
         self.toolbar.AddControl(self.folderControl) 
-        self.toolbar.AddControl(TransparentText(self.toolbar, wx.ID_ANY, "  "))
+        self.toolbar.AddControl(wx.StaticText(self.toolbar, wx.ID_ANY, "  "))
         self.toolbar.AddSeparator()        
         
         self.sensitivityCheckbox = wx.CheckBox(self.toolbar, wx.ID_ANY, label = "Perform sensitivity analysis  ")
         self.toolbar.AddControl(self.sensitivityCheckbox)
         
         self.toolbar.AddSeparator()
-        self.toolbar.AddControl(TransparentText(self.toolbar, wx.ID_ANY, " Sensitivity Adjustment Value: "))
+        self.toolbar.AddControl(wx.StaticText(self.toolbar, wx.ID_ANY, " Sensitivity Adjustment Value: "))
         self.sensitivityControl = mask.NumCtrl(self.toolbar, wx.ID_ANY, integerWidth = 2, allowNegative = False)
         self.toolbar.AddControl(self.sensitivityControl)
-        self.toolbar.AddControl(TransparentText(self.toolbar, wx.ID_ANY, " %"))        
+        self.toolbar.AddControl(wx.StaticText(self.toolbar, wx.ID_ANY, " %"))        
         
         # Setting up menu
         filemenu = wx.Menu()
@@ -682,20 +1019,25 @@ class MainFrame(wx.Frame):
         self.Bind(wx.EVT_MENU, self.OnNewProject, self.menuNewProject)
 #        self.Bind(wx.EVT_MENU, self.OnNewFile, self.menuNewFile)
         self.Bind(wx.EVT_MENU, self.OnSaveAll, self.menuSaveAll)
-        self.Bind(wx.EVT_CHECKBOX, self.SA_Checkbox_Event, self.sensitivityCheckbox)        
+        self.Bind(wx.EVT_CHECKBOX, self.SA_Checkbox_Event, self.sensitivityCheckbox)  
+        
+        #self.Bind(wx.EVT_MENU_HIGHLIGHT_ALL, self.resetStatusBar) 
+        self.Bind(wx.EVT_TOOL_ENTER, self.resetStatusBar)
         
         ################################################################
         # Define mainsplitter as child of Frame and add IOSplitterPanel and StatusPanel as children
         mainsplitter = wx.SplitterWindow(self, style = wx.SP_3D| wx.SP_LIVE_UPDATE)
-        mainsplitter.SetSashGravity(0.5)
+        mainsplitter.SetSashGravity(0.005)
+        #mainsplitter.SetSashPosition(20)
         mainsplitter.SetMinimumPaneSize(20)
 
         splitterpanel = IOSplitterPanel(mainsplitter)
-        statusPanel = StatusPanel(mainsplitter, style = wx.BORDER_SIMPLE)
+        #statusPanel = StatusPanel(mainsplitter, style = wx.BORDER_SIMPLE)
 
-        mainsplitter.SplitHorizontally(splitterpanel, statusPanel)
+        leftPanel = InputPanel(mainsplitter, style = wx.BORDER_SIMPLE | wx.TAB_TRAVERSAL)
+        mainsplitter.SplitVertically(leftPanel, splitterpanel)
         windowW, windowH = wx.DisplaySize()
-        newH = windowH/2
+        newH = windowH/1.7
         mainsplitter.SetSashPosition(windowH - newH, True)
         MainSizer = wx.BoxSizer(wx.VERTICAL)
         MainSizer.Add(mainsplitter, 1, wx.EXPAND | wx.ALL)
@@ -709,6 +1051,19 @@ class MainFrame(wx.Frame):
         self.dictionary = dict()
         self.project = ""
         self.dirname = ""
+
+    def resetStatusBar(self, event): 
+        
+        ''' Reset the status bar by hand. ''' 
+        '''
+        try: 
+            id = event.GetSelection() # for CommandEvent from the Toolbar 
+        except AttributeError: 
+            id = event.GetMenuId() # for MenuEvent 
+        if id == -1: 
+            self.toolbar._displayStatus() 
+        event.Skip() 
+        '''
 
     def ChangeProjectName(self, msg):
         
@@ -1064,11 +1419,15 @@ class MainFrame(wx.Frame):
             decimalEquiv = self.sensitivityControl.GetValue() / 100.0
             saDict = collections.OrderedDict()            
             saDict = SensitivityAnalysis(deepcopy(dictionary), decimalEquiv)
+            arrays = CreateSortArrays(saDict)
+            pub.sendMessage(("TransferSortArrays"), arrays)
             pub.sendMessage(("TransferSADictionary"), saDict)
             
         
         outputDict = sim.Simulation(deepcopy(dictionary))
-                
+
+        SA_Frame.Show()        
+        
         outputDirectory = self.folderControl.GetValue()
         logging.debug("Entered out path: %s",outputDirectory)
         OutputFile(outputDirectory, outputDict)
@@ -1109,7 +1468,7 @@ class MainFrame(wx.Frame):
         excel.Visible = True
         workbook.Close(SaveChanges=1)
         excel.Quit
-        SA_Frame.Show()
+        
 
         
         
@@ -1158,11 +1517,12 @@ class InputPanel(scrolled.ScrolledPanel):
         
         self.toolbar = wx.ToolBar(self, wx.ID_ANY, size = (2000, 32))
         self.toolbar.SetToolBitmapSize( ( 21, 21 ) )
-        self.dropDownList = wx.ComboBox(self.toolbar, -1, style = wx.CB_READONLY|wx.TRANSPARENT_WINDOW)
+        self.dropDownList = wx.ComboBox(self.toolbar, -1, style = wx.CB_READONLY|wx.TRANSPARENT_WINDOW, size = (275,22))
         self.Bind(wx.EVT_COMBOBOX, self.UpdateFields)
-        self.toolbar.AddControl(TransparentText(self.toolbar, wx.ID_ANY, "      Parameter File     "))
+        self.toolbar.AddControl(wx.StaticText(self.toolbar, wx.ID_ANY, "      Parameter File     "))
         self.toolbar.AddControl(self.dropDownList)
 
+        self.Bind(wx.EVT_TOOL_ENTER, self.resetStatusBar)
                 
         self.values=[]
         self.keys=[]
@@ -1173,6 +1533,7 @@ class InputPanel(scrolled.ScrolledPanel):
         self.hSizer= wx.BoxSizer(wx.HORIZONTAL)
         self.vSizer1 = wx.BoxSizer(wx.VERTICAL)
         
+        self.vSizer1.AddSpacer(2)
         self.vSizer1.Add(wx.StaticText(self, wx.ID_ANY, "Gearing (ratio)" ,size=(180,25)))        
         self.vSizer1.Add(wx.StaticText(self, wx.ID_ANY, "Step (seconds)",size=(180,25)))
         self.vSizer1.Add(wx.StaticText(self, wx.ID_ANY, "Total Time (seconds)" ,size=(180,25)))
@@ -1192,10 +1553,10 @@ class InputPanel(scrolled.ScrolledPanel):
         self.vSizer1.Add(wx.StaticText(self, wx.ID_ANY, "Max Distance Travel (meters)" ,size=(180,25)))
         self.vSizer1.Add(wx.StaticText(self, wx.ID_ANY, "Chain Efficiency" ,size=(180,25)))
         self.vSizer1.Add(wx.StaticText(self, wx.ID_ANY, "Battery Efficiency" ,size=(180,25)))
-        self.vSizer1.Add(wx.StaticText(self, wx.ID_ANY, "Motor Torque Constant (Nm/amps rms)" ,size=(180,25)))
-        self.vSizer1.Add(wx.StaticText(self, wx.ID_ANY, "Motor RPM Constant (RPM/Voltage)" ,size=(180,25)))
-        self.vSizer1.Add(wx.StaticText(self, wx.ID_ANY, "Motor Top Power (watts)" ,size=(180,25)))
-        self.vSizer1.Add(wx.StaticText(self, wx.ID_ANY, "Motor Thermal Conductivity (W/m*C)" ,size=(180,25)))
+        self.vSizer1.Add(wx.StaticText(self, wx.ID_ANY, "Motor Torque Constant (Nm/amps rms)" ,size=(215,25)))
+        self.vSizer1.Add(wx.StaticText(self, wx.ID_ANY, "Motor RPM Constant (RPM/Voltage)" ,size=(215,25)))
+        self.vSizer1.Add(wx.StaticText(self, wx.ID_ANY, "Motor Top Power (watts)" ,size=(215,25)))
+        self.vSizer1.Add(wx.StaticText(self, wx.ID_ANY, "Motor Thermal Conductivity (W/m*C)" ,size=(215,25)))
         self.vSizer1.Add(wx.StaticText(self, wx.ID_ANY, "Motor Heat Capacity (J/C)" ,size=(180,25)))
         self.vSizer1.Add(wx.StaticText(self, wx.ID_ANY, "Max Motor Temp (C)" ,size=(180,25)))
         self.vSizer1.Add(wx.StaticText(self, wx.ID_ANY, "Coolant Temp (C)" ,size=(180,25)))
@@ -1211,7 +1572,7 @@ class InputPanel(scrolled.ScrolledPanel):
         self.vSizer1.Add(wx.StaticText(self, wx.ID_ANY, "Lean Angle Lookup" ,size=(180,25)))
 
         self.vSizer1.AddSpacer(3)
-        self.vSizer1.Add(wx.StaticText(self, wx.ID_ANY, "Comments", size=(180,25)))
+        self.vSizer1.Add(wx.StaticText(self, wx.ID_ANY, "Comments", size=(215,25)))
  
         
         self.vSizer2 = wx.BoxSizer(wx.VERTICAL)
@@ -1252,7 +1613,7 @@ class InputPanel(scrolled.ScrolledPanel):
         self.p33 = wx.TextCtrl(self, size=(150,25))
         self.p34 = wx.TextCtrl(self, size=(150,25))
         self.p35 = wx.TextCtrl(self, size=(150,25))
-        self.comments = wx.TextCtrl(self, size = (355,160), style = wx.TE_MULTILINE)
+        self.comments = wx.TextCtrl(self, size = (390,160), style = wx.TE_MULTILINE)
         
         self.textCtrlList = (self.p0, self.p1, self.p2, self.p3, self.p4, self.p5,
                         self.p6, self.p7, self.p8, self.p9, self.p10, self.p11,
@@ -1340,7 +1701,9 @@ class InputPanel(scrolled.ScrolledPanel):
         self.SetAutoLayout(1)
         self.SetupScrolling(scroll_x = False, scroll_y = True, rate_x=20, rate_y=20, scrollToTop=True)
     
-        
+    
+    def resetStatusBar(self, e):
+        pass
     
     def Update(self, msg): 
         
@@ -2032,31 +2395,7 @@ class StatusPanel(wx.Panel):
         self.statusTextCtrl.ShowPosition(self.statusTextCtrl.GetLastPosition())
         
 ##############################################################################        
-        
-class TransparentText(wx.StaticText):
-    def __init__(self, parent, id=wx.ID_ANY, label='', pos=wx.DefaultPosition, size=wx.DefaultSize, style=wx.TRANSPARENT_WINDOW, name='transparenttext'):
-        wx.StaticText.__init__(self, parent, id, label, pos, size, style, name)
-
-        self.Bind(wx.EVT_PAINT, self.on_paint)
-        self.Bind(wx.EVT_ERASE_BACKGROUND, lambda event: None)
-        #self.Bind(wx.EVT_SIZE, self.on_size)
-
-    def on_paint(self, event):
-        bdc = wx.PaintDC(self)
-        dc = wx.GCDC(bdc)
-
-        font_face = self.GetFont()
-        font_color = self.GetForegroundColour()
-
-        dc.SetFont(font_face)
-        dc.SetTextForeground(font_color)
-        dc.SetBackgroundMode(wx.TRANSPARENT)
-        dc.DrawText(self.GetLabel(), 0, 0)
-
-    def on_size(self, event):
-        self.Refresh()
-        event.Skip()
-
+    
 ##############################################################################
 
 class NewTabPanel(wx.Panel):
