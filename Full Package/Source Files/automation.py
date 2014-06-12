@@ -17,6 +17,7 @@ import wx.lib.masked as mask
 import wx.lib.customtreectrl as ct
 import collections
 import shutil
+import wx.richtext
 from operator import itemgetter
 from threading import Thread
 
@@ -765,10 +766,28 @@ class SAResultsPanel(wx.Panel):
         self.parent = parent  
 
         self.sortArrays = collections.OrderedDict()
+        self.completeResults = collections.OrderedDict()
         pub.subscribe(self.TransferSortArrays, ("TransferSortArrays"))
+        pub.subscribe(self.TransferDictionary, ("TransferSADictionary"))
         pub.subscribe(self.UpdateNotebook, ("DisplayOutputs"))
         pub.subscribe(self.DetermineSortType, ("SortType"))
         
+        self.lowerSizer = wx.BoxSizer(wx.HORIZONTAL)
+        self.lowerSizer.AddSpacer(50)
+        
+        self.saveAll = wx.CheckBox(self, wx.ID_ANY, "Save full simulation results")
+        self.saveSummary = wx.CheckBox(self, wx.ID_ANY, "Save sensitivity analysis summaries")
+        self.saveButton = wx.Button(self, wx.ID_ANY, "Save Sensitivity Analysis")
+        
+        
+        self.lowerSizer.Add(self.saveAll, 1, wx.ALL | wx.EXPAND)
+        self.lowerSizer.AddSpacer(50)
+        self.lowerSizer.Add(self.saveSummary, 1, wx.ALL | wx.EXPAND)
+        self.lowerSizer.AddSpacer(50)
+        self.lowerSizer.Add(self.saveButton, 1, wx.CENTER)
+        self.lowerSizer.AddSpacer(10)
+        
+        self.Bind(wx.EVT_BUTTON, self.SaveSA, self.saveButton)
         # Default sort type
         self.sortType = 'TS_large_dict'
         
@@ -778,7 +797,10 @@ class SAResultsPanel(wx.Panel):
         self.notebook = wx.Notebook(self)
         pub.subscribe(self.InsertPages, ("TransferSADictionary")) 
         sizer = wx.BoxSizer(wx.VERTICAL)
-        sizer.Add(self.notebook, 1, wx.ALL|wx.EXPAND)
+        sizer.Add(self.notebook, 1, wx.ALL | wx.EXPAND)
+        self.lowerSizer.Layout()
+        sizer.Add(self.lowerSizer)
+        
         self.SetSizer(sizer)               
 
         #self.notebook.Bind(wx.EVT_MOTION, self.onMouseMove)        
@@ -786,6 +808,9 @@ class SAResultsPanel(wx.Panel):
         self.Layout()
         self.SetAutoLayout(1)
 
+    def TransferDictionary(self, msg):
+        self.completeResults = msg.data        
+        
     def TransferSortArrays(self, msg):
         self.sortArrays = msg.data
 
@@ -824,8 +849,9 @@ class SAResultsPanel(wx.Panel):
         
     def CreateOutputGrid(self, page, file, sortedArray):   
         
+        #self.page.myGrid.SetCellHighlightColour(self,'#14FF63' )
         row = 0
-
+        
         for parameter in sortedArray:
             if parameter[1] in self.outputs:
                 parameter = parameter[1]
@@ -846,8 +872,25 @@ class SAResultsPanel(wx.Panel):
                 page.myGrid.SetCellValue(row+1, col+3, "Diff")
                 #self.parameterSizer.Add(pdStaticText)
                 page.myGrid.SetCellValue(row+1, col+4, "% Diff")
-                
+
                 # Row 2, Col 0 or 8
+                self.page.myGrid.SetCellBackgroundColour(row+2, col+1, '#FFFFFF')
+                self.page.myGrid.SetCellBackgroundColour(row+2, col+2, '#FFFFFF')
+                self.page.myGrid.SetCellBackgroundColour(row+2, col+3, '#FFFFFF')
+                self.page.myGrid.SetCellBackgroundColour(row+2, col+4, '#FFFFFF')
+                if self.sortType == 'TS_large_dict':
+                    self.page.myGrid.SetCellBackgroundColour(row+2, col+1, '#14FF63')
+                elif self.sortType == 'TS_small_dict':
+                    self.page.myGrid.SetCellBackgroundColour(row+2, col+2, '#14FF63')
+                elif self.sortType == 'TS_large_diff_dict':
+                    self.page.myGrid.SetCellBackgroundColour(row+2, col+3, '#14FF63')
+                elif self.sortType == 'TS_small_diff_dict':
+                    self.page.myGrid.SetCellBackgroundColour(row+2, col+3, '#14FF63')
+                elif self.sortType == 'TS_large_perc_diff_dict':
+                    self.page.myGrid.SetCellBackgroundColour(row+2, col+4, '#14FF63')
+                elif self.sortType == 'TS_small_diff_dict':
+                    self.page.myGrid.SetCellBackgroundColour(row+2, col+4, '#14FF63')
+                    
                 page.myGrid.SetCellValue(row+2, col, "Max MPH")
                 plusValue = self.SADict[parameter][0][file]['Max MPH']
                 page.myGrid.SetCellValue(row+2, col+1, repr(round(plusValue,2)))
@@ -860,6 +903,23 @@ class SAResultsPanel(wx.Panel):
                 
                 
                 # Row 3, Col 0 or 8
+                self.page.myGrid.SetCellBackgroundColour(row+3, col+1, '#FFFFFF')
+                self.page.myGrid.SetCellBackgroundColour(row+3, col+2, '#FFFFFF')
+                self.page.myGrid.SetCellBackgroundColour(row+3, col+3, '#FFFFFF')
+                self.page.myGrid.SetCellBackgroundColour(row+3, col+4, '#FFFFFF')
+                if self.sortType == 'AS_large_dict':
+                    self.page.myGrid.SetCellBackgroundColour(row+3, col+1, '#14FF63')
+                elif self.sortType == 'AS_small_dict':
+                    self.page.myGrid.SetCellBackgroundColour(row+3, col+2, '#14FF63')
+                elif self.sortType == 'AS_large_diff_dict':
+                    self.page.myGrid.SetCellBackgroundColour(row+3, col+3, '#14FF63')
+                elif self.sortType == 'AS_small_diff_dict':
+                    self.page.myGrid.SetCellBackgroundColour(row+3, col+3, '#14FF63')
+                elif self.sortType == 'AS_large_perc_diff_dict':
+                    self.page.myGrid.SetCellBackgroundColour(row+3, col+4, '#14FF63')
+                elif self.sortType == 'AS_small_diff_dict':
+                    self.page.myGrid.SetCellBackgroundColour(row+3, col+4, '#14FF63')
+                    
                 page.myGrid.SetCellValue(row+3, col, "Average MPH")
                 plusValue = self.SADict[parameter][0][file]['Average MPH']
                 page.myGrid.SetCellValue(row+3, col+1, repr(round(plusValue,2)))
@@ -872,6 +932,23 @@ class SAResultsPanel(wx.Panel):
                 
                 
                 # Row 4, Col 0 or 8
+                self.page.myGrid.SetCellBackgroundColour(row+4, col+1, '#FFFFFF')
+                self.page.myGrid.SetCellBackgroundColour(row+4, col+2, '#FFFFFF')
+                self.page.myGrid.SetCellBackgroundColour(row+4, col+3, '#FFFFFF')
+                self.page.myGrid.SetCellBackgroundColour(row+4, col+4, '#FFFFFF')
+                if self.sortType == 'TP_large_dict':
+                    self.page.myGrid.SetCellBackgroundColour(row+4, col+1, '#14FF63')
+                elif self.sortType == 'TP_small_dict':
+                    self.page.myGrid.SetCellBackgroundColour(row+4, col+2, '#14FF63')
+                elif self.sortType == 'TP_large_diff_dict':
+                    self.page.myGrid.SetCellBackgroundColour(row+4, col+3, '#14FF63')
+                elif self.sortType == 'TP_small_diff_dict':
+                    self.page.myGrid.SetCellBackgroundColour(row+4, col+3, '#14FF63')
+                elif self.sortType == 'TP_large_perc_diff_dict':
+                    self.page.myGrid.SetCellBackgroundColour(row+4, col+4, '#14FF63')
+                elif self.sortType == 'TP_small_diff_dict':
+                    self.page.myGrid.SetCellBackgroundColour(row+4, col+4, '#14FF63')
+                    
                 page.myGrid.SetCellValue(row+4, col, "Max Power")
                 plusValue = self.SADict[parameter][0][file]['Max Power (Watts)']
                 page.myGrid.SetCellValue(row+4, col+1, repr(round(plusValue,2)))
@@ -883,6 +960,23 @@ class SAResultsPanel(wx.Panel):
                 page.myGrid.SetCellValue(row+4, col+4, repr(round(percentDiff,2)))
     
                 # Row 5, Col 0 or 8
+                self.page.myGrid.SetCellBackgroundColour(row+5, col+1, '#FFFFFF')
+                self.page.myGrid.SetCellBackgroundColour(row+5, col+2, '#FFFFFF')
+                self.page.myGrid.SetCellBackgroundColour(row+5, col+3, '#FFFFFF')
+                self.page.myGrid.SetCellBackgroundColour(row+5, col+4, '#FFFFFF')
+                if self.sortType == 'AP_large_dict':
+                    self.page.myGrid.SetCellBackgroundColour(row+5, col+1, '#14FF63')
+                elif self.sortType == 'AP_small_dict':
+                    self.page.myGrid.SetCellBackgroundColour(row+5, col+2, '#14FF63')
+                elif self.sortType == 'AP_large_diff_dict':
+                    self.page.myGrid.SetCellBackgroundColour(row+5, col+3, '#14FF63')
+                elif self.sortType == 'AP_small_diff_dict':
+                    self.page.myGrid.SetCellBackgroundColour(row+5, col+3, '#14FF63')
+                elif self.sortType == 'AP_large_perc_diff_dict':
+                    self.page.myGrid.SetCellBackgroundColour(row+5, col+4, '#14FF63')
+                elif self.sortType == 'AP_small_diff_dict':
+                    self.page.myGrid.SetCellBackgroundColour(row+5, col+4, '#14FF63')
+                    
                 page.myGrid.SetCellValue(row+5, col, "Average Power")
                 plusValue = self.SADict[parameter][0][file]['Average Power (Watts)']
                 page.myGrid.SetCellValue(row+5, col+1, repr(round(plusValue,2)))
@@ -894,6 +988,23 @@ class SAResultsPanel(wx.Panel):
                 page.myGrid.SetCellValue(row+5, col+4, repr(round(percentDiff,2)))
                         
                 # Row 6, Col 0 or 8
+                self.page.myGrid.SetCellBackgroundColour(row+6, col+1, '#FFFFFF')
+                self.page.myGrid.SetCellBackgroundColour(row+6, col+2, '#FFFFFF')
+                self.page.myGrid.SetCellBackgroundColour(row+6, col+3, '#FFFFFF')
+                self.page.myGrid.SetCellBackgroundColour(row+6, col+4, '#FFFFFF')
+                if self.sortType == 'E_large_dict':
+                    self.page.myGrid.SetCellBackgroundColour(row+6, col+1, '#14FF63')
+                elif self.sortType == 'E_small_dict':
+                    self.page.myGrid.SetCellBackgroundColour(row+6, col+2, '#14FF63')
+                elif self.sortType == 'E_large_diff_dict':
+                    self.page.myGrid.SetCellBackgroundColour(row+6, col+3, '#14FF63')
+                elif self.sortType == 'E_small_diff_dict':
+                    self.page.myGrid.SetCellBackgroundColour(row+6, col+3, '#14FF63')
+                elif self.sortType == 'E_large_perc_diff_dict':
+                    self.page.myGrid.SetCellBackgroundColour(row+6, col+4, '#14FF63')
+                elif self.sortType == 'E_small_diff_dict':
+                    self.page.myGrid.SetCellBackgroundColour(row+6, col+4, '#14FF63')
+                    
                 page.myGrid.SetCellValue(row+6, col, "Max Energy")
                 plusValue = self.SADict[parameter][0][file]['Max Energy (Wh)']
                 page.myGrid.SetCellValue(row+6, col+1, repr(round(plusValue,2)))
@@ -957,7 +1068,39 @@ class SAResultsPanel(wx.Panel):
                     row += 15
                     
         page.myGrid.AutoSizeColumns()   
+    
+    def SaveSA(self, e):
+
+                
+        
+        #Obtain each tab
+        pageNum = 0
+        for page in self.pages:
+            fileName = "SA_" + self.notebook.GetPageText(pageNum)
+            data = np.zeros((page.myGrid.GetNumberRows(),page.myGrid.GetNumberCols()), dtype = '|S50')
+            row = 0
+            while row < page.myGrid.GetNumberRows():
+                col = 0
+                while col < page.myGrid.GetNumberCols():
+                    data[row,col] = page.myGrid.GetCellValue(row, col)
+                    print data[row,col]
+                    col += 1
+                row += 1    
+            try:
+                np.savetxt(fileName, data, delimiter=",", fmt="%s")
+            except IOError:
+                logging.critical("Unable to save %s",fileName)
+                GUIdialog = wx.MessageDialog(None, "Unable to save file to " + fileName +". Make sure "+ fileName + " is closed, specify a new file to save to, or pick a save directory that's writable.", "Error", wx.OK)
+                GUIdialog.ShowModal()
+                GUIdialog.Destroy()            
+                raise Exception("Unable to save file")
             
+            pageNum += 1
+            
+        print("Data transfer to " + fileName + " complete")
+        logging.info("Data converted and saved to %s", fileName)
+
+
 
 class MainFrame(wx.Frame):
     """Constructor"""
@@ -1481,63 +1624,8 @@ class MainFrame(wx.Frame):
 
         dlg = RuntimeDialog(dictionary, self.performSensitivityAnalysis)
         dlg.ShowModal()
-        '''
-        dictionary = ProjectToParams(self.project)
         
-        inFiles = np.loadtxt(open(self.project, "rb"), dtype = 'string', delimiter = ',')
-        if not os.path.exists(self.folderControl.GetValue()):
-            os.makedirs(self.folderControl.GetValue())
-        
-        inFiles[1,3] = self.folderControl.GetValue()
-        # Sensitivity Analysis Function calls
-        #percentChange = 15
-        if self.performSensitivityAnalysis:
-            decimalEquiv = self.sensitivityControl.GetValue() / 100.0
-            saDict = collections.OrderedDict()            
-            saDict = SensitivityAnalysis(deepcopy(dictionary), decimalEquiv)
-            arrays = CreateSortArrays(saDict)
-            pub.sendMessage(("TransferSortArrays"), arrays)
-            pub.sendMessage(("TransferSADictionary"), saDict)
-            
-        
-        outputDict = sim.Simulation(deepcopy(dictionary))
-
-        SA_Frame.Show()
-        SA_Frame.Raise()        
-        
-        outputDirectory = self.folderControl.GetValue()
-        logging.debug("Entered out path: %s",outputDirectory)
-        OutputFile(outputDirectory, outputDict)
-        #OutputFile(outputDirectory, senseAnalysisDict)
-        WriteFolder(self.project,outputDirectory)
-        
-        # Gather filenames and value for quick values
-        fileNames = np.array(outputDict.keys())
-        #fileNames = np.append(outputDict.keys(), senseAnalysisDict.keys())
-        #resultsWindow = QuickResultsWindow(None, "Quick Results")
-        index = 1
-        for key in fileNames:
-            inFiles[index, 2] = dictionary[key]["comments"][0]
-            msg = key
-            pub.sendMessage(("fileNames.key"), msg)      
-            
-            if outputDict.has_key(key):
-                currentDict = outputDict[key]
-            #else:         # Used to make quick value tabs for senseAnalysis files
-            #    currentDict = senseAnalysisDict[key]
-            msg = currentDict
-            pub.sendMessage(("fileName.data"), msg)         
-            index = index + 1
-        
-        try:
-            np.savetxt(self.project, inFiles, delimiter=",", fmt="%s")
-        except:
-            logging.critical("Could not save project at the end of the simulation")
-           
-        '''
         path = os.path.dirname(os.path.realpath("OPTIONS.csv"))
-        
-        
         path = os.path.join(path, "SimOutputMacro1110.xlsm")        
         
         excel = win32com.client.DispatchEx("Excel.Application")
@@ -1547,7 +1635,8 @@ class MainFrame(wx.Frame):
         workbook.Close(SaveChanges=1)
         excel.Quit
         
-        
+                
+
         
         
     
@@ -2459,7 +2548,8 @@ class StatusPanel(wx.Panel):
         pub.subscribe(self.AddStatus, ("AddStatus"))
 
         self.panelLabel = wx.StaticText(self, wx.ID_ANY, "Status Messages",size=(-1,-1))
-        self.statusTextCtrl = wx.TextCtrl(self, -1,size=(200, 100), style=wx.TE_MULTILINE ^ wx.TE_READONLY)
+        self.statusTextCtrl = wx.richtext.RichTextCtrl(self, style=wx.VSCROLL|wx.HSCROLL|wx.NO_BORDER)
+        #self.statusTextCtrl = wx.TextCtrl(self, -1,size=(200, 100), style= wx.TE_RICH | wx.TE_MULTILINE ^ wx.TE_READONLY)
         font = wx.Font(10, wx.DEFAULT, wx.NORMAL, wx.BOLD)
         self.panelLabel.SetFont(font)
         
@@ -2471,14 +2561,25 @@ class StatusPanel(wx.Panel):
         self.SetSizer(sizer)
         self.Layout()
       
-      
 
         
     def AddStatus(self, msg):
-        currentTextCtrl = self.statusTextCtrl.GetValue()
-        newTextCtrl = currentTextCtrl + msg.data + os.linesep
-        self.statusTextCtrl.SetValue(newTextCtrl)
+        #currentTextCtrl = self.statusTextCtrl.GetValue()
+        #ewTextCtrl = currentTextCtrl + msg.data + os.linesep
+        
+        if "WARNING" in msg.data:
+            print "WARNING"
+            self.statusTextCtrl.BeginTextColour((255, 0, 0))
+            self.statusTextCtrl.WriteText(msg.data)
+            self.statusTextCtrl.EndTextColour()
+            self.statusTextCtrl.Newline()
+        else:
+            self.statusTextCtrl.WriteText(msg.data)
+            self.statusTextCtrl.Newline()
+        
         self.statusTextCtrl.ShowPosition(self.statusTextCtrl.GetLastPosition())
+        #self.statusTextCtrl.SetValue(newTextCtrl)
+        #self.statusTextCtrl.ShowPosition(self.statusTextCtrl.GetLastPosition())
         
 ##############################################################################        
     
@@ -2541,16 +2642,11 @@ class SimulationThread(Thread):
             arrays = CreateSortArrays(saDict)
             wx.CallAfter(pub.sendMessage, "TransferSortArrays", arrays)
             #pub.sendMessage(("TransferSortArrays"), arrays)
-            wx.CallAfter(pub.sendMessage, "TransferSADictionary", saDict)
-           # pub.sendMessage(("TransferSADictionary"), saDict)
-            
+            wx.CallAfter(pub.sendMessage, "TransferSADictionary", saDict)            
         
         outputDict = sim.Simulation(deepcopy(dictionary))
 
-        
-        SA_Frame.Show()
-        SA_Frame.Raise()        
-        
+                
         outputDirectory = self.folderControl.GetValue()
         logging.debug("Entered out path: %s",outputDirectory)
         OutputFile(outputDirectory, outputDict)
@@ -2581,6 +2677,9 @@ class SimulationThread(Thread):
             np.savetxt(self.project, inFiles, delimiter=",", fmt="%s")
         except:
             logging.critical("Could not save project at the end of the simulation")
+            
+        SA_Frame.Show()
+        SA_Frame.Raise()
             
         
     def stopThread(self, msg):
@@ -2675,7 +2774,7 @@ logging.info("STARTING automation.py")
 app = wx.App(False)
 testWindow = MainFrame(None, "SIMBA")
 SA_Frame = SensitivityAnalysisFrame(None, "Sensitivity Analysis Results")
-#SA_Frame.Hide()
+#SA_Frame.Show()
 #quickWindow = QuickResultsWindow(None, "Quick Results")
 
 msg = datetime.now().strftime('%H:%M:%S') + ": " + "Welcome to SIMBA! Start by creating a new project or opening one that has already been generated"
