@@ -35,7 +35,8 @@ def Simulation(dict_in):
                 msg = datetime.now().strftime('%H:%M:%S') + ": " + "Parameter " + key + " in " + file + " has more than 1 value! Each parameter may only have 1 value"
                 pub.sendMessage(("AddStatus"), msg)
                 raise Exception("One or more params in " + file + " have two or more values. Each param can only have one value")
-
+        
+        wx.CallAfter(pub.sendMessage, "update", "")
         tests = 1
         #parameters
         logging.info("Checking to make sure file %s has needed parameters...", file)
@@ -194,7 +195,8 @@ def Simulation(dict_in):
         assert "top_lean_angle" in currentData, logging.critical("%s is missing data: top_lean_angle" % file)
         logging.info("top_lean_angle found")
         top_lean_angle = currentData["top_lean_angle"][0]
-
+        
+        
         #top_lean_angle = 45
         
         #calc values
@@ -475,7 +477,8 @@ def Simulation(dict_in):
             message += 'max_distance_travel greater than lean angle to distance look up'
             message += 'max_distance_travel changed to ' + repr(max_distance_travel)
             pub.sendMessage(("AddStatus"), message)
-            
+        
+        wx.CallAfter(pub.sendMessage, "update", "")   
         '''
         if len(message) > 1:
             GUIdialog = wx.MessageDialog(None, message, "Warning", wx.OK)
@@ -670,9 +673,6 @@ def Simulation(dict_in):
         
         newData = collections.OrderedDict()
         
-        msg = datetime.now().strftime('%H:%M:%S') + ": " + "Storing calculated simulation data"
-        pub.sendMessage(("AddStatus"), msg)         
-        
         newData["Time (Seconds)"] = (time[:end])
         newData["Distance (Meters)"] = (distance[:end])
         newData["L_Speed (M/S)"] = (l_speed[:end])
@@ -740,16 +740,14 @@ def Simulation(dict_in):
         newData["Max Energy (Wh)"] = (round(np.max(energy),3))
         newData["Max Amphours"] = (round(np.max(amphour),3))
         
-        #msg = datetime.now().strftime('%H:%M:%S') + ": " + "Finished storing simulation data"
-        pub.sendMessage(("AddStatus"), msg) 
+ 
 
         dict_in[file] = newData
         logging.info("Converted %s to a dictionary successfully", file)
+        wx.CallAfter(pub.sendMessage, "update", "")
+
         
     logging.info("ENDING Simulation.py")
-    msg = datetime.now().strftime('%H:%M:%S') + ": " + "Done"
-    pub.sendMessage(("AddStatus"), msg) 
-
     return dict_in
 
 
