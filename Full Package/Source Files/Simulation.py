@@ -423,21 +423,21 @@ def Simulation(dict_in):
         if np.max(distancetospeed_lookup.x) < max_distance_travel:
             max_distance_travel =  np.max(distancetospeed_lookup.x)  
             message = datetime.now().strftime('%H:%M:%S') + ": "
-            message += 'max_distance_travel greater than speed to distance look up --- '
+            message += 'WARNING: max_distance_travel greater than speed to distance look up --- '
             message += 'max_distance_travel changed to ' + repr(max_distance_travel)
             pub.sendMessage(("AddStatus"), message) 
 
         if np.max(distancetoaltitude_lookup.x) < max_distance_travel:
             max_distance_travel =  np.max(distancetoaltitude_lookup.x)  
             message = datetime.now().strftime('%H:%M:%S') + ": "
-            message += 'max_distance_travel greater than altitude to distance look up --- '
+            message += 'WARNING: max_distance_travel greater than altitude to distance look up --- '
             message += 'max_distance_travel changed to ' + repr(max_distance_travel)
             pub.sendMessage(("AddStatus"), message)
             
         if np.max(throttlemap.x) < top_rpm:
             top_rpm = np.max(throttlemap.x)
             message = datetime.now().strftime('%H:%M:%S') + ": "
-            message += 'top rpm is greater than throttle map look up --- '
+            message += 'WARNING: top rpm is greater than throttle map look up --- '
             message += 'top rpm changed to ' + repr(top_rpm)
             pub.sendMessage(("AddStatus"), message)
             
@@ -445,14 +445,14 @@ def Simulation(dict_in):
         if y-1 <  top_torque:
             top_torque = y-1
             message = datetime.now().strftime('%H:%M:%S') + ": "
-            message += 'top_torque greater than motor efficiency look up --- '
+            message += 'WARNING: top_torque greater than motor efficiency look up --- '
             message += 'top_torque changed to ' + repr(top_torque)
             pub.sendMessage(("AddStatus"), message)
             
         if x-1 <  top_rpm:
             top_rpm = x-1
             message = datetime.now().strftime('%H:%M:%S') + ": "
-            message += 'top_rpm greater than motor efficiency look up --- '
+            message += 'WARNING: top_rpm greater than motor efficiency look up --- '
             message += 'top_rpm changed to ' + repr(top_rpm)
             pub.sendMessage(("AddStatus"), message)
 
@@ -460,21 +460,21 @@ def Simulation(dict_in):
         if y-1 <  top_torque/motor_torque_constant:
             top_torque = (y-1) * motor_torque_constant
             message = datetime.now().strftime('%H:%M:%S') + ": "
-            message += 'possible arms (from top_torque and motor torque constant) is greater than motor controller efficiency look up --- '
+            message += 'WARNING: possible arms (from top_torque and motor torque constant) is greater than motor controller efficiency look up --- '
             message += 'top_torque changed to ' + repr(top_torque)
             pub.sendMessage(("AddStatus"), message)
     
         if x-1 <  (top_rpm/(motor_rpm_constant)*(1/(sqrt2))) :
             top_rpm = (x-1)*(motor_rpm_constant)*(1/(sqrt2)) 
             message = datetime.now().strftime('%H:%M:%S') + ": "
-            message += 'possible Vrms (from top_rpm and motor rpm constant) is greater than motor controller efficiency look up --- '
+            message += 'WARNING: possible Vrms (from top_rpm and motor rpm constant) is greater than motor controller efficiency look up --- '
             message += 'top_rpm changed to ' + repr(top_rpm)
             pub.sendMessage(("AddStatus"), message)
             
         if np.max(lean_angle_lookup.x) < max_distance_travel:
             max_distance_travel =  np.max(lean_angle_lookup.x)  
             message = datetime.now().strftime('%H:%M:%S') + ": "
-            message += 'max_distance_travel greater than lean angle to distance look up'
+            message += 'WARNING: max_distance_travel greater than lean angle to distance look up'
             message += 'max_distance_travel changed to ' + repr(max_distance_travel)
             pub.sendMessage(("AddStatus"), message)
         
