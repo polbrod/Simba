@@ -18,6 +18,7 @@ import wx.lib.customtreectrl as ct
 import collections
 import shutil
 from operator import itemgetter
+from threading import Thread
 
 from wx.lib.pubsub import setuparg1
 from wx.lib.pubsub import pub
@@ -27,12 +28,15 @@ from datetime import datetime
 import sys, subprocess
 import traceback
 
+closeWorkerThread = 0
+
 def dependencies_for_automation():  #Missing imports needed to convert to .exe
     from scipy.sparse.csgraph import _validation
 
 
 def SensitivityAnalysis(dictionary, sensitivityValue):  
 
+    global closeWorkerThread
     parameterDict = collections.OrderedDict()
     
     # Take any file since they all have the same input parameters
@@ -61,7 +65,12 @@ def SensitivityAnalysis(dictionary, sensitivityValue):
         else:
             print key
             print " caused a pass"
-        
+            i = 0
+            while i < 6:
+                wx.CallAfter(pub.sendMessage, "update", "")
+                i += 1
+        if closeWorkerThread == 1:
+            return
         
     
     print parameterDict.keys()
@@ -71,6 +80,8 @@ def SensitivityAnalysis(dictionary, sensitivityValue):
     return parameterDict
     
 def CreateSortArrays(dictionary):
+    
+    
     # Sorting lists
     # Should rename plus to largest
     TS_plus_dict = collections.OrderedDict()
@@ -144,6 +155,7 @@ def CreateSortArrays(dictionary):
             AP_plus_list.append((AP_plus_value,parameter))
             E_plus_value = dictionary[parameter][0][file]['Max Energy (Wh)']
             E_plus_list.append((E_plus_value,parameter))
+            
             
             TS_minus_value = dictionary[parameter][1][file]['Max MPH']
             TS_minus_list.append((TS_minus_value,parameter))
@@ -547,7 +559,6 @@ class SensitivityAnalysisFrame(wx.Frame):
         MainSizer.Add(mainsplitter, 1, wx.EXPAND | wx.ALL)
         self.SetSizer(MainSizer)
         #################################################################        
-        
         self.Refresh()
 
         
@@ -574,23 +585,29 @@ class OptionsPanel(scrolled.ScrolledPanel):
         self.hSizer1 = wx.BoxSizer(wx.HORIZONTAL)
         self.hSortSizer = wx.BoxSizer(wx.HORIZONTAL)
         
-        self.optionsText = wx.StaticText(self, wx.ID_ANY, "Toggle variables to display")
-        self.vSizer.Add(self.optionsText, wx.LEFT, 5)
-        self.vSizer.AddSpacer(5)
-        self.sortText = wx.StaticText(self, wx.ID_ANY, "Sorting options")
+        font = wx.Font(10, wx.FONTFAMILY_DEFAULT, wx.NORMAL, wx.BOLD)
         
-        self.topSpeedItem = wx.RadioButton(self.leftPanel, -1, pos=(5,10), label='Top Speed', style=wx.RB_GROUP)
-        self.averageSpeedItem = wx.RadioButton(self.leftPanel, -1, pos=(5,25), label='Average Speed')
-        self.topPowerItem = wx.RadioButton(self.leftPanel, -1, pos=(5,40), label='Top Power')
-        self.averagePowerItem = wx.RadioButton(self.leftPanel, -1, pos=(5,55), label='Average Power')
-        self.energyItem = wx.RadioButton(self.leftPanel, -1, pos=(5,70), label='Energy')
+        self.vSizer.AddSpacer(5)
+        self.optionsText = wx.StaticText(self, wx.ID_ANY, "   Toggle variables to display")
+        self.optionsText.SetFont(font)
+        self.vSizer.Add(self.optionsText)
+        self.vSizer.AddSpacer(5)
+        self.sortText = wx.StaticText(self, wx.ID_ANY, "   Sorting options")
+        self.sortText.SetFont(font)
+        
+        
+        self.topSpeedItem = wx.RadioButton(self.leftPanel, -1, pos=(14,10), label='Top Speed', style=wx.RB_GROUP)
+        self.averageSpeedItem = wx.RadioButton(self.leftPanel, -1, pos=(14,25), label='Average Speed')
+        self.topPowerItem = wx.RadioButton(self.leftPanel, -1, pos=(14,40), label='Top Power')
+        self.averagePowerItem = wx.RadioButton(self.leftPanel, -1, pos=(14,55), label='Average Power')
+        self.energyItem = wx.RadioButton(self.leftPanel, -1, pos=(14,70), label='Energy')
 
-        self.largest2Smallest = wx.RadioButton(self.rightPanel, -1, pos = (0,10), label='Largest to Smallest', style=wx.RB_GROUP)
-        self.smallest2Largest = wx.RadioButton(self.rightPanel, -1, pos = (0,25), label='Smallest to Largest')
-        self.smallestDiff = wx.RadioButton(self.rightPanel, -1, pos=(0,40), label='Smallest Difference')
-        self.largestDiff = wx.RadioButton(self.rightPanel, -1, pos=(0,55), label='Largest Difference')
-        self.smallestPerc = wx.RadioButton(self.rightPanel, -1, pos=(0,70), label='Smallest Percent Difference')
-        self.largestPerc = wx.RadioButton(self.rightPanel, -1, pos=(0,85), label='Largest Percent Difference')
+        self.largest2Smallest = wx.RadioButton(self.rightPanel, -1, pos = (14,10), label='Largest to Smallest', style=wx.RB_GROUP)
+        self.smallest2Largest = wx.RadioButton(self.rightPanel, -1, pos = (14,25), label='Smallest to Largest')
+        self.smallestDiff = wx.RadioButton(self.rightPanel, -1, pos=(14,40), label='Smallest Difference')
+        self.largestDiff = wx.RadioButton(self.rightPanel, -1, pos=(14,55), label='Largest Difference')
+        self.smallestPerc = wx.RadioButton(self.rightPanel, -1, pos=(14,70), label='Smallest Percent Difference')
+        self.largestPerc = wx.RadioButton(self.rightPanel, -1, pos=(14,85), label='Largest Percent Difference')
         
         
         self.Bind(wx.EVT_RADIOBUTTON, self.Sort, self.topSpeedItem)
@@ -608,7 +625,7 @@ class OptionsPanel(scrolled.ScrolledPanel):
         
         self.SetSizer(self.vSizer)
         #self.vSizer.Fit(self)
-        self.SetAutoLayout(1)
+        #self.SetAutoLayout(1)
         self.SetupScrolling(scroll_x = False, scroll_y = True, rate_x=20, rate_y=20, scrollToTop=True)
         
     def TransferSADict(self, msg):
@@ -630,14 +647,17 @@ class OptionsPanel(scrolled.ScrolledPanel):
         self.vSizer.Add(self.hSizer1)
         
         self.vSizer.AddSpacer(10)
-        self.vSizer.Add(self.sortText, wx.LEFT, 5)
-        self.hSortSizer.Add(self.leftPanel)
+        self.vSizer.Add(self.sortText)
+        self.vSizer.Add(self.leftPanel)
+        self.vSizer.Add(self.rightPanel)
+        '''
+        self.hSortSizer.Add(self.leftPanel, 1, wx.EXPAND)
         self.hSortSizer.AddSpacer(5)
-        self.hSortSizer.Add(self.rightPanel)
-        self.hSortSizer.Layout()
+        self.hSortSizer.Add(self.rightPanel, 1, wx.EXPAND)
+        '''
         self.vSizer.Add(self.hSortSizer)
 
-        self.vSizer.Fit(self)
+        #self.vSizer.Fit(self)
         self.Layout()
         
         #self.Layout()
@@ -805,9 +825,9 @@ class SAResultsPanel(wx.Panel):
     def CreateOutputGrid(self, page, file, sortedArray):   
         
         row = 0
+
         for parameter in sortedArray:
             if parameter[1] in self.outputs:
-                print parameter[1]
                 parameter = parameter[1]
                 col = 0
                 if page.myGrid.GetCellValue(row, 0) != "" and page.myGrid.GetCellValue(row, 6) == "":
@@ -884,8 +904,57 @@ class SAResultsPanel(wx.Panel):
                 percentDiff = diff/(plusValue + minusValue)
                 page.myGrid.SetCellValue(row+6, col+4, repr(round(percentDiff,2)))
                 
+                # Row 8, Col 0 or 8
+                # % Motor RPM Limit
+                page.myGrid.SetCellValue(row+8, col, "% Motor RPM Limit")
+                plus_limit = self.SADict[parameter][0][file]['% Motor RPM Limit']
+                minus_limit = self.SADict[parameter][1][file]['% Motor RPM Limit']
+                page.myGrid.SetCellValue(row+8, col+1, repr(round(plus_limit,2)))
+                page.myGrid.SetCellValue(row+8, col+2, repr(round(minus_limit,2)))
+                
+                # Row 8, Col 0 or 8
+                # % Motor Torque Limit
+                page.myGrid.SetCellValue(row+9, col, "% Motor Torque Limit")
+                plus_limit = self.SADict[parameter][0][file]['% Motor Torque Limit']
+                minus_limit = self.SADict[parameter][1][file]['% Motor Torque Limit']
+                page.myGrid.SetCellValue(row+9, col+1, repr(round(plus_limit,2)))
+                page.myGrid.SetCellValue(row+9, col+2, repr(round(minus_limit,2)))
+                
+                # Row 9, Col 0 or 8
+                # % Motor Power Limit
+                page.myGrid.SetCellValue(row+10, col, "% Motor Power Limit")
+                plus_limit = self.SADict[parameter][0][file]['% Motor Power Limit']
+                minus_limit = self.SADict[parameter][1][file]['% Motor Power Limit']
+                page.myGrid.SetCellValue(row+10, col+1, repr(round(plus_limit,2)))
+                page.myGrid.SetCellValue(row+10, col+2, repr(round(minus_limit,2)))
+                
+                # Row 10, Col 0 or 8
+                # % Battery Power Limit
+                page.myGrid.SetCellValue(row+11, col, "% Battery Power Limit")
+                plus_limit = self.SADict[parameter][0][file]['% Battery Power Limit']
+                minus_limit = self.SADict[parameter][1][file]['% Battery Power Limit']
+                page.myGrid.SetCellValue(row+11, col+1, repr(round(plus_limit,2)))
+                page.myGrid.SetCellValue(row+11, col+2, repr(round(minus_limit,2)))
+                
+                # Row 11, Col 0 or 8
+                # % Motor Thermal Limit
+                page.myGrid.SetCellValue(row+12, col, "% Motor Thermal Limit")
+                plus_limit = self.SADict[parameter][0][file]['% Motor Thermal Limit']
+                minus_limit = self.SADict[parameter][1][file]['% Motor Thermal Limit']
+                page.myGrid.SetCellValue(row+12, col+1, repr(round(plus_limit,2)))
+                page.myGrid.SetCellValue(row+12, col+2, repr(round(minus_limit,2)))
+                
+                # Row 12, Col 0 or 8
+                # % Lean Angle Limit
+                page.myGrid.SetCellValue(row+13, col, "% Lean Angle Limit")
+                plus_limit = self.SADict[parameter][0][file]['% Lean Angle Limit']
+                minus_limit = self.SADict[parameter][1][file]['% Lean Angle Limit']
+                page.myGrid.SetCellValue(row+13, col+1, repr(round(plus_limit,2)))
+                page.myGrid.SetCellValue(row+13, col+2, repr(round(minus_limit,2)))
+                
+                
                 if page.myGrid.GetCellValue(row, 6) != "":
-                    row += 8
+                    row += 15
                     
         page.myGrid.AutoSizeColumns()   
             
@@ -1408,6 +1477,13 @@ class MainFrame(wx.Frame):
         
         dictionary = ProjectToParams(self.project)
         
+        SimulationThread(self, self.project, self.folderControl, self.sensitivityControl, self.performSensitivityAnalysis)
+
+        dlg = RuntimeDialog(dictionary, self.performSensitivityAnalysis)
+        dlg.ShowModal()
+        '''
+        dictionary = ProjectToParams(self.project)
+        
         inFiles = np.loadtxt(open(self.project, "rb"), dtype = 'string', delimiter = ',')
         if not os.path.exists(self.folderControl.GetValue()):
             os.makedirs(self.folderControl.GetValue())
@@ -1426,7 +1502,8 @@ class MainFrame(wx.Frame):
         
         outputDict = sim.Simulation(deepcopy(dictionary))
 
-        SA_Frame.Show()        
+        SA_Frame.Show()
+        SA_Frame.Raise()        
         
         outputDirectory = self.folderControl.GetValue()
         logging.debug("Entered out path: %s",outputDirectory)
@@ -1456,7 +1533,8 @@ class MainFrame(wx.Frame):
             np.savetxt(self.project, inFiles, delimiter=",", fmt="%s")
         except:
             logging.critical("Could not save project at the end of the simulation")
-            
+           
+        '''
         path = os.path.dirname(os.path.realpath("OPTIONS.csv"))
         
         
@@ -1469,7 +1547,7 @@ class MainFrame(wx.Frame):
         workbook.Close(SaveChanges=1)
         excel.Quit
         
-
+        
         
         
     
@@ -1515,23 +1593,31 @@ class InputPanel(scrolled.ScrolledPanel):
         pub.subscribe(self.SetComboFile, ("ChangeSelection"))
         
         
-        self.toolbar = wx.ToolBar(self, wx.ID_ANY, size = (2000, 32))
-        self.toolbar.SetToolBitmapSize( ( 21, 21 ) )
-        self.dropDownList = wx.ComboBox(self.toolbar, -1, style = wx.CB_READONLY|wx.TRANSPARENT_WINDOW, size = (275,22))
+        #self.toolbar = wx.ToolBar(self, wx.ID_ANY, size = (2000, 32))
+        #self.toolbar.SetToolBitmapSize( ( 21, 21 ) )
+        self.dropDownList = wx.ComboBox(self, -1, style = wx.CB_READONLY|wx.TRANSPARENT_WINDOW, size = (275,22))
         self.Bind(wx.EVT_COMBOBOX, self.UpdateFields)
-        self.toolbar.AddControl(wx.StaticText(self.toolbar, wx.ID_ANY, "      Parameter File     "))
-        self.toolbar.AddControl(self.dropDownList)
-
-        self.Bind(wx.EVT_TOOL_ENTER, self.resetStatusBar)
+        #self.toolbar.AddControl()
+        #self.toolbar.AddControl(self.dropDownList)
+        
+        self.topHSizer = wx.BoxSizer(wx.HORIZONTAL)
+        self.topHSizer.Add(wx.StaticText(self, wx.ID_ANY, "      Parameter File     "))
+        self.topHSizer.Add(self.dropDownList)
+        
+        #self.Bind(wx.EVT_TOOL_ENTER, self.resetStatusBar)
                 
         self.values=[]
         self.keys=[]
+        
         
         
         #Create Sizers    
         self.vSizer = wx.BoxSizer(wx.VERTICAL)
         self.hSizer= wx.BoxSizer(wx.HORIZONTAL)
         self.vSizer1 = wx.BoxSizer(wx.VERTICAL)
+        
+        self.vSizer.AddSpacer(10)
+        self.vSizer.Add(self.topHSizer)        
         
         self.vSizer1.AddSpacer(2)
         self.vSizer1.Add(wx.StaticText(self, wx.ID_ANY, "Gearing (ratio)" ,size=(180,25)))        
@@ -1684,7 +1770,7 @@ class InputPanel(scrolled.ScrolledPanel):
         self.hSizer.Add(self.vSizer2)
         
         #Add Horizontal Sizers to Vertical Sizer
-        self.vSizer.Add(self.toolbar)
+        #self.vSizer.Add(self.toolbar)
         self.vSizer.AddSpacer((-1,10))        
         
         #self.vSizer.Add(self.buttonRun)
@@ -1694,7 +1780,7 @@ class InputPanel(scrolled.ScrolledPanel):
         
         self.SetSizer(self.vSizer)
         
-        self.toolbar.Realize()
+        #self.toolbar.Realize()
         self.SetAutoLayout(1)
         self.vSizer.Fit(self)
         self.Layout()
@@ -1703,7 +1789,7 @@ class InputPanel(scrolled.ScrolledPanel):
     
     
     def resetStatusBar(self, e):
-        pass
+        self.dropDownList.Show()
     
     def Update(self, msg): 
         
@@ -2410,6 +2496,171 @@ class NewTabPanel(wx.Panel):
         sizer.Add(self.myGrid, 1, wx.ALL|wx.EXPAND, 5)
         self.SetSizer(sizer)
         self.Layout()
+
+
+########################################################################
+class SimulationThread(Thread):
+    """Test Worker Thread Class."""
+ 
+    #----------------------------------------------------------------------
+    def __init__(self, parent, project, folderControl, sensitivityControl, performAnalysis):
+        """Init Worker Thread Class."""
+        
+        pub.subscribe(self.stopThread, "AbortThread")
+        Thread.__init__(self)
+        self._parent = parent
+        self._want_abort = 0
+        global closeWorkerThread
+        closeWorkerThread = 0
+        self.project = project
+        self.folderControl = folderControl
+        self.sensitivityControl = sensitivityControl
+        self.performSensitivityAnalysis = performAnalysis
+        self.setDaemon(1)
+        self.start()    # start the thread
+ 
+    #----------------------------------------------------------------------
+    def run(self):
+        """Run Worker Thread."""
+        # This is the code executing in the new thread.
+        dictionary = ProjectToParams(self.project)
+        
+        inFiles = np.loadtxt(open(self.project, "rb"), dtype = 'string', delimiter = ',')
+        if not os.path.exists(self.folderControl.GetValue()):
+            os.makedirs(self.folderControl.GetValue())
+        
+        inFiles[1,3] = self.folderControl.GetValue()
+        # Sensitivity Analysis Function calls
+        #percentChange = 15
+        if self.performSensitivityAnalysis:
+            decimalEquiv = self.sensitivityControl.GetValue() / 100.0
+            saDict = collections.OrderedDict()            
+            saDict = SensitivityAnalysis(deepcopy(dictionary), decimalEquiv)
+            if type(saDict) is  None:
+                return
+            arrays = CreateSortArrays(saDict)
+            wx.CallAfter(pub.sendMessage, "TransferSortArrays", arrays)
+            #pub.sendMessage(("TransferSortArrays"), arrays)
+            wx.CallAfter(pub.sendMessage, "TransferSADictionary", saDict)
+           # pub.sendMessage(("TransferSADictionary"), saDict)
+            
+        
+        outputDict = sim.Simulation(deepcopy(dictionary))
+
+        
+        SA_Frame.Show()
+        SA_Frame.Raise()        
+        
+        outputDirectory = self.folderControl.GetValue()
+        logging.debug("Entered out path: %s",outputDirectory)
+        OutputFile(outputDirectory, outputDict)
+        #OutputFile(outputDirectory, senseAnalysisDict)
+        WriteFolder(self.project,outputDirectory)
+        
+        # Gather filenames and value for quick values
+        fileNames = np.array(outputDict.keys())
+        #fileNames = np.append(outputDict.keys(), senseAnalysisDict.keys())
+        #resultsWindow = QuickResultsWindow(None, "Quick Results")
+        index = 1
+        for key in fileNames:
+            inFiles[index, 2] = dictionary[key]["comments"][0]
+            msg = key
+            wx.CallAfter(pub.sendMessage, "fileNames.key", msg)
+            #pub.sendMessage(("fileNames.key"), msg)     
+            
+            if outputDict.has_key(key):
+                currentDict = outputDict[key]
+            #else:         # Used to make quick value tabs for senseAnalysis files
+            #    currentDict = senseAnalysisDict[key]
+            msg = currentDict
+            wx.CallAfter(pub.sendMessage, "fileName.data", msg)
+            #pub.sendMessage(("fileName.data"), msg)         
+            index = index + 1
+        
+        try:
+            np.savetxt(self.project, inFiles, delimiter=",", fmt="%s")
+        except:
+            logging.critical("Could not save project at the end of the simulation")
+            
+        
+    def stopThread(self, msg):
+        print "Trying to STOP!"
+        self.stopped = True
+        self._want_abort = 1
+        global closeWorkerThread
+        closeWorkerThread = 1
+            
+ 
+########################################################################
+
+########################################################################
+class RuntimeDialog(wx.Dialog):
+    """"""
+ 
+    #----------------------------------------------------------------------
+    def __init__(self, project, performAnalysis):
+        """Constructor"""
+        wx.Dialog.__init__(self, None, title="Simulation Progress")
+        self.count = 0
+ 
+        if performAnalysis is True:
+            # Three updates in simulation, x amount of parameters, times 2 for sensitivity report
+            self.amountOfUpdates = len(project.keys())*3 + len(project[project.keys()[0]].keys())*2 * len(project.keys()) * 3
+        else:
+            # Three increments in each individual file simulation run
+            self.amountOfUpdates = len(project.keys())*3
+
+        self.progress = wx.Gauge(self, range=self.amountOfUpdates, size = (400, 20), pos = self.Center())
+        #self.runningSimText = wx.StaticText(self, wx.ID_ANY, "Running Simulation and Sensitivity Analysis")
+        #self.runningSimText.SetFont(wx.Font(15, wx.FONTFAMILY_DEFAULT, wx.NORMAL, wx.BOLD))
+        #self.runningSimText.SetForegroundColour('GREEN')
+        self.notificationText = wx.StaticText(self, wx.ID_ANY, "Please wait, this could take a few minutes...")
+        self.progressText = wx.StaticText(self, wx.ID_ANY, "Progress: " + str(self.progress.GetValue()/self.amountOfUpdates) + "%")
+        sizer = wx.BoxSizer(wx.VERTICAL)
+        horizontalSizer = wx.BoxSizer(wx.HORIZONTAL)
+        horizontalSizer.AddSpacer(10)
+        sizer.AddSpacer(10)
+        sizer.Add(self.notificationText)
+        sizer.AddSpacer(2)
+        sizer.Add(self.progressText)
+        sizer.AddSpacer(5)
+        sizer.Add(self.progress, 0, wx.EXPAND)
+        sizer.AddSpacer(10)
+        horizontalSizer.Add(sizer)
+        horizontalSizer.AddSpacer(10)
+        self.SetSizer(horizontalSizer)
+        self.Fit()
+        self.RestartDialog()
+        print 
+        self.Bind(wx.EVT_CLOSE, self.OnExit)
+        # create a pubsub listener
+        pub.subscribe(self.updateProgress, "update")
+ 
+    #----------------------------------------------------------------------
+    def updateProgress(self, msg):
+        """
+        Update the progress bar
+        """
+        self.count += 1
+ 
+        if self.count >= self.amountOfUpdates:
+            self.Hide()
+ 
+        self.progress.SetValue(self.count)
+        percentProgress = float(self.count) / float(self.amountOfUpdates) * 100
+        self.progressText.SetLabel("Progress: " + repr(int(percentProgress)) + "%")
+ 
+    def RestartDialog(self):
+        self.count = 0
+        self.progress.SetValue(0)
+        self.Show()
+    
+    def OnExit(self, e):
+        wx.CallAfter(pub.sendMessage, "AbortThread", "")
+        self.Hide()
+        
+#############################################################
+
 
 ###############################################################################
 # GUI Ends Here
