@@ -284,7 +284,7 @@ def ProjectToParams(inFiles):
     logging.debug("Options file location passed: %s", inFiles)
     inFiles = np.loadtxt(open(inFiles, "rb"), dtype = 'string', delimiter = ',')
     files = inFiles[1:,0]
-    pub.sendMessage(("InputFiles"), files)
+    wx.CallAfter(pub.sendMessage, "InputFiles", files)
     inputDict = collections.OrderedDict()
     
     completedTransfers = 1
@@ -379,6 +379,7 @@ def OutputFile(folderName, outputDict):
         
         data = np.ma.vstack((paramHeaders, values))    #Combines headers with values
         try:
+            print fileName
             np.savetxt(fileName, data, delimiter=",", fmt="%s")
         except IOError:
             logging.critical("Unable to save %s",fileName)
@@ -502,10 +503,10 @@ class PopupFrame(wx.Frame):
          panel.Fit()
            
      def OnOK(self, event):
-         pub.sendMessage(("ProjectName"), self.projectName.GetValue())
+         wx.CallAfter(pub.sendMessage, "ProjectName", self.projectName.GetValue())
          self.Destroy()
      def OnCancel(self, event):
-         pub.sendMessage(("ProjectName"), "Cancel")
+         wx.CallAfter(pub.sendMessage, "ProjectName", "Cancel")
          self.Destroy()
           
      
@@ -636,7 +637,7 @@ class OptionsPanel(scrolled.ScrolledPanel):
             trigger = wx.CheckBox(self, wx.ID_ANY, label = key)
             trigger.SetValue(True)
             self.outputs.append(key)
-            pub.sendMessage(("DisplayOutputs"), self.outputs)
+            wx.CallAfter(pub.sendMessage, "DisplayOutputs", self.outputs)
             self.Bind(wx.EVT_CHECKBOX, self.configureOutput, id = trigger.GetId())
             self.inputs.append(trigger)
                 
@@ -683,78 +684,78 @@ class OptionsPanel(scrolled.ScrolledPanel):
                 if name in self.outputs:
                     self.outputs.remove(name)
                 
-        pub.sendMessage(("DisplayOutputs"), self.outputs)
+        wx.CallAfter(pub.sendMessage, "DisplayOutputs", self.outputs)
         
     def Sort(self, e):
         if self.topSpeedItem.GetValue() == True:
             if self.largest2Smallest.GetValue() == True:
-                pub.sendMessage(("SortType"), "TS_large_dict")
+                wx.CallAfter(pub.sendMessage, "SortType", "TS_large_dict")
             elif self.smallest2Largest.GetValue() == True:
-                pub.sendMessage(("SortType"), "TS_small_dict")
+                wx.CallAfter(pub.sendMessage, "SortType", "TS_small_dict")
             elif self.largestDiff.GetValue() == True:
-                pub.sendMessage(("SortType"), "TS_large_diff_dict")
+                wx.CallAfter(pub.sendMessage, "SortType", "TS_large_diff_dict")
             elif self.smallestDiff.GetValue() == True:
-                pub.sendMessage(("SortType"), "TS_small_diff_dict")
+                wx.CallAfter(pub.sendMessage, "SortType", "TS_small_diff_dict")
             elif self.largestPerc.GetValue() == True:
-                pub.sendMessage(("SortType"), "TS_large_perc_diff_dict")
+                wx.CallAfter(pub.sendMessage, "SortType", "TS_large_perc_diff_dict")
             elif self.smallestPerc.GetValue() == True:
-                pub.sendMessage(("SortType"), "TS_small_perc_diff_dict")
+                wx.CallAfter(pub.sendMessage, "SortType", "TS_small_perc_diff_dict")
                 
         elif self.averageSpeedItem.GetValue() == True:
             if self.largest2Smallest.GetValue() == True:
-                pub.sendMessage(("SortType"), "AS_large_dict")
+                wx.CallAfter(pub.sendMessage, "SortType", "AS_large_dict")
             elif self.smallest2Largest.GetValue() == True:
-                pub.sendMessage(("SortType"), "AS_small_dict")
+                wx.CallAfter(pub.sendMessage, "SortType", "AS_small_dict")
             elif self.largestDiff.GetValue() == True:
-                pub.sendMessage(("SortType"), "AS_large_diff_dict")
+                wx.CallAfter(pub.sendMessage, "SortType", "AS_large_diff_dict")
             elif self.smallestDiff.GetValue() == True:
-                pub.sendMessage(("SortType"), "AS_small_diff_dict")
+                wx.CallAfter(pub.sendMessage,"SortType", "AS_small_diff_dict")
             elif self.largestPerc.GetValue() == True:
-                pub.sendMessage(("SortType"), "AS_large_perc_diff_dict")
+                wx.CallAfter(pub.sendMessage,"SortType", "AS_large_perc_diff_dict")
             elif self.smallestPerc.GetValue() == True:
-                pub.sendMessage(("SortType"), "AS_small_perc_diff_dict")
+                wx.CallAfter(pub.sendMessage, "SortType", "AS_small_perc_diff_dict")
                 
         elif self.topPowerItem.GetValue() == True:
             if self.largest2Smallest.GetValue() == True:
-                pub.sendMessage(("SortType"), "TP_large_dict")
+                wx.CallAfter(pub.sendMessage, "SortType", "TP_large_dict")
             elif self.smallest2Largest.GetValue() == True:
-                pub.sendMessage(("SortType"), "TP_small_dict")
+                wx.CallAfter(pub.sendMessage, "SortType", "TP_small_dict")
             elif self.largestDiff.GetValue() == True:
-                pub.sendMessage(("SortType"), "TP_large_diff_dict")
+                wx.CallAfter(pub.sendMessage, "SortType", "TP_large_diff_dict")
             elif self.smallestDiff.GetValue() == True:
-                pub.sendMessage(("SortType"), "TP_small_diff_dict")
+                wx.CallAfter(pub.sendMessage, "SortType", "TP_small_diff_dict")
             elif self.largestPerc.GetValue() == True:
-                pub.sendMessage(("SortType"), "TP_large_perc_diff_dict")
+                wx.CallAfter(pub.sendMessage, "SortType", "TP_large_perc_diff_dict")
             elif self.smallestPerc.GetValue() == True:
-                pub.sendMessage(("SortType"), "TP_small_perc_diff_dict")
+                wx.CallAfter(pub.sendMessage, "SortType", "TP_small_perc_diff_dict")
                 
         elif self.averagePowerItem.GetValue() == True:
             if self.largest2Smallest.GetValue() == True:
-                pub.sendMessage(("SortType"), "AP_large_dict")
+                wx.CallAfter(pub.sendMessage, "SortType", "AP_large_dict")
             elif self.smallest2Largest.GetValue() == True:
-                pub.sendMessage(("SortType"), "AP_small_dict")
+                wx.CallAfter(pub.sendMessage, "SortType", "AP_small_dict")
             elif self.largestDiff.GetValue() == True:
-                pub.sendMessage(("SortType"), "AP_large_diff_dict")
+                wx.CallAfter(pub.sendMessage, "SortType", "AP_large_diff_dict")
             elif self.smallestDiff.GetValue() == True:
-                pub.sendMessage(("SortType"), "AP_small_diff_dict")
+                wx.CallAfter(pub.sendMessage, "SortType", "AP_small_diff_dict")
             elif self.largestPerc.GetValue() == True:
-                pub.sendMessage(("SortType"), "AP_large_perc_diff_dict")
+                wx.CallAfter(pub.sendMessage, "SortType", "AP_large_perc_diff_dict")
             elif self.smallestPerc.GetValue() == True:
-                pub.sendMessage(("SortType"), "AP_small_perc_diff_dict")
+                wx.CallAfter(pub.sendMessage, "SortType", "AP_small_perc_diff_dict")
                 
         elif self.energyItem.GetValue() == True:
             if self.largest2Smallest.GetValue() == True:
-                pub.sendMessage(("SortType"), "E_large_dict")
+                wx.CallAfter(pub.sendMessage, "SortType", "E_large_dict")
             elif self.smallest2Largest.GetValue() == True:
-                pub.sendMessage(("SortType"), "E_small_dict")
+                wx.CallAfter(pub.sendMessage, "SortType", "E_small_dict")
             elif self.largestDiff.GetValue() == True:
-                pub.sendMessage(("SortType"), "E_large_diff_dict")
+                wx.CallAfter(pub.sendMessage, "SortType", "E_large_diff_dict")
             elif self.smallestDiff.GetValue() == True:
-                pub.sendMessage(("SortType"), "E_small_diff_dict")
+                wx.CallAfter(pub.sendMessage, "SortType", "E_small_diff_dict")
             elif self.largestPerc.GetValue() == True:
-                pub.sendMessage(("SortType"), "E_large_perc_diff_dict")
+                wx.CallAfter(pub.sendMessage, "SortType", "E_large_perc_diff_dict")
             elif self.smallestPerc.GetValue() == True:
-                pub.sendMessage(("SortType"), "E_small_perc_diff_dict")
+                wx.CallAfter(pub.sendMessage, "SortType", "E_small_perc_diff_dict")
                 
         else:
             pass
@@ -767,8 +768,15 @@ class SAResultsPanel(wx.Panel):
 
         self.sortArrays = collections.OrderedDict()
         self.completeResults = collections.OrderedDict()
+        self.directory = ''
+        self.sensitivityValue = 0       
+    
+           
+        
         pub.subscribe(self.TransferSortArrays, ("TransferSortArrays"))
         pub.subscribe(self.TransferDictionary, ("TransferSADictionary"))
+        pub.subscribe(self.TransferOutputDirectory, ("TransferOutputDirectory"))
+        pub.subscribe(self.TransferSensitivityValue, ("TransferSensitivityValue"))
         pub.subscribe(self.UpdateNotebook, ("DisplayOutputs"))
         pub.subscribe(self.DetermineSortType, ("SortType"))
         
@@ -809,10 +817,18 @@ class SAResultsPanel(wx.Panel):
         self.SetAutoLayout(1)
 
     def TransferDictionary(self, msg):
-        self.completeResults = msg.data        
-        
+        self.completeResults = msg.data   
+
     def TransferSortArrays(self, msg):
         self.sortArrays = msg.data
+
+    def TransferOutputDirectory(self, msg):
+        self.directory = msg.data
+        print 'Directory now: '
+        print self.directory
+        
+    def TransferSensitivityValue(self,msg):
+        self.sensitivityValue = msg.data
 
     def DetermineSortType(self, msg):
         self.sortType = msg.data
@@ -1071,8 +1087,25 @@ class SAResultsPanel(wx.Panel):
     
     def SaveSA(self, e):
 
+        #print parameterDict[parameterDict.keys()[0]][0]['TestTemplateOutput.csv']['Max MPH']
+        outputDict = collections.OrderedDict()
                 
-        
+        for parameter in self.completeResults.keys():
+            for file in self.completeResults[parameter][0].keys():
+                #outputFile = "Gearing_15up_originalFileName"
+                # Plus x% files
+                outputFile = parameter + "_15plus" + file
+                outputDict[outputFile] = self.completeResults[parameter][0][file]
+                # Minus x% files
+                outputFile = parameter + "_15minus" + file
+                outputDict[outputFile] = self.completeResults[parameter][1][file]
+                
+        # Go to the Sensitivity Analysis folder in the output folder
+        if not os.path.exists(self.directory + '\Sensitivity Analysis'):
+            os.makedirs(self.directory + '\Sensitivity Analysis')
+            
+        OutputFile(self.directory + '\Sensitivity Analysis', outputDict)
+        #self.completeResults
         #Obtain each tab
         pageNum = 0
         for page in self.pages:
@@ -1114,7 +1147,7 @@ class MainFrame(wx.Frame):
         pub.subscribe(self.ChangeProjectName, ("ProjectName"))        
         pub.subscribe(self.DisableDeleteCopy, ("DisableDelete"))        
         pub.subscribe(self.CopyFileToFile, ("InputFile"))
-        
+                
         self.fileToFile = dict()
         self.currentFiles = np.empty(shape=(0,0))
         self.currentFile = dict()   
@@ -1234,7 +1267,6 @@ class MainFrame(wx.Frame):
         self.Bind(wx.EVT_CHECKBOX, self.SA_Checkbox_Event, self.sensitivityCheckbox)  
         
         #self.Bind(wx.EVT_MENU_HIGHLIGHT_ALL, self.resetStatusBar) 
-        self.Bind(wx.EVT_TOOL_ENTER, self.resetStatusBar)
         
         ################################################################
         # Define mainsplitter as child of Frame and add IOSplitterPanel and StatusPanel as children
@@ -1264,18 +1296,6 @@ class MainFrame(wx.Frame):
         self.project = ""
         self.dirname = ""
 
-    def resetStatusBar(self, event): 
-        
-        ''' Reset the status bar by hand. ''' 
-        '''
-        try: 
-            id = event.GetSelection() # for CommandEvent from the Toolbar 
-        except AttributeError: 
-            id = event.GetMenuId() # for MenuEvent 
-        if id == -1: 
-            self.toolbar._displayStatus() 
-        event.Skip() 
-        '''
 
     def ChangeProjectName(self, msg):
         
@@ -1294,10 +1314,10 @@ class MainFrame(wx.Frame):
             projectArray = np.array(["Files In", "Files Out", "Comments", "Output Folder", "Final Report Title"])
             np.savetxt(self.project, projectArray.reshape(1, projectArray.shape[0]), delimiter=",", fmt="%s")
             
-            pub.sendMessage(("UpdateInput"), self.dictionary)
+            wx.CallAfter(pub.sendMessage, "UpdateInput", self.dictionary)
             
             msg = datetime.now().strftime('%H:%M:%S') + ": " + "Successfully created new project: " + newDirectory
-            pub.sendMessage(("AddStatus"), msg)    
+            wx.CallAfter(pub.sendMessage, "AddStatus", msg)    
         
 
     def DisableDeleteCopy(self, msg):
@@ -1315,7 +1335,7 @@ class MainFrame(wx.Frame):
         
     def SetDictionary(self, msg):
         self.dictionary = msg.data
-        pub.sendMessage(("UpdateInput"), self.dictionary)
+        wx.CallAfter(pub.sendMessage, "UpdateInput", self.dictionary)
         
     def SetCurrentFiles(self, msg):
         self.currentFiles = msg.data
@@ -1357,7 +1377,7 @@ class MainFrame(wx.Frame):
         dlg = wx.FileDialog(self, "Choose a file", self.dirname, "", "Comma Seperated Value (.csv)|*.csv|Text file (.txt)|*.txt")
         if dlg.ShowModal() == wx.ID_OK:
             
-            pub.sendMessage(("RemoveFiles"), True)
+            wx.CallAfter(pub.sendMessage, "RemoveFiles", True)
             hasParamFile = False
             self.filename = dlg.GetFilename()
             self.dirname = dlg.GetDirectory()
@@ -1388,11 +1408,11 @@ class MainFrame(wx.Frame):
             else:
                 self.dictionary.clear()
                 msg = datetime.now().strftime('%H:%M:%S') + ": " + self.project + " has no parameter files"
-                pub.sendMessage(("AddStatus"), msg)  
+                wx.CallAfter(pub.sendMessage, "AddStatus", msg)  
                 
-            pub.sendMessage(("UpdateInput"), self.dictionary)
+            wx.CallAfter(pub.sendMessage, "UpdateInput", self.dictionary)
             msg = datetime.now().strftime('%H:%M:%S') + ": " + "Opened project " + self.project
-            pub.sendMessage(("AddStatus"), msg)    
+            wx.CallAfter(pub.sendMessage, "AddStatus", msg)    
               
             
             
@@ -1407,7 +1427,7 @@ class MainFrame(wx.Frame):
         saveDict[currentFile] = self.currentFile[self.currentFile.keys()[0]]
         SaveInput(os.path.dirname(os.path.realpath(self.project)), saveDict)
         msg = datetime.now().strftime('%H:%M:%S') + ": " + "Successfully saved " + saveDict.keys()[0]
-        pub.sendMessage(("AddStatus"), msg)  
+        wx.CallAfter(pub.sendMessage, "AddStatus", msg)  
         
         optionsData = np.loadtxt(open(self.project, "rb"), dtype = 'string', delimiter=',')
         if np.shape(optionsData)[0] > 1:
@@ -1430,7 +1450,7 @@ class MainFrame(wx.Frame):
                 optionsData[np.where(self.currentFiles == key)[0][0]+1,2] = self.dictionary[self.fileToFile[key]]["comments"][0]
                              
             msg = datetime.now().strftime('%H:%M:%S') + ": " + "Successfully saved " + key
-            pub.sendMessage(("AddStatus"), msg)  
+            wx.CallAfter(pub.sendMessage, "AddStatus", msg)  
             
         np.savetxt(self.project, optionsData, delimiter=",", fmt="%s")
     
@@ -1494,16 +1514,16 @@ class MainFrame(wx.Frame):
 
              
             self.currentFiles = np.append(self.currentFiles, self.newParamName.GetValue())
-            pub.sendMessage(("InputFiles"), self.currentFiles)
-            pub.sendMessage(("ChangeSelection"), self.newParamName.GetValue())
-            pub.sendMessage(("UpdateInput"), self.dictionary)
+            wx.CallAfter(pub.sendMessage, "InputFiles", self.currentFiles)
+            wx.CallAfter(pub.sendMessage, "ChangeSelection", self.newParamName.GetValue())
+            wx.CallAfter(pub.sendMessage, "UpdateInput", self.dictionary)
             
             if not os.path.exists(os.path.join(self.project, self.newParamName.GetValue())):
                 self.OnSave(wx.EVT_ACTIVATE)                
                 
         else:
             msg = datetime.now().strftime('%H:%M:%S') + ": " + "Must enter parameter filename before creating a new file"
-            pub.sendMessage(("AddStatus"), msg)  
+            wx.CallAfter(pub.sendMessage, "AddStatus", msg)  
         pass
     
     def OnCopyParamFile(self, e):
@@ -1530,9 +1550,9 @@ class MainFrame(wx.Frame):
             self.dictionary[self.newParamName.GetValue()] = deepcopy(self.currentFile[self.currentFile.keys()[0]])
 
             self.currentFiles = np.append(self.currentFiles, self.newParamName.GetValue())
-            pub.sendMessage(("InputFiles"), self.currentFiles)
-            pub.sendMessage(("ChangeSelection"), self.newParamName.GetValue())
-            pub.sendMessage(("UpdateInput"), self.dictionary)
+            wx.CallAfter(pub.sendMessage, "InputFiles", self.currentFiles)
+            wx.CallAfter(pub.sendMessage, "ChangeSelection", self.newParamName.GetValue())
+            wx.CallAfter(pub.sendMessage, "UpdateInput", self.dictionary)
              
 
             if not os.path.exists(os.path.join(self.project, self.newParamName.GetValue())):
@@ -1569,9 +1589,9 @@ class MainFrame(wx.Frame):
             self.dictionary = ProjectToParams(self.project)
             
             self.currentFiles = np.append(self.currentFiles, self.filename)
-            pub.sendMessage(("InputFiles"), self.currentFiles)
-            pub.sendMessage(("ChangeSelection"), self.filename)
-            pub.sendMessage(("UpdateInput"), self.dictionary)
+            wx.CallAfter(pub.sendMessage, "InputFiles", self.currentFiles)
+            wx.CallAfter(pub.sendMessage, "ChangeSelection", self.filename)
+            wx.CallAfter(pub.sendMessage, "UpdateInput", self.dictionary)
             
             if not os.path.exists(os.path.join(self.project, self.newParamName.GetValue())):
                 self.OnSave(wx.EVT_ACTIVATE)  
@@ -1599,14 +1619,14 @@ class MainFrame(wx.Frame):
                 keys.append(self.currentFile)
                 
         keys = np.delete(self.currentFiles, np.nonzero(self.currentFiles == self.currentFile.keys()[0]))
-        pub.sendMessage(("RemoveFiles"), keys)
-        pub.sendMessage(("InputFiles"), keys)
+        wx.CallAfter(pub.sendMessage, "RemoveFiles", keys)
+        wx.CallAfter(pub.sendMessage, "InputFiles", keys)
         if len(keys) > 0:
-            pub.sendMessage(("ChangeSelection"), keys[0])
+            wx.CallAfter(pub.sendMessage, "ChangeSelection", keys[0])
 
         #pub.sendMessage(("InputFiles"), keys)
         self.dictionary = newDict
-        pub.sendMessage(("UpdateInput"), newDict)
+        wx.CallAfter(pub.sendMessage, "UpdateInput", newDict)
         
 
 
@@ -1615,12 +1635,13 @@ class MainFrame(wx.Frame):
     
     def OnRun(self, e):
         """Runs the simulation and opens files if needed"""
-        pub.sendMessage(("ClearTabs"), "True")
+        wx.CallAfter(pub.sendMessage, "ClearTabs", "True")
         logging.debug("Entered path: %s", self.project)
         
         dictionary = ProjectToParams(self.project)
-        
+
         SimulationThread(self, self.project, self.folderControl, self.sensitivityControl, self.performSensitivityAnalysis)
+        
 
         dlg = RuntimeDialog(dictionary, self.performSensitivityAnalysis)
         dlg.ShowModal()
@@ -1635,7 +1656,7 @@ class MainFrame(wx.Frame):
         workbook.Close(SaveChanges=1)
         excel.Quit
         
-                
+        
 
         
         
@@ -1908,7 +1929,7 @@ class InputPanel(scrolled.ScrolledPanel):
         if len(self.dictionary) > 0:
             
             self.UpdateFields(wx.EVT_COMBOBOX)
-            pub.sendMessage(("DisableDelete"), False)
+            wx.CallAfter(pub.sendMessage, "DisableDelete", False)
             #pub.sendMessage(("DictFromInput"), self.dictionary)
 
         else:
@@ -1916,7 +1937,7 @@ class InputPanel(scrolled.ScrolledPanel):
                 self.textCtrlList[i].SetValue("")            
             
             self.dropDownList.Clear()
-            pub.sendMessage(("DisableDelete"), True)
+            wx.CallAfter(pub.sendMessage, "DisableDelete", True)
             
 
 
@@ -1934,11 +1955,11 @@ class InputPanel(scrolled.ScrolledPanel):
     def UpdateFields(self,event):
         
         self.values = []
-        pub.sendMessage(("InputFile"), self.fileToFile) 
+        wx.CallAfter(pub.sendMessage, "InputFile", self.fileToFile) 
         currentFile = self.dictionary[self.fileToFile[self.dropDownList.GetValue()]]
         fileDict = dict()
         fileDict[self.fileToFile[self.dropDownList.GetValue()]] = currentFile
-        pub.sendMessage(("CurrentFile"), fileDict)
+        wx.CallAfter(pub.sendMessage, "CurrentFile", fileDict)
         
         
         for k,v in currentFile.iteritems():
@@ -2101,9 +2122,9 @@ class InputPanel(scrolled.ScrolledPanel):
         try:
             previousValue = self.dictionary[self.fileToFile[self.dropDownList.GetValue()]]['gearing'][0]
             self.dictionary[self.fileToFile[self.dropDownList.GetValue()]]['gearing'] = [self.p0.GetValue()]
-            pub.sendMessage(("DictFromInput"), self.dictionary)
+            wx.CallAfter(pub.sendMessage, "DictFromInput", self.dictionary)
             msg = datetime.now().strftime('%H:%M:%S') + ": " + "Gearing changed from " + str(previousValue) + " to " + self.p0.GetValue()
-            pub.sendMessage(("AddStatus"), msg)  
+            wx.CallAfter(pub.sendMessage, "AddStatus", msg)  
         except:
             pass
         
@@ -2608,18 +2629,22 @@ class SimulationThread(Thread):
         """Init Worker Thread Class."""
         
         pub.subscribe(self.stopThread, "AbortThread")
+
+        self.folderControl = folderControl
+        self.sensitivityControl = sensitivityControl
+        
         Thread.__init__(self)
         self._parent = parent
         self._want_abort = 0
         global closeWorkerThread
         closeWorkerThread = 0
         self.project = project
-        self.folderControl = folderControl
-        self.sensitivityControl = sensitivityControl
+
         self.performSensitivityAnalysis = performAnalysis
         self.setDaemon(1)
         self.start()    # start the thread
- 
+
+
     #----------------------------------------------------------------------
     def run(self):
         """Run Worker Thread."""
@@ -2646,9 +2671,15 @@ class SimulationThread(Thread):
         
         outputDict = sim.Simulation(deepcopy(dictionary))
 
+        print "Before sending folder: "
+        folder = self.folderControl.GetValue()
+        print folder
+        wx.CallAfter(pub.sendMessage, "TransferOutputDirectory", folder)
+        wx.CallAfter(pub.sendMessage, "TransferSensitivityValue", self.sensitivityControl.GetValue())
                 
         outputDirectory = self.folderControl.GetValue()
         logging.debug("Entered out path: %s",outputDirectory)
+        print outputDict
         OutputFile(outputDirectory, outputDict)
         #OutputFile(outputDirectory, senseAnalysisDict)
         WriteFolder(self.project,outputDirectory)
@@ -2778,7 +2809,7 @@ SA_Frame = SensitivityAnalysisFrame(None, "Sensitivity Analysis Results")
 #quickWindow = QuickResultsWindow(None, "Quick Results")
 
 msg = datetime.now().strftime('%H:%M:%S') + ": " + "Welcome to SIMBA! Start by creating a new project or opening one that has already been generated"
-pub.sendMessage(("AddStatus"), msg)  
+wx.CallAfter(pub.sendMessage, "AddStatus", msg)  
 
 app.MainLoop()
 

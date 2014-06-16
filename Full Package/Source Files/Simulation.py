@@ -33,7 +33,7 @@ def Simulation(dict_in):
             if np.size(currentData[key]) > 1:
                 logging.critical("Parameter %s in %s has more than 1 value",key,file)
                 msg = datetime.now().strftime('%H:%M:%S') + ": " + "Parameter " + key + " in " + file + " has more than 1 value! Each parameter may only have 1 value"
-                pub.sendMessage(("AddStatus"), msg)
+                wx.CallAfter(pub.sendMessage, "AddStatus", msg)
                 raise Exception("One or more params in " + file + " have two or more values. Each param can only have one value")
         
         wx.CallAfter(pub.sendMessage, "update", "")
@@ -283,7 +283,7 @@ def Simulation(dict_in):
         except IOError:
             logging.critical("Unable to load %s", dist_to_speed_lookup)
             msg = datetime.now().strftime('%H:%M:%S') + ": " + "Unable to load " + dist_to_speed_lookup + ". Make sure the file exists and is not open."
-            pub.sendMessage(("AddStatus"), msg)
+            wx.CallAfter(pub.sendMessage, "AddStatus", msg)
             raise Exception("Unable to load \'" + dist_to_speed_lookup + "\'")
 
         x = n[:,0].astype(np.float)
@@ -306,7 +306,7 @@ def Simulation(dict_in):
         except IOError:
             logging.critical("Unable to load %s", soc_to_voltage_lookup)
             msg = datetime.now().strftime('%H:%M:%S') + ": " + "Unable to load " + soc_to_voltage_lookup + ". Make sure the file exists and is not open."
-            pub.sendMessage(("AddStatus"), msg)
+            wx.CallAfter(pub.sendMessage, "AddStatus", msg)
             raise Exception("Unable to load \'" + soc_to_voltage_lookup + "\'")
             
         x = n[:,0].astype(np.float)
@@ -327,7 +327,7 @@ def Simulation(dict_in):
         except IOError:
             logging.critical("Unable to load %s", dist_to_alt_lookup)
             msg = datetime.now().strftime('%H:%M:%S') + ": " + "Unable to load " + dist_to_alt_lookup + ". Make sure the file exists and is not open."
-            pub.sendMessage(("AddStatus"), msg)
+            wx.CallAfter(pub.sendMessage, "AddStatus", msg)
             raise Exception("Unable to load \'" + dist_to_alt_lookup + "\'")
         x = n[:,0].astype(np.float)
         y = n[:,1].astype(np.float)
@@ -346,7 +346,7 @@ def Simulation(dict_in):
         except IOError:
             logging.critical("Unable to load %s", throttlemap_lookup)
             msg = datetime.now().strftime('%H:%M:%S') + ": " + "Unable to load " + throttlemap_lookup + ". Make sure the file exists and is not open."
-            pub.sendMessage(("AddStatus"), msg)
+            wx.CallAfter(pub.sendMessage, "AddStatus", msg)
             raise Exception("Unable to load \'" + throttlemap_lookup + "\'")
         x = n[:,0].astype(np.float)
         y = n[:,1].astype(np.float)
@@ -364,7 +364,7 @@ def Simulation(dict_in):
         except IOError:
             logging.critical("Unable to load %s", lean_angle_lookup)
             msg = datetime.now().strftime('%H:%M:%S') + ": " + "Unable to load " + lean_angle_lookup + ". Make sure the file exists and is not open."
-            pub.sendMessage(("AddStatus"), msg)
+            wx.CallAfter(pub.sendMessage, "AddStatus", msg)
             raise Exception("Unable to load \'" + lean_angle_lookup + "\'")
         x = n[:,0].astype(np.float)
         y = n[:,1].astype(np.float)
@@ -381,7 +381,7 @@ def Simulation(dict_in):
         except IOError:
             logging.critical("Unable to load %s", motor_controller_eff_lookup)
             msg = datetime.now().strftime('%H:%M:%S') + ": " + "Unable to load " + motor_controller_eff_lookup + ". Make sure the file exists and is not open."
-            pub.sendMessage(("AddStatus"), msg)
+            wx.CallAfter(pub.sendMessage, "AddStatus", msg)
             raise Exception("Unable to load \'" + motor_controller_eff_lookup + "\'")
             
 
@@ -405,7 +405,7 @@ def Simulation(dict_in):
         except IOError:
             logging.critical("Unable to load %s", motor_eff_lookup)
             msg = datetime.now().strftime('%H:%M:%S') + ": " + "Unable to load " + motor_eff_lookup + ". Make sure the file exists and is not open."
-            pub.sendMessage(("AddStatus"), msg) 
+            wx.CallAfter(pub.sendMessage, "AddStatus", msg) 
             raise Exception("Unable to load \'" + motor_eff_lookup + "\'")
 
         x = n[:,0].astype(np.float)
@@ -425,21 +425,21 @@ def Simulation(dict_in):
             message = datetime.now().strftime('%H:%M:%S') + ": "
             message += 'WARNING: max_distance_travel greater than speed to distance look up --- '
             message += 'max_distance_travel changed to ' + repr(max_distance_travel)
-            pub.sendMessage(("AddStatus"), message) 
+            wx.CallAfter(pub.sendMessage, "AddStatus", message) 
 
         if np.max(distancetoaltitude_lookup.x) < max_distance_travel:
             max_distance_travel =  np.max(distancetoaltitude_lookup.x)  
             message = datetime.now().strftime('%H:%M:%S') + ": "
             message += 'WARNING: max_distance_travel greater than altitude to distance look up --- '
             message += 'max_distance_travel changed to ' + repr(max_distance_travel)
-            pub.sendMessage(("AddStatus"), message)
+            wx.CallAfter(pub.sendMessage, "AddStatus", message)
             
         if np.max(throttlemap.x) < top_rpm:
             top_rpm = np.max(throttlemap.x)
             message = datetime.now().strftime('%H:%M:%S') + ": "
             message += 'WARNING: top rpm is greater than throttle map look up --- '
             message += 'top rpm changed to ' + repr(top_rpm)
-            pub.sendMessage(("AddStatus"), message)
+            wx.CallAfter(pub.sendMessage, "AddStatus", message)
             
         (x,y) = motor_eff_grid.shape
         if y-1 <  top_torque:
@@ -447,14 +447,14 @@ def Simulation(dict_in):
             message = datetime.now().strftime('%H:%M:%S') + ": "
             message += 'WARNING: top_torque greater than motor efficiency look up --- '
             message += 'top_torque changed to ' + repr(top_torque)
-            pub.sendMessage(("AddStatus"), message)
+            wx.CallAfter(pub.sendMessage, "AddStatus", message)
             
         if x-1 <  top_rpm:
             top_rpm = x-1
             message = datetime.now().strftime('%H:%M:%S') + ": "
             message += 'WARNING: top_rpm greater than motor efficiency look up --- '
             message += 'top_rpm changed to ' + repr(top_rpm)
-            pub.sendMessage(("AddStatus"), message)
+            wx.CallAfter(pub.sendMessage, "AddStatus", message)
 
         (x,y) = motor_controller_eff_grid.shape
         if y-1 <  top_torque/motor_torque_constant:
@@ -462,21 +462,21 @@ def Simulation(dict_in):
             message = datetime.now().strftime('%H:%M:%S') + ": "
             message += 'WARNING: possible arms (from top_torque and motor torque constant) is greater than motor controller efficiency look up --- '
             message += 'top_torque changed to ' + repr(top_torque)
-            pub.sendMessage(("AddStatus"), message)
+            wx.CallAfter(pub.sendMessage, "AddStatus", message)
     
         if x-1 <  (top_rpm/(motor_rpm_constant)*(1/(sqrt2))) :
             top_rpm = (x-1)*(motor_rpm_constant)*(1/(sqrt2)) 
             message = datetime.now().strftime('%H:%M:%S') + ": "
             message += 'WARNING: possible Vrms (from top_rpm and motor rpm constant) is greater than motor controller efficiency look up --- '
             message += 'top_rpm changed to ' + repr(top_rpm)
-            pub.sendMessage(("AddStatus"), message)
+            wx.CallAfter(pub.sendMessage, "AddStatus", message)
             
         if np.max(lean_angle_lookup.x) < max_distance_travel:
             max_distance_travel =  np.max(lean_angle_lookup.x)  
             message = datetime.now().strftime('%H:%M:%S') + ": "
             message += 'WARNING: max_distance_travel greater than lean angle to distance look up'
             message += 'max_distance_travel changed to ' + repr(max_distance_travel)
-            pub.sendMessage(("AddStatus"), message)
+            wx.CallAfter(pub.sendMessage, "AddStatus", message)
         
         wx.CallAfter(pub.sendMessage, "update", "")   
         '''
