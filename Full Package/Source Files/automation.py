@@ -771,7 +771,7 @@ class SAResultsPanel(wx.Panel):
         self.directory = ''
         self.sensitivityValue = 0       
     
-           
+        
         
         pub.subscribe(self.TransferSortArrays, ("TransferSortArrays"))
         pub.subscribe(self.TransferDictionary, ("TransferSADictionary"))
@@ -783,12 +783,12 @@ class SAResultsPanel(wx.Panel):
         self.lowerSizer = wx.BoxSizer(wx.HORIZONTAL)
         self.lowerSizer.AddSpacer(50)
         
-        self.saveAll = wx.CheckBox(self, wx.ID_ANY, "Save full simulation results")
+        self.saveDetailed = wx.CheckBox(self, wx.ID_ANY, "Save detailed simulation results")
         self.saveSummary = wx.CheckBox(self, wx.ID_ANY, "Save sensitivity analysis summaries")
         self.saveButton = wx.Button(self, wx.ID_ANY, "Save Sensitivity Analysis")
         
         
-        self.lowerSizer.Add(self.saveAll, 1, wx.ALL | wx.EXPAND)
+        self.lowerSizer.Add(self.saveDetailed, 1, wx.ALL | wx.EXPAND)
         self.lowerSizer.AddSpacer(50)
         self.lowerSizer.Add(self.saveSummary, 1, wx.ALL | wx.EXPAND)
         self.lowerSizer.AddSpacer(50)
@@ -1088,50 +1088,51 @@ class SAResultsPanel(wx.Panel):
     def SaveSA(self, e):
 
         #print parameterDict[parameterDict.keys()[0]][0]['TestTemplateOutput.csv']['Max MPH']
-        outputDict = collections.OrderedDict()
-                
-        for parameter in self.completeResults.keys():
-            for file in self.completeResults[parameter][0].keys():
-                #outputFile = "Gearing_15up_originalFileName"
-                # Plus x% files
-                outputFile = parameter + "_15plus" + file
-                outputDict[outputFile] = self.completeResults[parameter][0][file]
-                # Minus x% files
-                outputFile = parameter + "_15minus" + file
-                outputDict[outputFile] = self.completeResults[parameter][1][file]
-                
-        # Go to the Sensitivity Analysis folder in the output folder
         if not os.path.exists(self.directory + '\Sensitivity Analysis'):
             os.makedirs(self.directory + '\Sensitivity Analysis')
-            
-        OutputFile(self.directory + '\Sensitivity Analysis', outputDict)
+        outputDict = collections.OrderedDict()
+        
+        if self.saveDetailed.GetValue() == 1:
+            for parameter in self.completeResults.keys():
+                for file in self.completeResults[parameter][0].keys():
+                    #outputFile = "Gearing_15up_originalFileName"
+                    # Plus x% files
+                    outputFile = parameter + "_15plus" + file
+                    outputDict[outputFile] = self.completeResults[parameter][0][file]
+                    # Minus x% files
+                    outputFile = parameter + "_15minus" + file
+                    outputDict[outputFile] = self.completeResults[parameter][1][file]
+                    
+            # Save to the Sensitivity Analysis folder in the output folder
+            OutputFile(self.directory + '\Sensitivity Analysis', outputDict)
         #self.completeResults
         #Obtain each tab
-        pageNum = 0
-        for page in self.pages:
-            fileName = "SA_" + self.notebook.GetPageText(pageNum)
-            data = np.zeros((page.myGrid.GetNumberRows(),page.myGrid.GetNumberCols()), dtype = '|S50')
-            row = 0
-            while row < page.myGrid.GetNumberRows():
-                col = 0
-                while col < page.myGrid.GetNumberCols():
-                    data[row,col] = page.myGrid.GetCellValue(row, col)
-                    print data[row,col]
-                    col += 1
-                row += 1    
-            try:
-                np.savetxt(fileName, data, delimiter=",", fmt="%s")
-            except IOError:
-                logging.critical("Unable to save %s",fileName)
-                GUIdialog = wx.MessageDialog(None, "Unable to save file to " + fileName +". Make sure "+ fileName + " is closed, specify a new file to save to, or pick a save directory that's writable.", "Error", wx.OK)
-                GUIdialog.ShowModal()
-                GUIdialog.Destroy()            
-                raise Exception("Unable to save file")
-            
-            pageNum += 1
-            
-        print("Data transfer to " + fileName + " complete")
-        logging.info("Data converted and saved to %s", fileName)
+        if self.saveSummary.GetValue() == 1:
+            pageNum = 0
+            for page in self.pages:
+                fileName = self.directory + "\Sensitivity Analysis\SA_summary_" + self.notebook.GetPageText(pageNum)
+                data = np.zeros((page.myGrid.GetNumberRows(),page.myGrid.GetNumberCols()), dtype = '|S50')
+                row = 0
+                while row < page.myGrid.GetNumberRows():
+                    col = 0
+                    while col < page.myGrid.GetNumberCols():
+                        data[row,col] = page.myGrid.GetCellValue(row, col)
+                        print data[row,col]
+                        col += 1
+                    row += 1    
+                try:
+                    np.savetxt(fileName, data, delimiter=",", fmt="%s")
+                except IOError:
+                    logging.critical("Unable to save %s",fileName)
+                    GUIdialog = wx.MessageDialog(None, "Unable to save file to " + fileName +". Make sure "+ fileName + " is closed, specify a new file to save to, or pick a save directory that's writable.", "Error", wx.OK)
+                    GUIdialog.ShowModal()
+                    GUIdialog.Destroy()            
+                    raise Exception("Unable to save file")
+                
+                pageNum += 1
+                
+            print("Data transfer to " + fileName + " complete")
+            logging.info("Data converted and saved to %s", fileName)
 
 
 
