@@ -42,7 +42,6 @@ def SensitivityAnalysis(dictionary, sensitivityValue):
     
     # Take any file since they all have the same input parameters
     for key in dictionary[dictionary.keys()[0]]:
-        print dictionary[dictionary.keys()[0]][key][0]
         if not isinstance(dictionary[dictionary.keys()[0]][key][0],basestring) and key != 'motor_torque_constant':
             outputFiles = []
             originalDictionary = deepcopy(dictionary)
@@ -64,12 +63,11 @@ def SensitivityAnalysis(dictionary, sensitivityValue):
             dictionary = deepcopy(originalDictionary)
             parameterDict[key] = outputFiles
         else:
-            print key
-            print " caused a pass"
-            i = 0
-            while i < 6:
-                wx.CallAfter(pub.sendMessage, "update", "")
-                i += 1
+            for file in dictionary:
+                i = 0
+                while i < 6:
+                    wx.CallAfter(pub.sendMessage, "update", "")
+                    i += 1
         if closeWorkerThread == 1:
             return
         
@@ -1647,6 +1645,7 @@ class MainFrame(wx.Frame):
         dlg = RuntimeDialog(dictionary, self.performSensitivityAnalysis)
         dlg.ShowModal()
         
+        '''
         path = os.path.dirname(os.path.realpath("OPTIONS.csv"))
         path = os.path.join(path, "SimOutputMacro1110.xlsm")        
         
@@ -1656,7 +1655,7 @@ class MainFrame(wx.Frame):
         excel.Visible = True
         workbook.Close(SaveChanges=1)
         excel.Quit
-        
+        '''
         
 
         
@@ -2735,8 +2734,11 @@ class RuntimeDialog(wx.Dialog):
         self.count = 0
  
         if performAnalysis is True:
-            # Three updates in simulation, x amount of parameters, times 2 for sensitivity report
-            self.amountOfUpdates = len(project.keys())*3 + len(project[project.keys()[0]].keys())*2 * len(project.keys()) * 3
+            # Three updates in simulation, x amount of parameters, times 2 for sensitivity report, number of files
+            print 'Project keys: '
+            print project.keys()
+            print project[project.keys()[0]].keys()
+            self.amountOfUpdates = (len(project.keys()) * 3 * len(project[project.keys()[0]].keys()) * 2) + (len(project.keys()) * 3)
         else:
             # Three increments in each individual file simulation run
             self.amountOfUpdates = len(project.keys())*3
