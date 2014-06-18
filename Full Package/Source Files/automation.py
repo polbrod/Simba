@@ -42,7 +42,6 @@ def SensitivityAnalysis(dictionary, sensitivityValue):
     
     # Take any file since they all have the same input parameters
     for key in dictionary[dictionary.keys()[0]]:
-        print dictionary[dictionary.keys()[0]][key][0]
         if not isinstance(dictionary[dictionary.keys()[0]][key][0],basestring) and key != 'motor_torque_constant':
             outputFiles = []
             originalDictionary = deepcopy(dictionary)
@@ -64,20 +63,16 @@ def SensitivityAnalysis(dictionary, sensitivityValue):
             dictionary = deepcopy(originalDictionary)
             parameterDict[key] = outputFiles
         else:
-            print key
-            print " caused a pass"
-            i = 0
-            while i < 6:
-                wx.CallAfter(pub.sendMessage, "update", "")
-                i += 1
+            for file in dictionary:
+                i = 0
+                while i < 6:
+                    wx.CallAfter(pub.sendMessage, "update", "")
+                    i += 1
         if closeWorkerThread == 1:
             return
         
     
-    print parameterDict.keys()
-    print "\n\n\n\n\n"
-    print parameterDict[parameterDict.keys()[0]][0]['TestTemplateOutput.csv']['Max MPH']
-    print parameterDict[parameterDict.keys()[0]][1]['TestTemplateOutput.csv']['Max MPH']
+
     return parameterDict
     
 def CreateSortArrays(dictionary):
@@ -85,6 +80,7 @@ def CreateSortArrays(dictionary):
     
     # Sorting lists
     # Should rename plus to largest
+    sorting_arrays = dict()
     TS_plus_dict = collections.OrderedDict()
     # Should rename minus to smallest
     TS_minus_dict = collections.OrderedDict()
@@ -122,7 +118,10 @@ def CreateSortArrays(dictionary):
     E_small_perc_diff_dict = collections.OrderedDict()    
     
     for file in dictionary['gearing'][0].keys():
-                
+        
+        print 'File in sort arrays: '
+        print file
+        
         TS_plus_list = []
         TS_minus_list = []
         TS_diff_list = []
@@ -237,7 +236,7 @@ def CreateSortArrays(dictionary):
         E_small_perc_diff_dict[file] = sorted(E_perc_diff_list, key=itemgetter(0))
 
     
-    sorting_arrays = dict()
+    
     sorting_arrays["TS_large_dict"] = TS_plus_dict
     sorting_arrays["TS_small_dict"] = TS_minus_dict
     sorting_arrays["TS_large_diff_dict"] = TS_large_diff_dict
@@ -272,6 +271,8 @@ def CreateSortArrays(dictionary):
     sorting_arrays["E_small_diff_dict"] = E_small_diff_dict
     sorting_arrays["E_large_perc_diff_dict"] = E_large_perc_diff_dict
     sorting_arrays["E_small_perc_diff_dict"] = E_small_perc_diff_dict
+    
+    
     
     return sorting_arrays
         
@@ -379,7 +380,6 @@ def OutputFile(folderName, outputDict):
         
         data = np.ma.vstack((paramHeaders, values))    #Combines headers with values
         try:
-            print fileName
             np.savetxt(fileName, data, delimiter=",", fmt="%s")
         except IOError:
             logging.critical("Unable to save %s",fileName)
@@ -824,8 +824,6 @@ class SAResultsPanel(wx.Panel):
 
     def TransferOutputDirectory(self, msg):
         self.directory = msg.data
-        print 'Directory now: '
-        print self.directory
         
     def TransferSensitivityValue(self,msg):
         self.sensitivityValue = msg.data
@@ -857,6 +855,7 @@ class SAResultsPanel(wx.Panel):
             self.page.myGrid.HideRowLabels()
             self.page.myGrid.EnableGridLines(False)
             sortedArray = self.sortArrays[self.sortType][file]
+            #print sortedArray
             self.CreateOutputGrid(self.page, file, sortedArray)
             self.notebook.AddPage(self.page, file)
             
@@ -896,6 +895,8 @@ class SAResultsPanel(wx.Panel):
                 self.page.myGrid.SetCellBackgroundColour(row+2, col+4, '#FFFFFF')
                 if self.sortType == 'TS_large_dict':
                     self.page.myGrid.SetCellBackgroundColour(row+2, col+1, '#14FF63')
+                    print 'I changed cell background for file: '
+                    print file
                 elif self.sortType == 'TS_small_dict':
                     self.page.myGrid.SetCellBackgroundColour(row+2, col+2, '#14FF63')
                 elif self.sortType == 'TS_large_diff_dict':
@@ -1083,7 +1084,7 @@ class SAResultsPanel(wx.Panel):
                 if page.myGrid.GetCellValue(row, 6) != "":
                     row += 15
                     
-        page.myGrid.AutoSizeColumns()   
+        page.myGrid.AutoSizeColumns()
     
     def SaveSA(self, e):
 
@@ -1117,7 +1118,6 @@ class SAResultsPanel(wx.Panel):
                     col = 0
                     while col < page.myGrid.GetNumberCols():
                         data[row,col] = page.myGrid.GetCellValue(row, col)
-                        print data[row,col]
                         col += 1
                     row += 1    
                 try:
@@ -1531,10 +1531,6 @@ class MainFrame(wx.Frame):
         if len(self.newParamName.GetValue()) > 0:
             
             inFiles = np.loadtxt(open(self.project, "rb"), dtype = 'string', delimiter = ',')
-            print "In Files"
-            print inFiles
-            print "Current File"
-            print self.currentFile.keys()[0]
             if not self.currentFile.keys()[0] in inFiles:    
                 print "Adding in current file"
                 files = inFiles
@@ -1647,6 +1643,7 @@ class MainFrame(wx.Frame):
         dlg = RuntimeDialog(dictionary, self.performSensitivityAnalysis)
         dlg.ShowModal()
         
+        '''
         path = os.path.dirname(os.path.realpath("OPTIONS.csv"))
         path = os.path.join(path, "SimOutputMacro1110.xlsm")        
         
@@ -1656,7 +1653,7 @@ class MainFrame(wx.Frame):
         excel.Visible = True
         workbook.Close(SaveChanges=1)
         excel.Quit
-        
+        '''
         
 
         
@@ -2672,15 +2669,12 @@ class SimulationThread(Thread):
         
         outputDict = sim.Simulation(deepcopy(dictionary))
 
-        print "Before sending folder: "
         folder = self.folderControl.GetValue()
-        print folder
         wx.CallAfter(pub.sendMessage, "TransferOutputDirectory", folder)
         wx.CallAfter(pub.sendMessage, "TransferSensitivityValue", self.sensitivityControl.GetValue())
                 
         outputDirectory = self.folderControl.GetValue()
         logging.debug("Entered out path: %s",outputDirectory)
-        print outputDict
         OutputFile(outputDirectory, outputDict)
         #OutputFile(outputDirectory, senseAnalysisDict)
         WriteFolder(self.project,outputDirectory)
@@ -2735,8 +2729,8 @@ class RuntimeDialog(wx.Dialog):
         self.count = 0
  
         if performAnalysis is True:
-            # Three updates in simulation, x amount of parameters, times 2 for sensitivity report
-            self.amountOfUpdates = len(project.keys())*3 + len(project[project.keys()[0]].keys())*2 * len(project.keys()) * 3
+            # Three updates in simulation, x amount of parameters, times 2 for sensitivity report, number of files
+            self.amountOfUpdates = (len(project.keys()) * 3 * len(project[project.keys()[0]].keys()) * 2) + (len(project.keys()) * 3)
         else:
             # Three increments in each individual file simulation run
             self.amountOfUpdates = len(project.keys())*3
@@ -2762,7 +2756,6 @@ class RuntimeDialog(wx.Dialog):
         self.SetSizer(horizontalSizer)
         self.Fit()
         self.RestartDialog()
-        print 
         self.Bind(wx.EVT_CLOSE, self.OnExit)
         # create a pubsub listener
         pub.subscribe(self.updateProgress, "update")
