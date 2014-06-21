@@ -636,13 +636,14 @@ class OptionsPanel(scrolled.ScrolledPanel):
             trigger = wx.CheckBox(self, wx.ID_ANY, label = key)
             trigger.SetValue(True)
             self.outputs.append(key)
-            wx.CallAfter(pub.sendMessage, "DisplayOutputs", self.outputs)
             self.Bind(wx.EVT_CHECKBOX, self.configureOutput, id = trigger.GetId())
             self.inputs.append(trigger)
                 
         for inputItem in self.inputs: 
             self.vSizer1.Add(inputItem, 0, wx.ALL, 1) 
             
+            
+        wx.CallAfter(pub.sendMessage, "DisplayOutputs", self.outputs)
         self.hSizer1.AddSpacer(15)
         self.hSizer1.Add(self.vSizer1)
         self.vSizer.Add(self.hSizer1)
@@ -837,25 +838,28 @@ class SAResultsPanel(wx.Panel):
     
     def RegeneratePages(self):
         pageNum = 0
+        
+        
         for page in self.pages:
             page.myGrid.ClearGrid()
             tabName = self.notebook.GetPageText(pageNum)
             self.CreateOutputGrid(page, tabName, self.sortArrays[self.sortType][tabName])
-            pageNum += 1        
+            pageNum += 1    
+
         
     def InsertPages(self, msg):
         self.SADict = msg.data
         
-        for file in self.SADict['gearing'][0]:    
+        for file in self.SADict['gearing'][0]: 
             self.page = NewTabPanel(self.notebook)
             self.pages.append(self.page)
             self.page.myGrid.CreateGrid(300,12)
             self.page.myGrid.HideColLabels()
             self.page.myGrid.HideRowLabels()
             self.page.myGrid.EnableGridLines(False)
-            sortedArray = self.sortArrays[self.sortType][file]
+            #sortedArray = self.sortArrays[self.sortType][file]
             #print sortedArray
-            self.CreateOutputGrid(self.page, file, sortedArray)
+            #self.CreateOutputGrid(self.page, file, sortedArray)
             self.notebook.AddPage(self.page, file)
             
         
@@ -865,9 +869,9 @@ class SAResultsPanel(wx.Panel):
         
         #self.page.myGrid.SetCellHighlightColour(self,'#14FF63' )
         row = 0
-        
         for parameter in sortedArray:
             if parameter[1] in self.outputs:
+                #print "Current page for parameter " + parameter[1] + " is " + file
                 parameter = parameter[1]
                 col = 0
                 if page.myGrid.GetCellValue(row, 0) != "" and page.myGrid.GetCellValue(row, 6) == "":
@@ -888,24 +892,23 @@ class SAResultsPanel(wx.Panel):
                 page.myGrid.SetCellValue(row+1, col+4, "% Diff")
 
                 # Row 2, Col 0 or 8
-                self.page.myGrid.SetCellBackgroundColour(row+2, col+1, '#FFFFFF')
-                self.page.myGrid.SetCellBackgroundColour(row+2, col+2, '#FFFFFF')
-                self.page.myGrid.SetCellBackgroundColour(row+2, col+3, '#FFFFFF')
-                self.page.myGrid.SetCellBackgroundColour(row+2, col+4, '#FFFFFF')
+                page.myGrid.SetCellBackgroundColour(row+2, col+1, '#FFFFFF')
+                page.myGrid.SetCellBackgroundColour(row+2, col+2, '#FFFFFF')
+                page.myGrid.SetCellBackgroundColour(row+2, col+3, '#FFFFFF')
+                page.myGrid.SetCellBackgroundColour(row+2, col+4, '#FFFFFF')
                 if self.sortType == 'TS_large_dict':
-                    self.page.myGrid.SetCellBackgroundColour(row+2, col+1, '#14FF63')
-                    print 'I changed cell background for file: '
-                    print file
+                    page.myGrid.SetCellBackgroundColour(row+2, col+1, '#14FF63')
+                    #print 'I changed cell background for file: ' + file
                 elif self.sortType == 'TS_small_dict':
-                    self.page.myGrid.SetCellBackgroundColour(row+2, col+2, '#14FF63')
+                    page.myGrid.SetCellBackgroundColour(row+2, col+2, '#14FF63')
                 elif self.sortType == 'TS_large_diff_dict':
-                    self.page.myGrid.SetCellBackgroundColour(row+2, col+3, '#14FF63')
+                    page.myGrid.SetCellBackgroundColour(row+2, col+3, '#14FF63')
                 elif self.sortType == 'TS_small_diff_dict':
-                    self.page.myGrid.SetCellBackgroundColour(row+2, col+3, '#14FF63')
+                    page.myGrid.SetCellBackgroundColour(row+2, col+3, '#14FF63')
                 elif self.sortType == 'TS_large_perc_diff_dict':
-                    self.page.myGrid.SetCellBackgroundColour(row+2, col+4, '#14FF63')
+                    page.myGrid.SetCellBackgroundColour(row+2, col+4, '#14FF63')
                 elif self.sortType == 'TS_small_diff_dict':
-                    self.page.myGrid.SetCellBackgroundColour(row+2, col+4, '#14FF63')
+                    page.myGrid.SetCellBackgroundColour(row+2, col+4, '#14FF63')
                     
                 page.myGrid.SetCellValue(row+2, col, "Max MPH")
                 plusValue = self.SADict[parameter][0][file]['Max MPH']
@@ -919,22 +922,22 @@ class SAResultsPanel(wx.Panel):
                 
                 
                 # Row 3, Col 0 or 8
-                self.page.myGrid.SetCellBackgroundColour(row+3, col+1, '#FFFFFF')
-                self.page.myGrid.SetCellBackgroundColour(row+3, col+2, '#FFFFFF')
-                self.page.myGrid.SetCellBackgroundColour(row+3, col+3, '#FFFFFF')
-                self.page.myGrid.SetCellBackgroundColour(row+3, col+4, '#FFFFFF')
+                page.myGrid.SetCellBackgroundColour(row+3, col+1, '#FFFFFF')
+                page.myGrid.SetCellBackgroundColour(row+3, col+2, '#FFFFFF')
+                page.myGrid.SetCellBackgroundColour(row+3, col+3, '#FFFFFF')
+                page.myGrid.SetCellBackgroundColour(row+3, col+4, '#FFFFFF')
                 if self.sortType == 'AS_large_dict':
-                    self.page.myGrid.SetCellBackgroundColour(row+3, col+1, '#14FF63')
+                    page.myGrid.SetCellBackgroundColour(row+3, col+1, '#14FF63')
                 elif self.sortType == 'AS_small_dict':
-                    self.page.myGrid.SetCellBackgroundColour(row+3, col+2, '#14FF63')
+                    page.myGrid.SetCellBackgroundColour(row+3, col+2, '#14FF63')
                 elif self.sortType == 'AS_large_diff_dict':
-                    self.page.myGrid.SetCellBackgroundColour(row+3, col+3, '#14FF63')
+                    page.myGrid.SetCellBackgroundColour(row+3, col+3, '#14FF63')
                 elif self.sortType == 'AS_small_diff_dict':
-                    self.page.myGrid.SetCellBackgroundColour(row+3, col+3, '#14FF63')
+                    page.myGrid.SetCellBackgroundColour(row+3, col+3, '#14FF63')
                 elif self.sortType == 'AS_large_perc_diff_dict':
-                    self.page.myGrid.SetCellBackgroundColour(row+3, col+4, '#14FF63')
+                    page.myGrid.SetCellBackgroundColour(row+3, col+4, '#14FF63')
                 elif self.sortType == 'AS_small_diff_dict':
-                    self.page.myGrid.SetCellBackgroundColour(row+3, col+4, '#14FF63')
+                    page.myGrid.SetCellBackgroundColour(row+3, col+4, '#14FF63')
                     
                 page.myGrid.SetCellValue(row+3, col, "Average MPH")
                 plusValue = self.SADict[parameter][0][file]['Average MPH']
@@ -948,22 +951,22 @@ class SAResultsPanel(wx.Panel):
                 
                 
                 # Row 4, Col 0 or 8
-                self.page.myGrid.SetCellBackgroundColour(row+4, col+1, '#FFFFFF')
-                self.page.myGrid.SetCellBackgroundColour(row+4, col+2, '#FFFFFF')
-                self.page.myGrid.SetCellBackgroundColour(row+4, col+3, '#FFFFFF')
-                self.page.myGrid.SetCellBackgroundColour(row+4, col+4, '#FFFFFF')
+                page.myGrid.SetCellBackgroundColour(row+4, col+1, '#FFFFFF')
+                page.myGrid.SetCellBackgroundColour(row+4, col+2, '#FFFFFF')
+                page.myGrid.SetCellBackgroundColour(row+4, col+3, '#FFFFFF')
+                page.myGrid.SetCellBackgroundColour(row+4, col+4, '#FFFFFF')
                 if self.sortType == 'TP_large_dict':
-                    self.page.myGrid.SetCellBackgroundColour(row+4, col+1, '#14FF63')
+                    page.myGrid.SetCellBackgroundColour(row+4, col+1, '#14FF63')
                 elif self.sortType == 'TP_small_dict':
-                    self.page.myGrid.SetCellBackgroundColour(row+4, col+2, '#14FF63')
+                    page.myGrid.SetCellBackgroundColour(row+4, col+2, '#14FF63')
                 elif self.sortType == 'TP_large_diff_dict':
-                    self.page.myGrid.SetCellBackgroundColour(row+4, col+3, '#14FF63')
+                    page.myGrid.SetCellBackgroundColour(row+4, col+3, '#14FF63')
                 elif self.sortType == 'TP_small_diff_dict':
-                    self.page.myGrid.SetCellBackgroundColour(row+4, col+3, '#14FF63')
+                    page.myGrid.SetCellBackgroundColour(row+4, col+3, '#14FF63')
                 elif self.sortType == 'TP_large_perc_diff_dict':
-                    self.page.myGrid.SetCellBackgroundColour(row+4, col+4, '#14FF63')
+                    page.myGrid.SetCellBackgroundColour(row+4, col+4, '#14FF63')
                 elif self.sortType == 'TP_small_diff_dict':
-                    self.page.myGrid.SetCellBackgroundColour(row+4, col+4, '#14FF63')
+                    page.myGrid.SetCellBackgroundColour(row+4, col+4, '#14FF63')
                     
                 page.myGrid.SetCellValue(row+4, col, "Max Power")
                 plusValue = self.SADict[parameter][0][file]['Max Power (Watts)']
@@ -976,22 +979,22 @@ class SAResultsPanel(wx.Panel):
                 page.myGrid.SetCellValue(row+4, col+4, repr(round(percentDiff,2)))
     
                 # Row 5, Col 0 or 8
-                self.page.myGrid.SetCellBackgroundColour(row+5, col+1, '#FFFFFF')
-                self.page.myGrid.SetCellBackgroundColour(row+5, col+2, '#FFFFFF')
-                self.page.myGrid.SetCellBackgroundColour(row+5, col+3, '#FFFFFF')
-                self.page.myGrid.SetCellBackgroundColour(row+5, col+4, '#FFFFFF')
+                page.myGrid.SetCellBackgroundColour(row+5, col+1, '#FFFFFF')
+                page.myGrid.SetCellBackgroundColour(row+5, col+2, '#FFFFFF')
+                page.myGrid.SetCellBackgroundColour(row+5, col+3, '#FFFFFF')
+                page.myGrid.SetCellBackgroundColour(row+5, col+4, '#FFFFFF')
                 if self.sortType == 'AP_large_dict':
-                    self.page.myGrid.SetCellBackgroundColour(row+5, col+1, '#14FF63')
+                    page.myGrid.SetCellBackgroundColour(row+5, col+1, '#14FF63')
                 elif self.sortType == 'AP_small_dict':
-                    self.page.myGrid.SetCellBackgroundColour(row+5, col+2, '#14FF63')
+                    page.myGrid.SetCellBackgroundColour(row+5, col+2, '#14FF63')
                 elif self.sortType == 'AP_large_diff_dict':
-                    self.page.myGrid.SetCellBackgroundColour(row+5, col+3, '#14FF63')
+                    page.myGrid.SetCellBackgroundColour(row+5, col+3, '#14FF63')
                 elif self.sortType == 'AP_small_diff_dict':
-                    self.page.myGrid.SetCellBackgroundColour(row+5, col+3, '#14FF63')
+                    page.myGrid.SetCellBackgroundColour(row+5, col+3, '#14FF63')
                 elif self.sortType == 'AP_large_perc_diff_dict':
-                    self.page.myGrid.SetCellBackgroundColour(row+5, col+4, '#14FF63')
+                    page.myGrid.SetCellBackgroundColour(row+5, col+4, '#14FF63')
                 elif self.sortType == 'AP_small_diff_dict':
-                    self.page.myGrid.SetCellBackgroundColour(row+5, col+4, '#14FF63')
+                    page.myGrid.SetCellBackgroundColour(row+5, col+4, '#14FF63')
                     
                 page.myGrid.SetCellValue(row+5, col, "Average Power")
                 plusValue = self.SADict[parameter][0][file]['Average Power (Watts)']
@@ -1004,22 +1007,22 @@ class SAResultsPanel(wx.Panel):
                 page.myGrid.SetCellValue(row+5, col+4, repr(round(percentDiff,2)))
                         
                 # Row 6, Col 0 or 8
-                self.page.myGrid.SetCellBackgroundColour(row+6, col+1, '#FFFFFF')
-                self.page.myGrid.SetCellBackgroundColour(row+6, col+2, '#FFFFFF')
-                self.page.myGrid.SetCellBackgroundColour(row+6, col+3, '#FFFFFF')
-                self.page.myGrid.SetCellBackgroundColour(row+6, col+4, '#FFFFFF')
+                page.myGrid.SetCellBackgroundColour(row+6, col+1, '#FFFFFF')
+                page.myGrid.SetCellBackgroundColour(row+6, col+2, '#FFFFFF')
+                page.myGrid.SetCellBackgroundColour(row+6, col+3, '#FFFFFF')
+                page.myGrid.SetCellBackgroundColour(row+6, col+4, '#FFFFFF')
                 if self.sortType == 'E_large_dict':
-                    self.page.myGrid.SetCellBackgroundColour(row+6, col+1, '#14FF63')
+                    page.myGrid.SetCellBackgroundColour(row+6, col+1, '#14FF63')
                 elif self.sortType == 'E_small_dict':
-                    self.page.myGrid.SetCellBackgroundColour(row+6, col+2, '#14FF63')
+                    page.myGrid.SetCellBackgroundColour(row+6, col+2, '#14FF63')
                 elif self.sortType == 'E_large_diff_dict':
-                    self.page.myGrid.SetCellBackgroundColour(row+6, col+3, '#14FF63')
+                    page.myGrid.SetCellBackgroundColour(row+6, col+3, '#14FF63')
                 elif self.sortType == 'E_small_diff_dict':
-                    self.page.myGrid.SetCellBackgroundColour(row+6, col+3, '#14FF63')
+                    page.myGrid.SetCellBackgroundColour(row+6, col+3, '#14FF63')
                 elif self.sortType == 'E_large_perc_diff_dict':
-                    self.page.myGrid.SetCellBackgroundColour(row+6, col+4, '#14FF63')
+                    page.myGrid.SetCellBackgroundColour(row+6, col+4, '#14FF63')
                 elif self.sortType == 'E_small_diff_dict':
-                    self.page.myGrid.SetCellBackgroundColour(row+6, col+4, '#14FF63')
+                    page.myGrid.SetCellBackgroundColour(row+6, col+4, '#14FF63')
                     
                 page.myGrid.SetCellValue(row+6, col, "Max Energy")
                 plusValue = self.SADict[parameter][0][file]['Max Energy (Wh)']
@@ -1084,6 +1087,7 @@ class SAResultsPanel(wx.Panel):
                     row += 15
                     
         page.myGrid.AutoSizeColumns()
+        #page.myGrid.ForceRefresh()
     
     def SaveSA(self, e):
 
