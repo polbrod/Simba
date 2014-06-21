@@ -636,13 +636,14 @@ class OptionsPanel(scrolled.ScrolledPanel):
             trigger = wx.CheckBox(self, wx.ID_ANY, label = key)
             trigger.SetValue(True)
             self.outputs.append(key)
-            wx.CallAfter(pub.sendMessage, "DisplayOutputs", self.outputs)
             self.Bind(wx.EVT_CHECKBOX, self.configureOutput, id = trigger.GetId())
             self.inputs.append(trigger)
                 
         for inputItem in self.inputs: 
             self.vSizer1.Add(inputItem, 0, wx.ALL, 1) 
             
+            
+        wx.CallAfter(pub.sendMessage, "DisplayOutputs", self.outputs)
         self.hSizer1.AddSpacer(15)
         self.hSizer1.Add(self.vSizer1)
         self.vSizer.Add(self.hSizer1)
@@ -829,7 +830,7 @@ class SAResultsPanel(wx.Panel):
 
     def DetermineSortType(self, msg):
         self.sortType = msg.data
-        self.RegeneratePages()
+        #self.RegeneratePages()
     
     def UpdateNotebook(self, msg):
         self.outputs = msg.data
@@ -846,16 +847,16 @@ class SAResultsPanel(wx.Panel):
     def InsertPages(self, msg):
         self.SADict = msg.data
         
-        for file in self.SADict['gearing'][0]:    
+        for file in self.SADict['gearing'][0]: 
             self.page = NewTabPanel(self.notebook)
             self.pages.append(self.page)
             self.page.myGrid.CreateGrid(300,12)
             self.page.myGrid.HideColLabels()
             self.page.myGrid.HideRowLabels()
             self.page.myGrid.EnableGridLines(False)
-            sortedArray = self.sortArrays[self.sortType][file]
+            #sortedArray = self.sortArrays[self.sortType][file]
             #print sortedArray
-            self.CreateOutputGrid(self.page, file, sortedArray)
+            #self.CreateOutputGrid(self.page, file, sortedArray)
             self.notebook.AddPage(self.page, file)
             
         
@@ -865,9 +866,9 @@ class SAResultsPanel(wx.Panel):
         
         #self.page.myGrid.SetCellHighlightColour(self,'#14FF63' )
         row = 0
-        
         for parameter in sortedArray:
             if parameter[1] in self.outputs:
+                #print "Current page for parameter " + parameter[1] + " is " + file
                 parameter = parameter[1]
                 col = 0
                 if page.myGrid.GetCellValue(row, 0) != "" and page.myGrid.GetCellValue(row, 6) == "":
@@ -894,8 +895,7 @@ class SAResultsPanel(wx.Panel):
                 self.page.myGrid.SetCellBackgroundColour(row+2, col+4, '#FFFFFF')
                 if self.sortType == 'TS_large_dict':
                     self.page.myGrid.SetCellBackgroundColour(row+2, col+1, '#14FF63')
-                    print 'I changed cell background for file: '
-                    print file
+                    #print 'I changed cell background for file: ' + file
                 elif self.sortType == 'TS_small_dict':
                     self.page.myGrid.SetCellBackgroundColour(row+2, col+2, '#14FF63')
                 elif self.sortType == 'TS_large_diff_dict':
@@ -1084,6 +1084,7 @@ class SAResultsPanel(wx.Panel):
                     row += 15
                     
         page.myGrid.AutoSizeColumns()
+        page.myGrid.ForceRefresh()
     
     def SaveSA(self, e):
 
