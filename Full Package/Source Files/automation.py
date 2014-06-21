@@ -537,9 +537,8 @@ class SensitivityAnalysisFrame(wx.Frame):
     """Constructor"""
     #----------------------------------------------------------------------
     def __init__(self, parent, id):
-        wx.Frame.__init__(self, None, title="Sensitivity Analysis Results", size = (1200,800))
-        
-        
+        wx.Frame.__init__(self, parent, title="Sensitivity Analysis Results", size = (1200,800))
+                
         ################################################################
         # Define mainsplitter as child of Frame and add IOSplitterPanel and StatusPanel as children
         mainsplitter = wx.SplitterWindow(self, style = wx.SP_3D| wx.SP_LIVE_UPDATE)
@@ -1640,7 +1639,7 @@ class MainFrame(wx.Frame):
         SimulationThread(self, self.project, self.folderControl, self.sensitivityControl, self.performSensitivityAnalysis)
         
 
-        dlg = RuntimeDialog(dictionary, self.performSensitivityAnalysis)
+        dlg = RuntimeDialog(self, dictionary, self.performSensitivityAnalysis)
         dlg.ShowModal()
         
         '''
@@ -2723,9 +2722,9 @@ class RuntimeDialog(wx.Dialog):
     """"""
  
     #----------------------------------------------------------------------
-    def __init__(self, project, performAnalysis):
+    def __init__(self, parent, project, performAnalysis):
         """Constructor"""
-        wx.Dialog.__init__(self, None, title="Simulation Progress")
+        wx.Dialog.__init__(self, parent, title="Simulation Progress")
         self.count = 0
  
         if performAnalysis is True:
@@ -2798,7 +2797,7 @@ logging.info("STARTING automation.py")
 
 app = wx.App(False)
 testWindow = MainFrame(None, "SIMBA")
-SA_Frame = SensitivityAnalysisFrame(None, "Sensitivity Analysis Results")
+SA_Frame = SensitivityAnalysisFrame(testWindow, "Sensitivity Analysis Results")
 #SA_Frame.Show()
 #quickWindow = QuickResultsWindow(None, "Quick Results")
 
