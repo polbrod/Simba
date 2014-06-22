@@ -38,6 +38,7 @@ def dependencies_for_automation():  #Missing imports needed to convert to .exe
 def SensitivityAnalysis(dictionary, sensitivityValue):  
 
     global closeWorkerThread
+    resultSADict = collections.OrderedDict()
     parameterDict = collections.OrderedDict()
     
     # Take any file since they all have the same input parameters
@@ -49,8 +50,10 @@ def SensitivityAnalysis(dictionary, sensitivityValue):
             # Plus x% from the current key in each file
             for file in dictionary:
                 originalData = dictionary[file][key]
+                
+                # Probably a bad solution to allow for the renaming of keys...
                 dictionary[file][key] = originalData * (1.0 + sensitivityValue)
-            
+                
             outputFiles.append(sim.Simulation(dictionary))
             dictionary = deepcopy(originalDictionary)
             
@@ -1134,7 +1137,6 @@ class SAResultsPanel(wx.Panel):
                 
                 pageNum += 1
                 
-            print("Data transfer to " + fileName + " complete")
             logging.info("Data converted and saved to %s", fileName)
 
 
@@ -2586,22 +2588,19 @@ class StatusPanel(wx.Panel):
 
         
     def AddStatus(self, msg):
-        #currentTextCtrl = self.statusTextCtrl.GetValue()
-        #ewTextCtrl = currentTextCtrl + msg.data + os.linesep
         
         if "WARNING" in msg.data:
-            print "WARNING"
-            self.statusTextCtrl.BeginTextColour((255, 0, 0))
-            self.statusTextCtrl.WriteText(msg.data)
-            self.statusTextCtrl.EndTextColour()
-            self.statusTextCtrl.Newline()
+            # Get the status string not including the time stamp
+            if msg.data[10:] not in self.statusTextCtrl.GetValue():
+                self.statusTextCtrl.BeginTextColour((255, 0, 0))
+                self.statusTextCtrl.WriteText(msg.data)
+                self.statusTextCtrl.EndTextColour()
+                self.statusTextCtrl.Newline()
         else:
             self.statusTextCtrl.WriteText(msg.data)
             self.statusTextCtrl.Newline()
         
         self.statusTextCtrl.ShowPosition(self.statusTextCtrl.GetLastPosition())
-        #self.statusTextCtrl.SetValue(newTextCtrl)
-        #self.statusTextCtrl.ShowPosition(self.statusTextCtrl.GetLastPosition())
         
 ##############################################################################        
     
