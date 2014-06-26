@@ -545,7 +545,7 @@ class SensitivityAnalysisFrame(wx.Frame):
         ################################################################
         # Define mainsplitter as child of Frame and add IOSplitterPanel and StatusPanel as children
         mainsplitter = wx.SplitterWindow(self, style = wx.SP_3D| wx.SP_LIVE_UPDATE)
-        mainsplitter.SetSashGravity(0.2)
+        #mainsplitter.SetSashGravity(0.2)
         mainsplitter.SetMinimumPaneSize(20)
 
         #splitterpanel = IOSplitterPanel(mainsplitter)
@@ -555,7 +555,7 @@ class SensitivityAnalysisFrame(wx.Frame):
 
         mainsplitter.SplitVertically(leftPanel, rightPanel)
         windowW, windowH = wx.DisplaySize()
-        mainsplitter.SetSashPosition(30, True)
+        mainsplitter.SetSashPosition(300, True)
         newW = windowW/0.6
         #mainsplitter.SetSashPosition(windowW - newW, True)
         #mainsplitter.SetSashPosition(-50, True)
@@ -773,13 +773,15 @@ class SAResultsPanel(wx.Panel):
         self.completeResults = collections.OrderedDict()
         self.directory = ''
         self.sensitivityValue = 0       
-    
+        self.cellBlockSize = 0
+
         
         
         pub.subscribe(self.TransferSortArrays, ("TransferSortArrays"))
         pub.subscribe(self.TransferDictionary, ("TransferSADictionary"))
         pub.subscribe(self.TransferOutputDirectory, ("TransferOutputDirectory"))
         pub.subscribe(self.TransferSensitivityValue, ("TransferSensitivityValue"))
+        pub.subscribe(self.InsertPages, ("TransferSADictionary")) 
         pub.subscribe(self.UpdateNotebook, ("DisplayOutputs"))
         pub.subscribe(self.DetermineSortType, ("SortType"))
         
@@ -806,14 +808,14 @@ class SAResultsPanel(wx.Panel):
         self.outputs = []
         self.SADict = collections.OrderedDict()
         self.notebook = wx.Notebook(self)
-        pub.subscribe(self.InsertPages, ("TransferSADictionary")) 
         sizer = wx.BoxSizer(wx.VERTICAL)
         sizer.Add(self.notebook, 1, wx.ALL | wx.EXPAND)
         self.lowerSizer.Layout()
         sizer.Add(self.lowerSizer)
         
         self.SetSizer(sizer)               
-
+        
+        
         #self.notebook.Bind(wx.EVT_MOTION, self.onMouseMove)        
         
         self.Layout()
@@ -838,11 +840,12 @@ class SAResultsPanel(wx.Panel):
     def UpdateNotebook(self, msg):
         self.outputs = msg.data
         self.RegeneratePages()
+
     
     def RegeneratePages(self):
         pageNum = 0
         
-        
+        self.notebook.GetSize()
         for page in self.pages:
             page.myGrid.ClearGrid()
             tabName = self.notebook.GetPageText(pageNum)
@@ -852,33 +855,34 @@ class SAResultsPanel(wx.Panel):
         
     def InsertPages(self, msg):
         self.SADict = msg.data
-        
+        self.parent.Show()
+        self.GrandParent.Show()
         for file in self.SADict['gearing'][0]: 
             self.page = NewTabPanel(self.notebook)
             self.pages.append(self.page)
-            self.page.myGrid.CreateGrid(300,12)
+            self.page.myGrid.CreateGrid(450,30)
             self.page.myGrid.HideColLabels()
             self.page.myGrid.HideRowLabels()
             self.page.myGrid.EnableGridLines(False)
             #sortedArray = self.sortArrays[self.sortType][file]
             #print sortedArray
             #self.CreateOutputGrid(self.page, file, sortedArray)
-            self.notebook.AddPage(self.page, file)
-            
+            self.notebook.AddPage(self.page, file)            
         
         self.page.Update()
         
     def CreateOutputGrid(self, page, file, sortedArray):   
         
         #self.page.myGrid.SetCellHighlightColour(self,'#14FF63' )
+        currentBlocksInRow = 0
         row = 0
+        col = 0
         for parameter in sortedArray:
             if parameter[1] in self.outputs:
+                currentBlocksInRow += 1
                 #print "Current page for parameter " + parameter[1] + " is " + file
                 parameter = parameter[1]
-                col = 0
-                if page.myGrid.GetCellValue(row, 0) != "" and page.myGrid.GetCellValue(row, 6) == "":
-                    col = 6
+                
                 # Row 0, Col 0 or 8
                 page.myGrid.SetCellValue(row, col, parameter)
                 page.myGrid.SetCellFont(row, col, wx.Font(10, wx.FONTFAMILY_DEFAULT, wx.NORMAL, wx.BOLD))
@@ -1085,10 +1089,23 @@ class SAResultsPanel(wx.Panel):
                 page.myGrid.SetCellValue(row+13, col+1, repr(round(plus_limit,2)))
                 page.myGrid.SetCellValue(row+13, col+2, repr(round(minus_limit,2)))
                 
+                ''' If we haven't obtained the cell block size yet, resize the columns
+                after the first block is generated and then count the cells widths '''
+                if self.cellBlockSize == 0:
+                    page.myGrid.AutoSizeColumns()
+                    cellCountingCol = 0
+                    while cellCountingCol < 6:
+                        self.cellBlockSize += page.myGrid.GetColSize(cellCountingCol)
+                        cellCountingCol += 1
                 
-                if page.myGrid.GetCellValue(row, 6) != "":
+                if ((self.cellBlockSize) * (currentBlocksInRow+1)) < self.GetSize()[0]:
+                    col += 6
+                else:
+                    currentBlocksInRow = 0
+                    col = 0
                     row += 15
                     
+
         page.myGrid.AutoSizeColumns()
         #page.myGrid.ForceRefresh()
     
@@ -2706,7 +2723,7 @@ class SimulationThread(Thread):
         except:
             logging.critical("Could not save project at the end of the simulation")
             
-        SA_Frame.Show()
+        #SA_Frame.Show()
         SA_Frame.Raise()
             
         
