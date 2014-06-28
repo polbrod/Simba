@@ -13,50 +13,50 @@ is_motor_power = False
 tests = 1
 
 #parameters
-step = 1.0       #time step in seconds
+step = .5       #time step in seconds
 total_time = 3600.0
 
 #wheel_radius = 0.323596 #meters
-gearing = 1.8
+gearing = 44/21.0
 
-rider_mass = 90.71 
-bike_mass = 236.04 #kg
+rider_mass = 97 
+bike_mass = 267.6195 #kg
 
 gravity = 9.81
 
-air_resistance = 1.0
-air_density = 1.187
-frontal_area =  0.4 #m^2
+air_resistance = .45
+air_density = 1.204
+frontal_area =  1 #m^2
 
-rolling_resistance = 0.029
+rolling_resistance = 0.02973
 
 top_torque = 240.0 #nm
 top_rpm = 3000
 
-motor_top_power = 75360.0
+motor_top_power = 80000.0
 max_distance_travel = 60350.0 #meters this needs to be calculated from lookups
 
 chain_efficiency = .98
 battery_efficiency = .98
 
-motor_torque_constant = 1.0   #torque to current constant of motor. torque/amp
-motor_rpm_constant = 10.0   #rpm to voltage dc constant of motor. rpm/volt
+motor_torque_constant = 1   #torque to current constant of motor. torque/amp
+motor_rpm_constant = 12.0   #rpm to voltage dc constant of motor. rpm/volt
 
-series_cells = 108.0
+series_cells = 110.0
 max_amphour = 40.0
-batt_max_current = 500.0
+batt_max_current = 280
 
-motor_thermal_conductivity = 30.7
-motor_heat_capacity = 400.0
-coolant_temp = 20.0
-max_motor_temp = 100.0
+motor_thermal_conductivity = 20
+motor_heat_capacity = 4000.0
+coolant_temp = 13.0
+max_motor_temp = 115.0
 
 #wheel_radius = tyreA*lean_angle**2 + tyreB*lean_angle + TyreC
 tyreA = -2.069641313760728140e-05
 tyreB = 6.386679031823000125e-06
-TyreC = 3.197376543933548310e-01
+TyreC = 3.15e-01
 
-top_lean_angle = 45
+top_lean_angle = 38
 
 #lookup files
 dist_to_speed_lookup = 'disttospeed.csv'
@@ -313,7 +313,7 @@ def Top_power(n):
 #Find motor thermal values at point n+1
 def Motor_Thermal(n):
     motor_energy_in[n+1] = motor_loss[n] * step
-    motor_energy_out[n+1] = motor_thermal_conductivity*(motor_temp[n]-coolant_temp)
+    motor_energy_out[n+1] = motor_thermal_conductivity*(motor_temp[n]-coolant_temp)*step
     motor_energy[n+1] = motor_energy_in[n+1] - motor_energy_out[n+1]
     motor_temp[n+1] = motor_temp[n] + motor_energy[n+1]/motor_heat_capacity 
 
