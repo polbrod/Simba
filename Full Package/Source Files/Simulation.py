@@ -544,7 +544,7 @@ def Simulation(dict_in):
         #Find motor thermal values at point n+1
         def Motor_Thermal(n):
             motor_energy_in[n+1] = motor_loss[n] * step
-            motor_energy_out[n+1] = motor_thermal_conductivity*(motor_temp[n]-coolant_temp)
+            motor_energy_out[n+1] = motor_thermal_conductivity*(motor_temp[n]-coolant_temp)*step
             motor_energy[n+1] = motor_energy_in[n+1] - motor_energy_out[n+1]
             motor_temp[n+1] = motor_temp[n] + motor_energy[n+1]/motor_heat_capacity 
         
