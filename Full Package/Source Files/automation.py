@@ -38,6 +38,7 @@ def dependencies_for_automation():  #Missing imports needed to convert to .exe
 def SensitivityAnalysis(dictionary, sensitivityValue):  
 
     global closeWorkerThread
+    resultSADict = collections.OrderedDict()
     parameterDict = collections.OrderedDict()
     
     # Take any file since they all have the same input parameters
@@ -49,8 +50,10 @@ def SensitivityAnalysis(dictionary, sensitivityValue):
             # Plus x% from the current key in each file
             for file in dictionary:
                 originalData = dictionary[file][key]
+                
+                # Probably a bad solution to allow for the renaming of keys...
                 dictionary[file][key] = originalData * (1.0 + sensitivityValue)
-            
+                
             outputFiles.append(sim.Simulation(dictionary))
             dictionary = deepcopy(originalDictionary)
             
@@ -542,7 +545,7 @@ class SensitivityAnalysisFrame(wx.Frame):
         ################################################################
         # Define mainsplitter as child of Frame and add IOSplitterPanel and StatusPanel as children
         mainsplitter = wx.SplitterWindow(self, style = wx.SP_3D| wx.SP_LIVE_UPDATE)
-        mainsplitter.SetSashGravity(0.2)
+        #mainsplitter.SetSashGravity(0.2)
         mainsplitter.SetMinimumPaneSize(20)
 
         #splitterpanel = IOSplitterPanel(mainsplitter)
@@ -552,7 +555,7 @@ class SensitivityAnalysisFrame(wx.Frame):
 
         mainsplitter.SplitVertically(leftPanel, rightPanel)
         windowW, windowH = wx.DisplaySize()
-        mainsplitter.SetSashPosition(30, True)
+        mainsplitter.SetSashPosition(300, True)
         newW = windowW/0.6
         #mainsplitter.SetSashPosition(windowW - newW, True)
         #mainsplitter.SetSashPosition(-50, True)
@@ -770,15 +773,18 @@ class SAResultsPanel(wx.Panel):
         self.completeResults = collections.OrderedDict()
         self.directory = ''
         self.sensitivityValue = 0       
-    
+        self.cellBlockSize = 0
+        self.inputValues = dict()
         
         
         pub.subscribe(self.TransferSortArrays, ("TransferSortArrays"))
         pub.subscribe(self.TransferDictionary, ("TransferSADictionary"))
         pub.subscribe(self.TransferOutputDirectory, ("TransferOutputDirectory"))
         pub.subscribe(self.TransferSensitivityValue, ("TransferSensitivityValue"))
+        pub.subscribe(self.InsertPages, ("TransferSADictionary")) 
         pub.subscribe(self.UpdateNotebook, ("DisplayOutputs"))
         pub.subscribe(self.DetermineSortType, ("SortType"))
+        pub.subscribe(self.ObtainInputs, ("GetInputs"))
         
         self.lowerSizer = wx.BoxSizer(wx.HORIZONTAL)
         self.lowerSizer.AddSpacer(50)
@@ -803,14 +809,14 @@ class SAResultsPanel(wx.Panel):
         self.outputs = []
         self.SADict = collections.OrderedDict()
         self.notebook = wx.Notebook(self)
-        pub.subscribe(self.InsertPages, ("TransferSADictionary")) 
         sizer = wx.BoxSizer(wx.VERTICAL)
         sizer.Add(self.notebook, 1, wx.ALL | wx.EXPAND)
         self.lowerSizer.Layout()
         sizer.Add(self.lowerSizer)
         
         self.SetSizer(sizer)               
-
+        
+        
         #self.notebook.Bind(wx.EVT_MOTION, self.onMouseMove)        
         
         self.Layout()
@@ -827,6 +833,7 @@ class SAResultsPanel(wx.Panel):
         
     def TransferSensitivityValue(self,msg):
         self.sensitivityValue = msg.data
+        print self.sensitivityValue
 
     def DetermineSortType(self, msg):
         self.sortType = msg.data
@@ -835,11 +842,14 @@ class SAResultsPanel(wx.Panel):
     def UpdateNotebook(self, msg):
         self.outputs = msg.data
         self.RegeneratePages()
+
+    def ObtainInputs(self, msg):
+        self.inputValues = msg.data
     
     def RegeneratePages(self):
         pageNum = 0
         
-        
+        self.notebook.GetSize()
         for page in self.pages:
             page.myGrid.ClearGrid()
             tabName = self.notebook.GetPageText(pageNum)
@@ -849,43 +859,46 @@ class SAResultsPanel(wx.Panel):
         
     def InsertPages(self, msg):
         self.SADict = msg.data
-        
+        self.parent.Show()
+        self.GrandParent.Show()
         for file in self.SADict['gearing'][0]: 
             self.page = NewTabPanel(self.notebook)
             self.pages.append(self.page)
-            self.page.myGrid.CreateGrid(300,12)
+            self.page.myGrid.CreateGrid(450,30)
             self.page.myGrid.HideColLabels()
             self.page.myGrid.HideRowLabels()
             self.page.myGrid.EnableGridLines(False)
             #sortedArray = self.sortArrays[self.sortType][file]
             #print sortedArray
             #self.CreateOutputGrid(self.page, file, sortedArray)
-            self.notebook.AddPage(self.page, file)
-            
+            self.notebook.AddPage(self.page, file)            
         
         self.page.Update()
         
     def CreateOutputGrid(self, page, file, sortedArray):   
         
         #self.page.myGrid.SetCellHighlightColour(self,'#14FF63' )
+        currentBlocksInRow = 0
         row = 0
+        col = 0
         for parameter in sortedArray:
             if parameter[1] in self.outputs:
+                currentBlocksInRow += 1
                 #print "Current page for parameter " + parameter[1] + " is " + file
                 parameter = parameter[1]
-                col = 0
-                if page.myGrid.GetCellValue(row, 0) != "" and page.myGrid.GetCellValue(row, 6) == "":
-                    col = 6
+                
                 # Row 0, Col 0 or 8
                 page.myGrid.SetCellValue(row, col, parameter)
+                page.myGrid.SetCellValue(row, col+1, "Input Value")
+                page.myGrid.SetCellValue(row, col+2, str(self.inputValues[file][parameter][0]))
                 page.myGrid.SetCellFont(row, col, wx.Font(10, wx.FONTFAMILY_DEFAULT, wx.NORMAL, wx.BOLD))
     
                 # Row 1, Col 0 or 8
                 #self.parameterSizer.AddSpacer(0)
                 #self.parameterSizer.Add(plusStaticText)
-                page.myGrid.SetCellValue(row+1, col+1, "+X%")
+                page.myGrid.SetCellValue(row+1, col+1, "+" + str(self.sensitivityValue) + "%")
                 #self.parameterSizer.Add(negativeStaticText)
-                page.myGrid.SetCellValue(row+1, col+2, "-X%")
+                page.myGrid.SetCellValue(row+1, col+2, "-" + str(self.sensitivityValue) + "%")
                 #self.parameterSizer.Add(diffStaticText)
                 page.myGrid.SetCellValue(row+1, col+3, "Diff")
                 #self.parameterSizer.Add(pdStaticText)
@@ -1082,10 +1095,23 @@ class SAResultsPanel(wx.Panel):
                 page.myGrid.SetCellValue(row+13, col+1, repr(round(plus_limit,2)))
                 page.myGrid.SetCellValue(row+13, col+2, repr(round(minus_limit,2)))
                 
+                ''' If we haven't obtained the cell block size yet, resize the columns
+                after the first block is generated and then count the cells widths '''
+                if self.cellBlockSize == 0:
+                    page.myGrid.AutoSizeColumns()
+                    cellCountingCol = 0
+                    while cellCountingCol < 6:
+                        self.cellBlockSize += page.myGrid.GetColSize(cellCountingCol)
+                        cellCountingCol += 1
                 
-                if page.myGrid.GetCellValue(row, 6) != "":
+                if ((self.cellBlockSize) * (currentBlocksInRow+1)) < self.GetSize()[0]:
+                    col += 6
+                else:
+                    currentBlocksInRow = 0
+                    col = 0
                     row += 15
                     
+
         page.myGrid.AutoSizeColumns()
         #page.myGrid.ForceRefresh()
     
@@ -1134,7 +1160,6 @@ class SAResultsPanel(wx.Panel):
                 
                 pageNum += 1
                 
-            print("Data transfer to " + fileName + " complete")
             logging.info("Data converted and saved to %s", fileName)
 
 
@@ -1630,12 +1655,13 @@ class MainFrame(wx.Frame):
         
 
 
-        
-
+    def TransferInput(self):
+        wx.CallAfter(pub.sendMessage, "GetInputs", self.dictionary)
     
     def OnRun(self, e):
         """Runs the simulation and opens files if needed"""
         wx.CallAfter(pub.sendMessage, "ClearTabs", "True")
+        self.TransferInput()
         logging.debug("Entered path: %s", self.project)
         
         dictionary = ProjectToParams(self.project)
@@ -2586,22 +2612,19 @@ class StatusPanel(wx.Panel):
 
         
     def AddStatus(self, msg):
-        #currentTextCtrl = self.statusTextCtrl.GetValue()
-        #ewTextCtrl = currentTextCtrl + msg.data + os.linesep
         
         if "WARNING" in msg.data:
-            print "WARNING"
-            self.statusTextCtrl.BeginTextColour((255, 0, 0))
-            self.statusTextCtrl.WriteText(msg.data)
-            self.statusTextCtrl.EndTextColour()
-            self.statusTextCtrl.Newline()
+            # Get the status string not including the time stamp
+            if msg.data[10:] not in self.statusTextCtrl.GetValue():
+                self.statusTextCtrl.BeginTextColour((255, 0, 0))
+                self.statusTextCtrl.WriteText(msg.data)
+                self.statusTextCtrl.EndTextColour()
+                self.statusTextCtrl.Newline()
         else:
             self.statusTextCtrl.WriteText(msg.data)
             self.statusTextCtrl.Newline()
         
         self.statusTextCtrl.ShowPosition(self.statusTextCtrl.GetLastPosition())
-        #self.statusTextCtrl.SetValue(newTextCtrl)
-        #self.statusTextCtrl.ShowPosition(self.statusTextCtrl.GetLastPosition())
         
 ##############################################################################        
     
@@ -2660,6 +2683,8 @@ class SimulationThread(Thread):
         # Sensitivity Analysis Function calls
         #percentChange = 15
         if self.performSensitivityAnalysis:
+            sensitivityValue = self.sensitivityControl.GetValue()
+            wx.CallAfter(pub.sendMessage, "TransferSensitivityValue", sensitivityValue)
             decimalEquiv = self.sensitivityControl.GetValue() / 100.0
             saDict = collections.OrderedDict()            
             saDict = SensitivityAnalysis(deepcopy(dictionary), decimalEquiv)
@@ -2674,7 +2699,7 @@ class SimulationThread(Thread):
 
         folder = self.folderControl.GetValue()
         wx.CallAfter(pub.sendMessage, "TransferOutputDirectory", folder)
-        wx.CallAfter(pub.sendMessage, "TransferSensitivityValue", self.sensitivityControl.GetValue())
+        
                 
         outputDirectory = self.folderControl.GetValue()
         logging.debug("Entered out path: %s",outputDirectory)
@@ -2707,7 +2732,7 @@ class SimulationThread(Thread):
         except:
             logging.critical("Could not save project at the end of the simulation")
             
-        SA_Frame.Show()
+        #SA_Frame.Show()
         SA_Frame.Raise()
             
         
