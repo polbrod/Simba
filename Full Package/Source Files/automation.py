@@ -930,7 +930,7 @@ class SAResultsPanel(wx.Panel):
                 page.myGrid.SetCellValue(row+2, col+2, repr(round(minusValue,2)))
                 diff = abs(plusValue - minusValue)
                 page.myGrid.SetCellValue(row+2, col+3, repr(round(diff,2)))
-                percentDiff = diff/(plusValue + minusValue)
+                percentDiff = diff/(plusValue + minusValue) * 100
                 page.myGrid.SetCellValue(row+2, col+4, repr(round(percentDiff,2)))
                 
                 
@@ -959,7 +959,7 @@ class SAResultsPanel(wx.Panel):
                 page.myGrid.SetCellValue(row+3, col+2, repr(round(minusValue,2)))
                 diff = abs(plusValue - minusValue)
                 page.myGrid.SetCellValue(row+3, col+3, repr(round(diff,2)))
-                percentDiff = diff/(plusValue + minusValue)
+                percentDiff = diff/(plusValue + minusValue) * 100
                 page.myGrid.SetCellValue(row+3, col+4, repr(round(percentDiff,2)))
                 
                 
@@ -988,7 +988,7 @@ class SAResultsPanel(wx.Panel):
                 page.myGrid.SetCellValue(row+4, col+2, repr(round(minusValue,2)))
                 diff = abs(plusValue - minusValue)
                 page.myGrid.SetCellValue(row+4, col+3, repr(round(diff,2)))
-                percentDiff = diff/(plusValue + minusValue)
+                percentDiff = diff/(plusValue + minusValue) * 100
                 page.myGrid.SetCellValue(row+4, col+4, repr(round(percentDiff,2)))
     
                 # Row 5, Col 0 or 8
@@ -1016,7 +1016,7 @@ class SAResultsPanel(wx.Panel):
                 page.myGrid.SetCellValue(row+5, col+2, repr(round(minusValue,2)))
                 diff = abs(plusValue - minusValue)
                 page.myGrid.SetCellValue(row+5, col+3, repr(round(diff,2)))
-                percentDiff = diff/(plusValue + minusValue)
+                percentDiff = diff/(plusValue + minusValue) * 100
                 page.myGrid.SetCellValue(row+5, col+4, repr(round(percentDiff,2)))
                         
                 # Row 6, Col 0 or 8
@@ -1044,7 +1044,7 @@ class SAResultsPanel(wx.Panel):
                 page.myGrid.SetCellValue(row+6, col+2, repr(round(minusValue,2)))
                 diff = abs(plusValue - minusValue)
                 page.myGrid.SetCellValue(row+6, col+3, repr(round(diff,2)))
-                percentDiff = diff/(plusValue + minusValue)
+                percentDiff = diff/(plusValue + minusValue) * 100
                 page.myGrid.SetCellValue(row+6, col+4, repr(round(percentDiff,2)))
                 
                 # Row 8, Col 0 or 8
@@ -2711,6 +2711,7 @@ class SimulationThread(Thread):
         fileNames = np.array(outputDict.keys())
         #fileNames = np.append(outputDict.keys(), senseAnalysisDict.keys())
         #resultsWindow = QuickResultsWindow(None, "Quick Results")
+        testWindow.Freeze()
         index = 1
         for key in fileNames:
             inFiles[index, 2] = dictionary[key]["comments"][0]
@@ -2734,6 +2735,7 @@ class SimulationThread(Thread):
             
         #SA_Frame.Show()
         SA_Frame.Raise()
+        testWindow.Thaw()
             
         
     def stopThread(self, msg):
@@ -2787,7 +2789,7 @@ class RuntimeDialog(wx.Dialog):
         self.Bind(wx.EVT_CLOSE, self.OnExit)
         # create a pubsub listener
         pub.subscribe(self.updateProgress, "update")
- 
+
     #----------------------------------------------------------------------
     def updateProgress(self, msg):
         """
