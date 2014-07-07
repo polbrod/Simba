@@ -30,7 +30,7 @@ frontal_area =  1 #m^2
 
 rolling_resistance = 0.02973
 
-top_torque = 240.0 #nm
+#top_torque = 240.0 #nm no longer used calculatede below
 top_rpm = 3000
 
 motor_top_power = 80000.0
@@ -39,7 +39,7 @@ max_distance_travel = 60350.0 #meters this needs to be calculated from lookups
 chain_efficiency = .98
 battery_efficiency = .98
 
-motor_torque_constant = 1   #torque to current constant of motor. torque/amp
+motor_torque_constant = 2   #torque to current constant of motor. torque/amp
 motor_rpm_constant = 12.0   #rpm to voltage dc constant of motor. rpm/volt
 
 series_cells = 110.0
@@ -58,6 +58,8 @@ TyreC = 3.15e-01
 
 top_lean_angle = 38
 
+top_motor_current = 240.0 #Amps
+
 #lookup files
 dist_to_speed_lookup = 'disttospeed.csv'
 dist_to_alt_lookup = 'disttoalt.csv'
@@ -74,6 +76,7 @@ sqrt2 = np.sqrt(2)
 #motor_top_force = (top_torque * gearing) / wheel_radius
 drag_area = frontal_area * air_resistance
 mass = rider_mass + bike_mass
+top_torque = top_motor_current * motor_torque_constant
 
 #Arrays (output)
 time = np.zeros((steps+1,tests),dtype=float)
@@ -157,7 +160,7 @@ x = n[:,0].astype(np.float)
 y = n[:,1].astype(np.float)
 distancetoaltitude_lookup = interp1d(x,y)
 
-#rpm to current throttlemap
+#rpm to top current % throttlemap
 n = np.loadtxt(throttlemap_lookup,dtype = 'string',delimiter = ',', skiprows = 1)
 x = n[:,0].astype(np.float)
 y = n[:,1].astype(np.float)
@@ -218,8 +221,9 @@ if np.max(throttlemap.x) < top_rpm:
 (x,y) = motor_eff_grid.shape
 if y-1 <  top_torque:
     top_torque = y-1
+    top_motor_current = (y-1)/motor_torque_constant 
     print 'top_torque greater than motor efficiency look up'
-    print 'top_torque changed to ' + repr(top_torque)
+    print 'top_motor_current changed to ' + repr(top_motor_current)
 
 if x-1 <  top_rpm:
     top_rpm = x-1
@@ -229,8 +233,9 @@ if x-1 <  top_rpm:
 (x,y) = motor_controller_eff_grid.shape
 if y-1 <  top_torque/motor_torque_constant:
     top_torque = (y-1) * motor_torque_constant
-    print 'possible arms (from top_torque and motor torque constant) is greater than motor controller efficiency look up'
-    print 'top_torque changed to ' + repr(top_torque)
+    top_motor_current = y-1
+    print 'possible arms (from top motor current and motor torque constant) is greater than motor controller efficiency look up'
+    print 'top_motor_current changed to ' + repr(top_motor_current)
 
 if x-1 <  (top_rpm/(motor_rpm_constant)*(1/(sqrt2))) :
     top_rpm = (x-1)*(motor_rpm_constant)*(1/(sqrt2)) 
@@ -289,7 +294,7 @@ def Battery_Voltage(n):
     
 #Top force (allows for expandsion to more than one top forces)
 def Top_force(n):
-    return ((throttlemap(motor_rpm[n]) * motor_torque_constant) * gearing) / wheel_radius[n+1]
+    return ((throttlemap(motor_rpm[n]) * top_motor_current * motor_torque_constant) * gearing) / wheel_radius[n+1]
 
 #Top Speed(allows for expandsion to one top speeds)
 def Top_speed(n):
