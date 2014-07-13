@@ -38,12 +38,11 @@ def dependencies_for_automation():  #Missing imports needed to convert to .exe
 def SensitivityAnalysis(dictionary, sensitivityValue):  
 
     global closeWorkerThread
-    resultSADict = collections.OrderedDict()
     parameterDict = collections.OrderedDict()
     
     # Take any file since they all have the same input parameters
     for key in dictionary[dictionary.keys()[0]]:
-        if not isinstance(dictionary[dictionary.keys()[0]][key][0],basestring) and key != 'motor_torque_constant':
+        if not isinstance(dictionary[dictionary.keys()[0]][key][0],basestring):
             outputFiles = []
             originalDictionary = deepcopy(dictionary)
             
@@ -1591,7 +1590,7 @@ class MainFrame(wx.Frame):
             self.dictionary[self.newParamName.GetValue()]["air_density"] = np.array([""])
             self.dictionary[self.newParamName.GetValue()]["gravity"] = np.array([""])
             self.dictionary[self.newParamName.GetValue()]["frontal_area"] = np.array([""])
-            self.dictionary[self.newParamName.GetValue()]["top_torque"] = np.array([""])
+            self.dictionary[self.newParamName.GetValue()]["top_motor_current"] = np.array([""])
             self.dictionary[self.newParamName.GetValue()]["top_rpm"] = np.array([""])
             self.dictionary[self.newParamName.GetValue()]["max_distance_travel"] = np.array([""])
             self.dictionary[self.newParamName.GetValue()]["chain_efficiency"] = np.array([""])
@@ -1845,7 +1844,7 @@ class InputPanel(scrolled.ScrolledPanel):
         self.vSizer1.Add(wx.StaticText(self, wx.ID_ANY, "Air Density (kg/m^2)",size=(180,25)))
         self.vSizer1.Add(wx.StaticText(self, wx.ID_ANY, "Gravity (m/s^2)" ,size=(180,25)))
         self.vSizer1.Add(wx.StaticText(self, wx.ID_ANY, "Frontal Area (m^2)" ,size=(180,25)))
-        self.vSizer1.Add(wx.StaticText(self, wx.ID_ANY, "Top Torque (Nm)" ,size=(180,25)))
+        self.vSizer1.Add(wx.StaticText(self, wx.ID_ANY, "Top Motor Current (amps)" ,size=(180,25)))
         self.vSizer1.Add(wx.StaticText(self, wx.ID_ANY, "Top RPM (RPM)" ,size=(180,25)))
         self.vSizer1.Add(wx.StaticText(self, wx.ID_ANY, "Max Distance Travel (meters)" ,size=(180,25)))
         self.vSizer1.Add(wx.StaticText(self, wx.ID_ANY, "Chain Efficiency" ,size=(180,25)))
@@ -2126,7 +2125,7 @@ class InputPanel(scrolled.ScrolledPanel):
         except:
             self.p13.ChangeValue('')
         try:
-            self.p14.ChangeValue(str(currentFile["top_torque"][0]))  
+            self.p14.ChangeValue(str(currentFile["top_motor_current"][0]))  
         except:
             self.p14.ChangeValue('')
         try:
@@ -2361,10 +2360,10 @@ class InputPanel(scrolled.ScrolledPanel):
         
     def UpdateP14 (self, e):
         try:
-            previousValue = self.dictionary[self.fileToFile[self.dropDownList.GetValue()]]['top_torque'][0]
-            self.dictionary[self.fileToFile[self.dropDownList.GetValue()]]['top_torque'] = [self.p14.GetValue()]
+            previousValue = self.dictionary[self.fileToFile[self.dropDownList.GetValue()]]['top_motor_current'][0]
+            self.dictionary[self.fileToFile[self.dropDownList.GetValue()]]['top_motor_current'] = [self.p14.GetValue()]
             pub.sendMessage(("DictFromInput"), self.dictionary)
-            msg = datetime.now().strftime('%H:%M:%S') + ": " + "Top Torque changed from " + str(previousValue) + " to " + self.p14.GetValue()
+            msg = datetime.now().strftime('%H:%M:%S') + ": " + "Top Motor Current changed from " + str(previousValue) + " to " + self.p14.GetValue()
             pub.sendMessage(("AddStatus"), msg)
         except:
             pass
