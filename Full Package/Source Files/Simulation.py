@@ -105,7 +105,7 @@ def Simulation(dict_in):
         assert "motor_torque_constant" in currentData, logging.critical("%s is missing data: motor_torque_constant" % file)
         logging.info("motor_torque_constant found")
         motor_torque_constant = currentData["motor_torque_constant"] #torque to current constant of motor. torque/amp
-    
+        
         assert "motor_rpm_constant" in currentData, logging.critical("%s is missing data: motor_rpm_constant" % file)
         logging.info("motor_rpm_constant found")
         motor_rpm_constant = currentData["motor_rpm_constant"] #rpm to voltage dc constant of motor. rpm/volt
@@ -499,7 +499,7 @@ def Simulation(dict_in):
             motor_torque[n+1] = (f * wheel_radius[n+1])/gearing
             arms[n+1] = motor_torque[n+1]/motor_torque_constant
             vrms[n+1] = motor_rpm[n+1]/(motor_rpm_constant)*(1/(sqrt2))  
-        
+            
             motor_efficiency[n+1] = motor_eff_grid[np.int(np.around(motor_rpm[n+1]))][np.int(np.around(motor_torque[n+1]))]
             motor_controller_efficiency[n+1] = motor_controller_eff_grid[np.int(np.around(vrms[n+1]))][np.int(np.around(arms[n+1]))]
             

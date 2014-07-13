@@ -578,7 +578,6 @@ class OptionsPanel(scrolled.ScrolledPanel):
         pub.subscribe(self.TransferSortArrays, ("TransferSortArrays"))
         pub.subscribe(self.TransferSADict, ("TransferSADictionary")) 
         
-        self.leftPanel = wx.Panel(self)
         self.rightPanel = wx.Panel(self)
         #Create Sizers    
         
@@ -600,20 +599,35 @@ class OptionsPanel(scrolled.ScrolledPanel):
         self.sortText = wx.StaticText(self, wx.ID_ANY, "   Sorting options")
         self.sortText.SetFont(font)
         
+        self.rightSizer = wx.BoxSizer(wx.VERTICAL)
         
-        self.topSpeedItem = wx.RadioButton(self.leftPanel, -1, pos=(14,10), label='Top Speed', style=wx.RB_GROUP)
-        self.averageSpeedItem = wx.RadioButton(self.leftPanel, -1, pos=(14,25), label='Average Speed')
-        self.topPowerItem = wx.RadioButton(self.leftPanel, -1, pos=(14,40), label='Top Power')
-        self.averagePowerItem = wx.RadioButton(self.leftPanel, -1, pos=(14,55), label='Average Power')
-        self.energyItem = wx.RadioButton(self.leftPanel, -1, pos=(14,70), label='Energy')
-
-        self.largest2Smallest = wx.RadioButton(self.rightPanel, -1, pos = (14,10), label='Largest to Smallest', style=wx.RB_GROUP)
-        self.smallest2Largest = wx.RadioButton(self.rightPanel, -1, pos = (14,25), label='Smallest to Largest')
-        self.smallestDiff = wx.RadioButton(self.rightPanel, -1, pos=(14,40), label='Smallest Difference')
-        self.largestDiff = wx.RadioButton(self.rightPanel, -1, pos=(14,55), label='Largest Difference')
-        self.smallestPerc = wx.RadioButton(self.rightPanel, -1, pos=(14,70), label='Smallest Percent Difference')
-        self.largestPerc = wx.RadioButton(self.rightPanel, -1, pos=(14,85), label='Largest Percent Difference')
+        self.topSpeedItem = wx.RadioButton(self, -1, label='Top Speed', style=wx.RB_GROUP)
+        self.rightSizer.Add(self.topSpeedItem)
+        self.averageSpeedItem = wx.RadioButton(self, -1, label='Average Speed')
+        self.rightSizer.Add(self.averageSpeedItem)
+        self.topPowerItem = wx.RadioButton(self, -1, label='Top Power')
+        self.rightSizer.Add(self.topPowerItem)
+        self.averagePowerItem = wx.RadioButton(self, -1, label='Average Power')
+        self.rightSizer.Add(self.averagePowerItem)
+        self.energyItem = wx.RadioButton(self, -1, label='Energy')
+        self.rightSizer.Add(self.energyItem)
+        self.rightSizer.AddSpacer(10)
+        self.largest2Smallest = wx.RadioButton(self, -1, label='Largest to Smallest', style=wx.RB_GROUP)
+        self.rightSizer.Add(self.largest2Smallest)
+        self.smallest2Largest = wx.RadioButton(self, -1, label='Smallest to Largest')
+        self.rightSizer.Add(self.smallest2Largest)
+        self.smallestDiff = wx.RadioButton(self, -1, label='Smallest Difference')
+        self.rightSizer.Add(self.smallestDiff)
+        self.largestDiff = wx.RadioButton(self, -1, label='Largest Difference')
+        self.rightSizer.Add(self.largestDiff)
+        self.smallestPerc = wx.RadioButton(self, -1, label='Smallest Percent Difference')
+        self.rightSizer.Add(self.smallestPerc)
+        self.largestPerc = wx.RadioButton(self, -1, label='Largest Percent Difference')
+        self.rightSizer.Add(self.largestPerc)
         
+        self.offsetSizer = wx.BoxSizer(wx.HORIZONTAL)
+        self.offsetSizer.AddSpacer(14)
+        self.offsetSizer.Add(self.rightSizer)
         
         self.Bind(wx.EVT_RADIOBUTTON, self.Sort, self.topSpeedItem)
         self.Bind(wx.EVT_RADIOBUTTON, self.Sort, self.averageSpeedItem)
@@ -656,8 +670,8 @@ class OptionsPanel(scrolled.ScrolledPanel):
         
         self.vSizer.AddSpacer(10)
         self.vSizer.Add(self.sortText)
-        self.vSizer.Add(self.leftPanel)
-        self.vSizer.Add(self.rightPanel)
+        #self.vSizer.Add(self.leftPanel)
+        self.vSizer.Add(self.offsetSizer)
         '''
         self.hSortSizer.Add(self.leftPanel, 1, wx.EXPAND)
         self.hSortSizer.AddSpacer(5)
