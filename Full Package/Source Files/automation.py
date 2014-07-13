@@ -572,12 +572,12 @@ class OptionsPanel(scrolled.ScrolledPanel):
         scrolled.ScrolledPanel.__init__(self, parent, *args, **kwargs)
         self.parent = parent
 
+        self.fillSizer = True
         self.SADict = collections.OrderedDict()
         self.sortArrays = collections.OrderedDict()
         pub.subscribe(self.TransferSortArrays, ("TransferSortArrays"))
         pub.subscribe(self.TransferSADict, ("TransferSADictionary")) 
         
-        self.leftPanel = wx.Panel(self)
         self.rightPanel = wx.Panel(self)
         #Create Sizers    
         
@@ -599,20 +599,35 @@ class OptionsPanel(scrolled.ScrolledPanel):
         self.sortText = wx.StaticText(self, wx.ID_ANY, "   Sorting options")
         self.sortText.SetFont(font)
         
+        self.rightSizer = wx.BoxSizer(wx.VERTICAL)
         
-        self.topSpeedItem = wx.RadioButton(self.leftPanel, -1, pos=(14,10), label='Top Speed', style=wx.RB_GROUP)
-        self.averageSpeedItem = wx.RadioButton(self.leftPanel, -1, pos=(14,25), label='Average Speed')
-        self.topPowerItem = wx.RadioButton(self.leftPanel, -1, pos=(14,40), label='Top Power')
-        self.averagePowerItem = wx.RadioButton(self.leftPanel, -1, pos=(14,55), label='Average Power')
-        self.energyItem = wx.RadioButton(self.leftPanel, -1, pos=(14,70), label='Energy')
-
-        self.largest2Smallest = wx.RadioButton(self.rightPanel, -1, pos = (14,10), label='Largest to Smallest', style=wx.RB_GROUP)
-        self.smallest2Largest = wx.RadioButton(self.rightPanel, -1, pos = (14,25), label='Smallest to Largest')
-        self.smallestDiff = wx.RadioButton(self.rightPanel, -1, pos=(14,40), label='Smallest Difference')
-        self.largestDiff = wx.RadioButton(self.rightPanel, -1, pos=(14,55), label='Largest Difference')
-        self.smallestPerc = wx.RadioButton(self.rightPanel, -1, pos=(14,70), label='Smallest Percent Difference')
-        self.largestPerc = wx.RadioButton(self.rightPanel, -1, pos=(14,85), label='Largest Percent Difference')
+        self.topSpeedItem = wx.RadioButton(self, -1, label='Top Speed', style=wx.RB_GROUP)
+        self.rightSizer.Add(self.topSpeedItem)
+        self.averageSpeedItem = wx.RadioButton(self, -1, label='Average Speed')
+        self.rightSizer.Add(self.averageSpeedItem)
+        self.topPowerItem = wx.RadioButton(self, -1, label='Top Power')
+        self.rightSizer.Add(self.topPowerItem)
+        self.averagePowerItem = wx.RadioButton(self, -1, label='Average Power')
+        self.rightSizer.Add(self.averagePowerItem)
+        self.energyItem = wx.RadioButton(self, -1, label='Energy')
+        self.rightSizer.Add(self.energyItem)
+        self.rightSizer.AddSpacer(10)
+        self.largest2Smallest = wx.RadioButton(self, -1, label='Largest to Smallest', style=wx.RB_GROUP)
+        self.rightSizer.Add(self.largest2Smallest)
+        self.smallest2Largest = wx.RadioButton(self, -1, label='Smallest to Largest')
+        self.rightSizer.Add(self.smallest2Largest)
+        self.smallestDiff = wx.RadioButton(self, -1, label='Smallest Difference')
+        self.rightSizer.Add(self.smallestDiff)
+        self.largestDiff = wx.RadioButton(self, -1, label='Largest Difference')
+        self.rightSizer.Add(self.largestDiff)
+        self.smallestPerc = wx.RadioButton(self, -1, label='Smallest Percent Difference')
+        self.rightSizer.Add(self.smallestPerc)
+        self.largestPerc = wx.RadioButton(self, -1, label='Largest Percent Difference')
+        self.rightSizer.Add(self.largestPerc)
         
+        self.offsetSizer = wx.BoxSizer(wx.HORIZONTAL)
+        self.offsetSizer.AddSpacer(14)
+        self.offsetSizer.Add(self.rightSizer)
         
         self.Bind(wx.EVT_RADIOBUTTON, self.Sort, self.topSpeedItem)
         self.Bind(wx.EVT_RADIOBUTTON, self.Sort, self.averageSpeedItem)
@@ -641,9 +656,11 @@ class OptionsPanel(scrolled.ScrolledPanel):
             self.outputs.append(key)
             self.Bind(wx.EVT_CHECKBOX, self.configureOutput, id = trigger.GetId())
             self.inputs.append(trigger)
-                
-        for inputItem in self.inputs: 
-            self.vSizer1.Add(inputItem, 0, wx.ALL, 1) 
+        
+        if self.fillSizer is True:
+            for inputItem in self.inputs: 
+                self.vSizer1.Add(inputItem, 0, wx.ALL, 1) 
+            self.fillSizer = False
             
             
         wx.CallAfter(pub.sendMessage, "DisplayOutputs", self.outputs)
@@ -653,8 +670,8 @@ class OptionsPanel(scrolled.ScrolledPanel):
         
         self.vSizer.AddSpacer(10)
         self.vSizer.Add(self.sortText)
-        self.vSizer.Add(self.leftPanel)
-        self.vSizer.Add(self.rightPanel)
+        #self.vSizer.Add(self.leftPanel)
+        self.vSizer.Add(self.offsetSizer)
         '''
         self.hSortSizer.Add(self.leftPanel, 1, wx.EXPAND)
         self.hSortSizer.AddSpacer(5)
@@ -930,7 +947,10 @@ class SAResultsPanel(wx.Panel):
                 page.myGrid.SetCellValue(row+2, col+2, repr(round(minusValue,2)))
                 diff = abs(plusValue - minusValue)
                 page.myGrid.SetCellValue(row+2, col+3, repr(round(diff,2)))
-                percentDiff = diff/(plusValue + minusValue) * 100
+                if (plusValue+minusValue) == 0:
+                    percentDiff = 0
+                else:
+                    percentDiff = diff/(plusValue + minusValue) * 100
                 page.myGrid.SetCellValue(row+2, col+4, repr(round(percentDiff,2)))
                 
                 
@@ -959,7 +979,10 @@ class SAResultsPanel(wx.Panel):
                 page.myGrid.SetCellValue(row+3, col+2, repr(round(minusValue,2)))
                 diff = abs(plusValue - minusValue)
                 page.myGrid.SetCellValue(row+3, col+3, repr(round(diff,2)))
-                percentDiff = diff/(plusValue + minusValue) * 100
+                if (plusValue+minusValue) == 0:
+                    percentDiff = 0
+                else:
+                    percentDiff = diff/(plusValue + minusValue) * 100
                 page.myGrid.SetCellValue(row+3, col+4, repr(round(percentDiff,2)))
                 
                 
@@ -988,7 +1011,10 @@ class SAResultsPanel(wx.Panel):
                 page.myGrid.SetCellValue(row+4, col+2, repr(round(minusValue,2)))
                 diff = abs(plusValue - minusValue)
                 page.myGrid.SetCellValue(row+4, col+3, repr(round(diff,2)))
-                percentDiff = diff/(plusValue + minusValue) * 100
+                if (plusValue+minusValue) == 0:
+                    percentDiff = 0
+                else:
+                    percentDiff = diff/(plusValue + minusValue) * 100
                 page.myGrid.SetCellValue(row+4, col+4, repr(round(percentDiff,2)))
     
                 # Row 5, Col 0 or 8
@@ -1016,7 +1042,10 @@ class SAResultsPanel(wx.Panel):
                 page.myGrid.SetCellValue(row+5, col+2, repr(round(minusValue,2)))
                 diff = abs(plusValue - minusValue)
                 page.myGrid.SetCellValue(row+5, col+3, repr(round(diff,2)))
-                percentDiff = diff/(plusValue + minusValue) * 100
+                if (plusValue+minusValue) == 0:
+                    percentDiff = 0
+                else:
+                    percentDiff = diff/(plusValue + minusValue) * 100
                 page.myGrid.SetCellValue(row+5, col+4, repr(round(percentDiff,2)))
                         
                 # Row 6, Col 0 or 8
@@ -1044,7 +1073,10 @@ class SAResultsPanel(wx.Panel):
                 page.myGrid.SetCellValue(row+6, col+2, repr(round(minusValue,2)))
                 diff = abs(plusValue - minusValue)
                 page.myGrid.SetCellValue(row+6, col+3, repr(round(diff,2)))
-                percentDiff = diff/(plusValue + minusValue) * 100
+                if (plusValue+minusValue) == 0:
+                    percentDiff = 0
+                else:
+                    percentDiff = diff/(plusValue + minusValue) * 100
                 page.myGrid.SetCellValue(row+6, col+4, repr(round(percentDiff,2)))
                 
                 # Row 8, Col 0 or 8
@@ -1054,6 +1086,13 @@ class SAResultsPanel(wx.Panel):
                 minus_limit = self.SADict[parameter][1][file]['% Motor RPM Limit']
                 page.myGrid.SetCellValue(row+8, col+1, repr(round(plus_limit,2)))
                 page.myGrid.SetCellValue(row+8, col+2, repr(round(minus_limit,2)))
+                diff = abs(plus_limit - minus_limit)
+                page.myGrid.SetCellValue(row+8, col+3, repr(round(diff,2)))
+                if (plusValue+minusValue) == 0:
+                    percentDiff = 0
+                else:
+                    percentDiff = diff/(plusValue + minusValue) * 100
+                page.myGrid.SetCellValue(row+8, col+4, repr(round(percentDiff,2)))
                 
                 # Row 8, Col 0 or 8
                 # % Motor Torque Limit
@@ -1062,6 +1101,13 @@ class SAResultsPanel(wx.Panel):
                 minus_limit = self.SADict[parameter][1][file]['% Motor Torque Limit']
                 page.myGrid.SetCellValue(row+9, col+1, repr(round(plus_limit,2)))
                 page.myGrid.SetCellValue(row+9, col+2, repr(round(minus_limit,2)))
+                diff = abs(plus_limit - minus_limit)
+                page.myGrid.SetCellValue(row+9, col+3, repr(round(diff,2)))
+                if (plusValue+minusValue) == 0:
+                    percentDiff = 0
+                else:
+                    percentDiff = diff/(plusValue + minusValue) * 100
+                page.myGrid.SetCellValue(row+9, col+4, repr(round(percentDiff,2)))
                 
                 # Row 9, Col 0 or 8
                 # % Motor Power Limit
@@ -1070,6 +1116,13 @@ class SAResultsPanel(wx.Panel):
                 minus_limit = self.SADict[parameter][1][file]['% Motor Power Limit']
                 page.myGrid.SetCellValue(row+10, col+1, repr(round(plus_limit,2)))
                 page.myGrid.SetCellValue(row+10, col+2, repr(round(minus_limit,2)))
+                diff = abs(plus_limit - minus_limit)
+                page.myGrid.SetCellValue(row+10, col+3, repr(round(diff,2)))
+                if (plusValue+minusValue) == 0:
+                    percentDiff = 0
+                else:
+                    percentDiff = diff/(plusValue + minusValue) * 100
+                page.myGrid.SetCellValue(row+10, col+4, repr(round(percentDiff,2)))
                 
                 # Row 10, Col 0 or 8
                 # % Battery Power Limit
@@ -1078,6 +1131,13 @@ class SAResultsPanel(wx.Panel):
                 minus_limit = self.SADict[parameter][1][file]['% Battery Power Limit']
                 page.myGrid.SetCellValue(row+11, col+1, repr(round(plus_limit,2)))
                 page.myGrid.SetCellValue(row+11, col+2, repr(round(minus_limit,2)))
+                diff = abs(plus_limit - minus_limit)
+                page.myGrid.SetCellValue(row+11, col+3, repr(round(diff,2)))
+                if (plusValue+minusValue) == 0:
+                    percentDiff = 0
+                else:
+                    percentDiff = diff/(plusValue + minusValue) * 100
+                page.myGrid.SetCellValue(row+11, col+4, repr(round(percentDiff,2)))
                 
                 # Row 11, Col 0 or 8
                 # % Motor Thermal Limit
@@ -1086,6 +1146,13 @@ class SAResultsPanel(wx.Panel):
                 minus_limit = self.SADict[parameter][1][file]['% Motor Thermal Limit']
                 page.myGrid.SetCellValue(row+12, col+1, repr(round(plus_limit,2)))
                 page.myGrid.SetCellValue(row+12, col+2, repr(round(minus_limit,2)))
+                diff = abs(plus_limit - minus_limit)
+                page.myGrid.SetCellValue(row+12, col+3, repr(round(diff,2)))
+                if (plusValue+minusValue) == 0:
+                    percentDiff = 0
+                else:
+                    percentDiff = diff/(plusValue + minusValue) * 100
+                page.myGrid.SetCellValue(row+12, col+4, repr(round(percentDiff,2)))
                 
                 # Row 12, Col 0 or 8
                 # % Lean Angle Limit
@@ -1094,6 +1161,13 @@ class SAResultsPanel(wx.Panel):
                 minus_limit = self.SADict[parameter][1][file]['% Lean Angle Limit']
                 page.myGrid.SetCellValue(row+13, col+1, repr(round(plus_limit,2)))
                 page.myGrid.SetCellValue(row+13, col+2, repr(round(minus_limit,2)))
+                diff = abs(plus_limit - minus_limit)
+                page.myGrid.SetCellValue(row+13, col+3, repr(round(diff,2)))
+                if (plusValue+minusValue) == 0:
+                    percentDiff = 0
+                else:
+                    percentDiff = diff/(plusValue + minusValue) * 100
+                page.myGrid.SetCellValue(row+13, col+4, repr(round(percentDiff,2)))
                 
                 ''' If we haven't obtained the cell block size yet, resize the columns
                 after the first block is generated and then count the cells widths '''
