@@ -68,6 +68,7 @@ motor_eff_lookup = 'Emrax_eff.csv'
 soc_to_voltage_lookup = 'aee.csv'
 throttlemap_lookup = 'throttle.csv'
 lean_angle_lookup = 'lean_IOM_video_data.csv'
+chain_eff_lookup = 'chain_eff_30kW.csv'
 
 #simulation calcs
 steps = int(math.ceil(total_time/step))
@@ -194,6 +195,13 @@ values = np.array(z)
 grid_x, grid_y = np.mgrid[np.min(x):np.max(x)+1, np.min(y):np.max(y)+1]
 motor_eff_grid = griddata(points, values, (grid_x, grid_y), method='linear')
 
+#chain efficiency
+#rpm to chain efficiency %
+n = np.loadtxt(chain_eff_lookup,dtype = 'string',delimiter = ',', skiprows = 1)
+x = n[:,0].astype(np.float)
+y = n[:,1].astype(np.float)
+chain_efficiency = interp1d(x,y)
+
 
 #Make sure parameters don't extend lookups
 if np.max(distancetospeed_lookup.x) < max_distance_travel:
@@ -217,7 +225,11 @@ if np.max(throttlemap.x) < top_rpm:
     print 'top rpm is greater than throttle map look up'
     print 'top rpm ' + repr(top_rpm)
 
-
+if np.max(chain_efficiency.x) < top_rpm:
+    top_rpm = np.max(chain_efficiency.x)
+    print 'top rpm is greater than the chain efficiency look up'
+    print 'top rpm ' + repr(top_rpm)    
+    
 (x,y) = motor_eff_grid.shape
 if y-1 <  top_torque:
     top_torque = y-1
@@ -277,14 +289,15 @@ def Efficiency(s,f,p,n):
     motor_efficiency[n+1] = motor_eff_grid[np.int(np.around(motor_rpm[n+1]))][np.int(np.around(motor_torque[n+1]))]
     motor_controller_efficiency[n+1] = motor_controller_eff_grid[np.int(np.around(vrms[n+1]))][np.int(np.around(arms[n+1]))]
     
-    chain_power[n+1] = (p/(chain_efficiency))
+    chain_power[n+1] = (p/(chain_efficiency(motor_rpm[[n+1]])))
     motor_power[n+1] = (chain_power[n+1]/(motor_efficiency[n+1]))
     motor_controller_power[n+1] = (motor_power[n+1]/(motor_controller_efficiency[n+1]))
     battery_power[n+1] = (motor_controller_power[n+1]/(battery_efficiency))
     
     motor_loss[n+1] = motor_power[n+1]*(1-motor_efficiency[n+1])
     motor_controller_loss[n+1] = motor_controller_power[n+1]*(1-motor_controller_efficiency[n+1])
-    chain_loss[n+1] = chain_power[n+1]*(1-chain_efficiency)
+    print chain_efficiency(motor_rpm[n+1])
+    chain_loss[n+1] = chain_power[n+1]*(1-chain_efficiency(motor_rpm[n+1]))
     battery_loss[n+1] = battery_power[n+1]*(1-battery_efficiency)
     return battery_power[n+1]
 
