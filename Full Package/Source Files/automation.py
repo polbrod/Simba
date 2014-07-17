@@ -1593,7 +1593,6 @@ class MainFrame(wx.Frame):
             self.dictionary[self.newParamName.GetValue()]["top_motor_current"] = np.array([""])
             self.dictionary[self.newParamName.GetValue()]["top_rpm"] = np.array([""])
             self.dictionary[self.newParamName.GetValue()]["max_distance_travel"] = np.array([""])
-            self.dictionary[self.newParamName.GetValue()]["chain_efficiency"] = np.array([""])
             self.dictionary[self.newParamName.GetValue()]["battery_efficiency"] = np.array([""])
             self.dictionary[self.newParamName.GetValue()]["motor_torque_constant"] = np.array([""])
             self.dictionary[self.newParamName.GetValue()]["motor_rpm_constant"] = np.array([""])
@@ -1610,6 +1609,7 @@ class MainFrame(wx.Frame):
             self.dictionary[self.newParamName.GetValue()]["coolant_temp"] = np.array([""])
             self.dictionary[self.newParamName.GetValue()]["max_motor_temp"] = np.array([""])
             self.dictionary[self.newParamName.GetValue()]["throttlemap_lookup"] = np.array([""])
+            self.dictionary[self.newParamName.GetValue()]["chain_efficiency_lookup"] = np.array([""])
             self.dictionary[self.newParamName.GetValue()]["tyreA"] = np.array([""])
             self.dictionary[self.newParamName.GetValue()]["tyreB"] = np.array([""])
             self.dictionary[self.newParamName.GetValue()]["tyreC"] = np.array([""])
@@ -1847,7 +1847,6 @@ class InputPanel(scrolled.ScrolledPanel):
         self.vSizer1.Add(wx.StaticText(self, wx.ID_ANY, "Top Motor Current (amps)" ,size=(180,25)))
         self.vSizer1.Add(wx.StaticText(self, wx.ID_ANY, "Top RPM (RPM)" ,size=(180,25)))
         self.vSizer1.Add(wx.StaticText(self, wx.ID_ANY, "Max Distance Travel (meters)" ,size=(180,25)))
-        self.vSizer1.Add(wx.StaticText(self, wx.ID_ANY, "Chain Efficiency" ,size=(180,25)))
         self.vSizer1.Add(wx.StaticText(self, wx.ID_ANY, "Battery Efficiency" ,size=(180,25)))
         self.vSizer1.Add(wx.StaticText(self, wx.ID_ANY, "Motor Torque Constant (Nm/amps rms)" ,size=(215,25)))
         self.vSizer1.Add(wx.StaticText(self, wx.ID_ANY, "Motor RPM Constant (RPM/Voltage)" ,size=(215,25)))
@@ -1866,6 +1865,7 @@ class InputPanel(scrolled.ScrolledPanel):
         self.vSizer1.Add(wx.StaticText(self, wx.ID_ANY, "SOC to Voltage Lookup" ,size=(180,25)))
         self.vSizer1.Add(wx.StaticText(self, wx.ID_ANY, "Throttlemap Lookup" ,size=(180,25)))
         self.vSizer1.Add(wx.StaticText(self, wx.ID_ANY, "Lean Angle Lookup" ,size=(180,25)))
+        self.vSizer1.Add(wx.StaticText(self, wx.ID_ANY, "Chain Efficiency Lookup" ,size=(180,25)))
 
         self.vSizer1.AddSpacer(3)
         self.vSizer1.Add(wx.StaticText(self, wx.ID_ANY, "Comments", size=(215,25)))
@@ -2137,79 +2137,79 @@ class InputPanel(scrolled.ScrolledPanel):
         except:
             self.p16.ChangeValue('')
         try:
-            self.p17.ChangeValue(str(currentFile["chain_efficiency"][0])) 
+            self.p17.ChangeValue(str(currentFile["battery_efficiency"][0]))
         except:
             self.p17.ChangeValue('')
         try:
-            self.p18.ChangeValue(str(currentFile["battery_efficiency"][0]))
+            self.p18.ChangeValue(str(currentFile["motor_torque_constant"][0]))    
         except:
             self.p18.ChangeValue('')
         try:
-            self.p19.ChangeValue(str(currentFile["motor_torque_constant"][0]))    
+            self.p19.ChangeValue(str(currentFile["motor_rpm_constant"][0]))
         except:
             self.p19.ChangeValue('')
         try:
-            self.p20.ChangeValue(str(currentFile["motor_rpm_constant"][0]))
+            self.p20.ChangeValue(str(currentFile["motor_top_power"][0]))
         except:
             self.p20.ChangeValue('')
         try:
-            self.p21.ChangeValue(str(currentFile["motor_top_power"][0]))
+            self.p21.ChangeValue(str(currentFile["motor_thermal_conductivity"][0]))
         except:
             self.p21.ChangeValue('')
         try:
-            self.p22.ChangeValue(str(currentFile["motor_thermal_conductivity"][0]))
+            self.p22.ChangeValue(str(currentFile["motor_heat_capacity"][0]))
         except:
             self.p22.ChangeValue('')
         try:
-            self.p23.ChangeValue(str(currentFile["motor_heat_capacity"][0]))
+            self.p23.ChangeValue(str(currentFile["max_motor_temp"][0]))
         except:
             self.p23.ChangeValue('')
         try:
-            self.p24.ChangeValue(str(currentFile["max_motor_temp"][0]))
+            self.p24.ChangeValue(str(currentFile["coolant_temp"][0]))
         except:
             self.p24.ChangeValue('')
         try:
-            self.p25.ChangeValue(str(currentFile["coolant_temp"][0]))
+            self.p25.ChangeValue(str(currentFile["batt_max_current"][0]))
         except:
             self.p25.ChangeValue('')
         try:
-            self.p26.ChangeValue(str(currentFile["batt_max_current"][0]))
+            self.p26.ChangeValue(str(currentFile["max_amphour"][0]))
         except:
             self.p26.ChangeValue('')
         try:
-            self.p27.ChangeValue(str(currentFile["max_amphour"][0]))
+            self.p27.ChangeValue(str(currentFile["series_cells"][0]))
         except:
             self.p27.ChangeValue('')
         try:
-            self.p28.ChangeValue(str(currentFile["series_cells"][0]))
+            self.p28.ChangeValue(str(currentFile["dist_to_alt_lookup"][0]))
         except:
             self.p28.ChangeValue('')
         try:
-            self.p29.ChangeValue(str(currentFile["dist_to_alt_lookup"][0]))
+            self.p29.ChangeValue(str(currentFile["dist_to_speed_lookup"][0]))
         except:
             self.p29.ChangeValue('')
         try:
-            self.p30.ChangeValue(str(currentFile["dist_to_speed_lookup"][0]))
+            self.p30.ChangeValue(str(currentFile["motor_eff_lookup"][0]))
         except:
             self.p30.ChangeValue('')
         try:
-            self.p31.ChangeValue(str(currentFile["motor_eff_lookup"][0]))
+            self.p31.ChangeValue(str(currentFile["motor_controller_eff_lookup"][0]))
         except:
             self.p31.ChangeValue('')
         try:
-            self.p32.ChangeValue(str(currentFile["motor_controller_eff_lookup"][0]))
+            self.p32.ChangeValue(str(currentFile["soc_to_voltage_lookup"][0]))
         except:
             self.p32.ChangeValue('')
         try:
-            self.p33.ChangeValue(str(currentFile["soc_to_voltage_lookup"][0]))
+            self.p33.ChangeValue(str(currentFile["throttlemap_lookup"][0]))
         except:
             self.p33.ChangeValue('')
         try:
-            self.p34.ChangeValue(str(currentFile["throttlemap_lookup"][0]))
+            self.p34.ChangeValue(str(currentFile["lean_angle_lookup"][0]))
         except:
             self.p34.ChangeValue('')
         try:
-            self.p35.ChangeValue(str(currentFile["lean_angle_lookup"][0]))
+            self.p35.ChangeValue(str(currentFile["chain_efficiency_lookup"][0])) 
         except:
             self.p35.ChangeValue('')
         try:
@@ -2391,194 +2391,195 @@ class InputPanel(scrolled.ScrolledPanel):
         
     def UpdateP17 (self, e):
         try:
-            previousValue = self.dictionary[self.fileToFile[self.dropDownList.GetValue()]]['chain_efficiency'][0]
-            self.dictionary[self.fileToFile[self.dropDownList.GetValue()]]['chain_efficiency'] = [self.p17.GetValue()]
+            previousValue = self.dictionary[self.fileToFile[self.dropDownList.GetValue()]]['battery_efficiency'][0]
+            self.dictionary[self.fileToFile[self.dropDownList.GetValue()]]['battery_efficiency'] = [self.p17.GetValue()]
             pub.sendMessage(("DictFromInput"), self.dictionary)
-            msg = datetime.now().strftime('%H:%M:%S') + ": " + "Chain Efficiency changed from " + str(previousValue) + " to " + self.p17.GetValue()
+            msg = datetime.now().strftime('%H:%M:%S') + ": " + "Battery Efficiency changed from " + str(previousValue) + " to " + self.p17.GetValue()
             pub.sendMessage(("AddStatus"), msg)
         except:
             pass
         
     def UpdateP18 (self, e):
         try:
-            previousValue = self.dictionary[self.fileToFile[self.dropDownList.GetValue()]]['battery_efficiency'][0]
-            self.dictionary[self.fileToFile[self.dropDownList.GetValue()]]['battery_efficiency'] = [self.p18.GetValue()]
+            previousValue = self.dictionary[self.fileToFile[self.dropDownList.GetValue()]]['motor_torque_constant'][0]
+            self.dictionary[self.fileToFile[self.dropDownList.GetValue()]]['motor_torque_constant'] = [self.p18.GetValue()]
             pub.sendMessage(("DictFromInput"), self.dictionary)
-            msg = datetime.now().strftime('%H:%M:%S') + ": " + "Battery Efficiency changed from " + str(previousValue) + " to " + self.p18.GetValue()
+            msg = datetime.now().strftime('%H:%M:%S') + ": " + "Motor Torque Constant changed from " + str(previousValue) + " to " + self.p18.GetValue()
             pub.sendMessage(("AddStatus"), msg)
         except:
             pass
         
     def UpdateP19 (self, e):
         try:
-            previousValue = self.dictionary[self.fileToFile[self.dropDownList.GetValue()]]['motor_torque_constant'][0]
-            self.dictionary[self.fileToFile[self.dropDownList.GetValue()]]['motor_torque_constant'] = [self.p19.GetValue()]
+            previousValue = self.dictionary[self.fileToFile[self.dropDownList.GetValue()]]['motor_rpm_constant'][0]
+            self.dictionary[self.fileToFile[self.dropDownList.GetValue()]]['motor_rpm_constant'] = [self.p19.GetValue()]
             pub.sendMessage(("DictFromInput"), self.dictionary)
-            msg = datetime.now().strftime('%H:%M:%S') + ": " + "Motor Torque Constant changed from " + str(previousValue) + " to " + self.p19.GetValue()
+            msg = datetime.now().strftime('%H:%M:%S') + ": " + "Motor RPM Constant changed from " + str(previousValue) + " to " + self.p19.GetValue()
             pub.sendMessage(("AddStatus"), msg)
         except:
             pass
         
     def UpdateP20 (self, e):
         try:
-            previousValue = self.dictionary[self.fileToFile[self.dropDownList.GetValue()]]['motor_rpm_constant'][0]
-            self.dictionary[self.fileToFile[self.dropDownList.GetValue()]]['motor_rpm_constant'] = [self.p20.GetValue()]
+            previousValue = self.dictionary[self.fileToFile[self.dropDownList.GetValue()]]['motor_top_power'][0]
+            self.dictionary[self.fileToFile[self.dropDownList.GetValue()]]['motor_top_power'] = [self.p20.GetValue()]
             pub.sendMessage(("DictFromInput"), self.dictionary)
-            msg = datetime.now().strftime('%H:%M:%S') + ": " + "Motor RPM Constant changed from " + str(previousValue) + " to " + self.p20.GetValue()
+            msg = datetime.now().strftime('%H:%M:%S') + ": " + "Motor Top Power changed from " + str(previousValue) + " to " + self.p20.GetValue()
             pub.sendMessage(("AddStatus"), msg)
         except:
             pass
+        
         
     def UpdateP21 (self, e):
         try:
-            previousValue = self.dictionary[self.fileToFile[self.dropDownList.GetValue()]]['motor_top_power'][0]
-            self.dictionary[self.fileToFile[self.dropDownList.GetValue()]]['motor_top_power'] = [self.p21.GetValue()]
+            previousValue = self.dictionary[self.fileToFile[self.dropDownList.GetValue()]]['motor_thermal_conductivity'][0]
+            self.dictionary[self.fileToFile[self.dropDownList.GetValue()]]['motor_thermal_conductivity'] = [self.p21.GetValue()]
             pub.sendMessage(("DictFromInput"), self.dictionary)
-            msg = datetime.now().strftime('%H:%M:%S') + ": " + "Motor Top Power changed from " + str(previousValue) + " to " + self.p21.GetValue()
+            msg = datetime.now().strftime('%H:%M:%S') + ": " + "Motor Thermal Conductivity changed from " + str(previousValue) + " to " + self.p21.GetValue()
             pub.sendMessage(("AddStatus"), msg)
         except:
             pass
-        
         
     def UpdateP22 (self, e):
         try:
-            previousValue = self.dictionary[self.fileToFile[self.dropDownList.GetValue()]]['motor_thermal_conductivity'][0]
-            self.dictionary[self.fileToFile[self.dropDownList.GetValue()]]['motor_thermal_conductivity'] = [self.p22.GetValue()]
-            pub.sendMessage(("DictFromInput"), self.dictionary)
-            msg = datetime.now().strftime('%H:%M:%S') + ": " + "Motor Thermal Conductivity changed from " + str(previousValue) + " to " + self.p22.GetValue()
-            pub.sendMessage(("AddStatus"), msg)
-        except:
-            pass
-        
-    def UpdateP23 (self, e):
-        try:
             previousValue = self.dictionary[self.fileToFile[self.dropDownList.GetValue()]]['motor_heat_capacity'][0]
-            self.dictionary[self.fileToFile[self.dropDownList.GetValue()]]['motor_heat_capacity'] = [self.p23.GetValue()]
+            self.dictionary[self.fileToFile[self.dropDownList.GetValue()]]['motor_heat_capacity'] = [self.p22.GetValue()]
             pub.sendMessage(("DictFromInput"), self.dictionary)
-            msg = datetime.now().strftime('%H:%M:%S') + ": " + "Motor Heat Capacity changed from " + str(previousValue) + " to " + self.p23.GetValue()
+            msg = datetime.now().strftime('%H:%M:%S') + ": " + "Motor Heat Capacity changed from " + str(previousValue) + " to " + self.p22.GetValue()
             pub.sendMessage(("AddStatus"), msg)
         except:
             pass
     
-    def UpdateP24 (self, e):
+    def UpdateP23 (self, e):
         try:
             previousValue = self.dictionary[self.fileToFile[self.dropDownList.GetValue()]]['max_motor_temp'][0]
-            self.dictionary[self.fileToFile[self.dropDownList.GetValue()]]['max_motor_temp'] = [self.p24.GetValue()]
+            self.dictionary[self.fileToFile[self.dropDownList.GetValue()]]['max_motor_temp'] = [self.p23.GetValue()]
             pub.sendMessage(("DictFromInput"), self.dictionary)
-            msg = datetime.now().strftime('%H:%M:%S') + ": " + "Max Motor Temp changed from " + str(previousValue) + " to " + self.p24.GetValue()
+            msg = datetime.now().strftime('%H:%M:%S') + ": " + "Max Motor Temp changed from " + str(previousValue) + " to " + self.p23.GetValue()
             pub.sendMessage(("AddStatus"), msg)
         except:
             pass
+
+    def UpdateP24 (self, e):
+        try:
+            previousValue = self.dictionary[self.fileToFile[self.dropDownList.GetValue()]]['coolant_temp'][0]
+            self.dictionary[self.fileToFile[self.dropDownList.GetValue()]]['coolant_temp'] = [self.p24.GetValue()]
+            pub.sendMessage(("DictFromInput"), self.dictionary)
+            msg = datetime.now().strftime('%H:%M:%S') + ": " + "Coolant Temp changed from " + str(previousValue) + " to " + self.p24.GetValue()
+            pub.sendMessage(("AddStatus"), msg)
+        except:
+            pass    
 
     def UpdateP25 (self, e):
         try:
-            previousValue = self.dictionary[self.fileToFile[self.dropDownList.GetValue()]]['coolant_temp'][0]
-            self.dictionary[self.fileToFile[self.dropDownList.GetValue()]]['coolant_temp'] = [self.p25.GetValue()]
-            pub.sendMessage(("DictFromInput"), self.dictionary)
-            msg = datetime.now().strftime('%H:%M:%S') + ": " + "Coolant Temp changed from " + str(previousValue) + " to " + self.p25.GetValue()
-            pub.sendMessage(("AddStatus"), msg)
-        except:
-            pass    
-
-    def UpdateP26 (self, e):
-        try:
             previousValue = self.dictionary[self.fileToFile[self.dropDownList.GetValue()]]['batt_max_current'][0]
-            self.dictionary[self.fileToFile[self.dropDownList.GetValue()]]['batt_max_current'] = [self.p26.GetValue()]
+            self.dictionary[self.fileToFile[self.dropDownList.GetValue()]]['batt_max_current'] = [self.p25.GetValue()]
             pub.sendMessage(("DictFromInput"), self.dictionary)
-            msg = datetime.now().strftime('%H:%M:%S') + ": " + "Battery Max Current changed from " + str(previousValue) + " to " + self.p26.GetValue()
+            msg = datetime.now().strftime('%H:%M:%S') + ": " + "Battery Max Current changed from " + str(previousValue) + " to " + self.p25.GetValue()
             pub.sendMessage(("AddStatus"), msg)
         except:
             pass    
         
-    def UpdateP27 (self, e):
+    def UpdateP26 (self, e):
         try:
             previousValue = self.dictionary[self.fileToFile[self.dropDownList.GetValue()]]['max_amphour'][0]
-            self.dictionary[self.fileToFile[self.dropDownList.GetValue()]]['max_amphour'] = [self.p27.GetValue()]
+            self.dictionary[self.fileToFile[self.dropDownList.GetValue()]]['max_amphour'] = [self.p26.GetValue()]
             pub.sendMessage(("DictFromInput"), self.dictionary)
-            msg = datetime.now().strftime('%H:%M:%S') + ": " + "Max Amphour changed from " + str(previousValue) + " to " + self.p27.GetValue()
+            msg = datetime.now().strftime('%H:%M:%S') + ": " + "Max Amphour changed from " + str(previousValue) + " to " + self.p26.GetValue()
             pub.sendMessage(("AddStatus"), msg)
         except:
             pass
         
-    def UpdateP28 (self, e):
+    def UpdateP27 (self, e):
         try:
             previousValue = self.dictionary[self.fileToFile[self.dropDownList.GetValue()]]['series_cells'][0]
-            self.dictionary[self.fileToFile[self.dropDownList.GetValue()]]['series_cells'] = [self.p28.GetValue()]
+            self.dictionary[self.fileToFile[self.dropDownList.GetValue()]]['series_cells'] = [self.p27.GetValue()]
             pub.sendMessage(("DictFromInput"), self.dictionary)
-            msg = datetime.now().strftime('%H:%M:%S') + ": " + "Cell Amount in Series changed from " + str(previousValue) + " to " + self.p28.GetValue()
+            msg = datetime.now().strftime('%H:%M:%S') + ": " + "Cell Amount in Series changed from " + str(previousValue) + " to " + self.p27.GetValue()
+            pub.sendMessage(("AddStatus"), msg)
+        except:
+            pass  
+        
+    def UpdateP28 (self, e):
+        try:
+            previousValue = self.dictionary[self.fileToFile[self.dropDownList.GetValue()]]['dist_to_alt_lookup'][0]
+            self.dictionary[self.fileToFile[self.dropDownList.GetValue()]]['dist_to_alt_lookup'] = [self.p28.GetValue()]
+            pub.sendMessage(("DictFromInput"), self.dictionary)
+            msg = datetime.now().strftime('%H:%M:%S') + ": " + "Distance to Altitude Lookup changed from " + str(previousValue) + " to " + self.p28.GetValue()
             pub.sendMessage(("AddStatus"), msg)
         except:
             pass  
         
     def UpdateP29 (self, e):
         try:
-            previousValue = self.dictionary[self.fileToFile[self.dropDownList.GetValue()]]['dist_to_alt_lookup'][0]
-            self.dictionary[self.fileToFile[self.dropDownList.GetValue()]]['dist_to_alt_lookup'] = [self.p29.GetValue()]
-            pub.sendMessage(("DictFromInput"), self.dictionary)
-            msg = datetime.now().strftime('%H:%M:%S') + ": " + "Distance to Altitude Lookup changed from " + str(previousValue) + " to " + self.p29.GetValue()
-            pub.sendMessage(("AddStatus"), msg)
-        except:
-            pass  
-        
-    def UpdateP30 (self, e):
-        try:
             previousValue = self.dictionary[self.fileToFile[self.dropDownList.GetValue()]]['dist_to_speed_lookup'][0]
-            self.dictionary[self.fileToFile[self.dropDownList.GetValue()]]['dist_to_speed_lookup'] = [self.p30.GetValue()]
+            self.dictionary[self.fileToFile[self.dropDownList.GetValue()]]['dist_to_speed_lookup'] = [self.p29.GetValue()]
             pub.sendMessage(("DictFromInput"), self.dictionary)
-            msg = datetime.now().strftime('%H:%M:%S') + ": " + "Distance to Speed Lookup changed from " + str(previousValue) + " to " + self.p30.GetValue()
+            msg = datetime.now().strftime('%H:%M:%S') + ": " + "Distance to Speed Lookup changed from " + str(previousValue) + " to " + self.p29.GetValue()
             pub.sendMessage(("AddStatus"), msg)
         except:
             pass
     
-    def UpdateP31 (self, e):
+    def UpdateP30 (self, e):
         try:
             previousValue = self.dictionary[self.fileToFile[self.dropDownList.GetValue()]]['motor_eff_lookup'][0]
-            self.dictionary[self.fileToFile[self.dropDownList.GetValue()]]['motor_eff_lookup'] = [self.p31.GetValue()]
+            self.dictionary[self.fileToFile[self.dropDownList.GetValue()]]['motor_eff_lookup'] = [self.p30.GetValue()]
             pub.sendMessage(("DictFromInput"), self.dictionary)
-            msg = datetime.now().strftime('%H:%M:%S') + ": " + "Motor Efficiency Lookup changed from " + str(previousValue) + " to " + self.p31.GetValue()
+            msg = datetime.now().strftime('%H:%M:%S') + ": " + "Motor Efficiency Lookup changed from " + str(previousValue) + " to " + self.p30.GetValue()
+            pub.sendMessage(("AddStatus"), msg)
+        except:
+            pass 
+    
+    def UpdateP31 (self, e):
+        try:
+            previousValue = self.dictionary[self.fileToFile[self.dropDownList.GetValue()]]['motor_controller_eff_lookup'][0]
+            self.dictionary[self.fileToFile[self.dropDownList.GetValue()]]['motor_controller_eff_lookup'] = [self.p31.GetValue()]
+            pub.sendMessage(("DictFromInput"), self.dictionary)
+            msg = datetime.now().strftime('%H:%M:%S') + ": " + "Motor Controller Efficiency Lookup changed from " + str(previousValue) + " to " + self.p31.GetValue()
             pub.sendMessage(("AddStatus"), msg)
         except:
             pass 
     
     def UpdateP32 (self, e):
         try:
-            previousValue = self.dictionary[self.fileToFile[self.dropDownList.GetValue()]]['motor_controller_eff_lookup'][0]
-            self.dictionary[self.fileToFile[self.dropDownList.GetValue()]]['motor_controller_eff_lookup'] = [self.p32.GetValue()]
+            previousValue = self.dictionary[self.fileToFile[self.dropDownList.GetValue()]]['soc_to_voltage_lookup'][0]
+            self.dictionary[self.fileToFile[self.dropDownList.GetValue()]]['soc_to_voltage_lookup'] = [self.p32.GetValue()]
             pub.sendMessage(("DictFromInput"), self.dictionary)
-            msg = datetime.now().strftime('%H:%M:%S') + ": " + "Motor Controller Efficiency Lookup changed from " + str(previousValue) + " to " + self.p32.GetValue()
+            msg = datetime.now().strftime('%H:%M:%S') + ": " + "SOC to Voltage Lookup changed from " + str(previousValue) + " to " + self.p32.GetValue()
             pub.sendMessage(("AddStatus"), msg)
         except:
             pass 
     
     def UpdateP33 (self, e):
         try:
-            previousValue = self.dictionary[self.fileToFile[self.dropDownList.GetValue()]]['soc_to_voltage_lookup'][0]
-            self.dictionary[self.fileToFile[self.dropDownList.GetValue()]]['soc_to_voltage_lookup'] = [self.p33.GetValue()]
+            previousValue = self.dictionary[self.fileToFile[self.dropDownList.GetValue()]]['throttlemap_lookup'][0]
+            self.dictionary[self.fileToFile[self.dropDownList.GetValue()]]['throttlemap_lookup'] = [self.p33.GetValue()]
             pub.sendMessage(("DictFromInput"), self.dictionary)
-            msg = datetime.now().strftime('%H:%M:%S') + ": " + "SOC to Voltage Lookup changed from " + str(previousValue) + " to " + self.p33.GetValue()
+            msg = datetime.now().strftime('%H:%M:%S') + ": " + "Throttle Map Lookup changed from " + str(previousValue) + " to " + self.p33.GetValue()
             pub.sendMessage(("AddStatus"), msg)
         except:
             pass 
-    
+        
     def UpdateP34 (self, e):
         try:
-            previousValue = self.dictionary[self.fileToFile[self.dropDownList.GetValue()]]['throttlemap_lookup'][0]
-            self.dictionary[self.fileToFile[self.dropDownList.GetValue()]]['throttlemap_lookup'] = [self.p34.GetValue()]
+            previousValue = self.dictionary[self.fileToFile[self.dropDownList.GetValue()]]['lean_angle_lookup'][0]
+            self.dictionary[self.fileToFile[self.dropDownList.GetValue()]]['lean_angle_lookup'] = [self.p34.GetValue()]
             pub.sendMessage(("DictFromInput"), self.dictionary)
-            msg = datetime.now().strftime('%H:%M:%S') + ": " + "Throttle Map Lookup changed from " + str(previousValue) + " to " + self.p34.GetValue()
+            msg = datetime.now().strftime('%H:%M:%S') + ": " + "Lean Angle Lookup changed from " + str(previousValue) + " to " + self.p34.GetValue()
             pub.sendMessage(("AddStatus"), msg)
         except:
             pass 
         
     def UpdateP35 (self, e):
         try:
-            previousValue = self.dictionary[self.fileToFile[self.dropDownList.GetValue()]]['lean_angle_lookup'][0]
-            self.dictionary[self.fileToFile[self.dropDownList.GetValue()]]['lean_angle_lookup'] = [self.p35.GetValue()]
+            previousValue = self.dictionary[self.fileToFile[self.dropDownList.GetValue()]]['chain_efficiency_lookup'][0]
+            self.dictionary[self.fileToFile[self.dropDownList.GetValue()]]['chain_efficiency_lookup'] = [self.p35.GetValue()]
             pub.sendMessage(("DictFromInput"), self.dictionary)
-            msg = datetime.now().strftime('%H:%M:%S') + ": " + "Lean Angle Lookup changed from " + str(previousValue) + " to " + self.p35.GetValue()
+            msg = datetime.now().strftime('%H:%M:%S') + ": " + "Chain Efficiency Lookup changed from " + str(previousValue) + " to " + self.p35.GetValue()
             pub.sendMessage(("AddStatus"), msg)
         except:
-            pass 
+            pass
+        
     def UpdateComments (self, e):
         try:
             previousValue = self.dictionary[self.fileToFile[self.dropDownList.GetValue()]]['comments'][0]

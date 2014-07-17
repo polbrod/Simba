@@ -45,124 +45,94 @@ def Simulation(dict_in):
         logging.info("Step found")
         step = currentData["step"]           #time step in seconds
         step = step + 0.0
-        print step        
         
         assert "total_time" in currentData, logging.critical("%s is missing data: total_time" % file)
         logging.info("total_time found")
         total_time = currentData["total_time"]
-        print total_time        
         
         assert "gearing" in currentData, logging.critical("%s is missing data: gearing" % file)
         logging.info("gearing found")
         gearing = currentData["gearing"]
-        print "Gearing"
-        print gearing        
-        
+
         assert "rider_mass" in currentData, logging.critical("%s is missing data: rider_mass" % file)
         logging.info("rider_mass found")
         rider_mass = currentData["rider_mass"] #kg
-        print rider_mass
     
         assert "bike_mass" in currentData, logging.critical("%s is missing data: bike_mass" % file)
         logging.info("bike_mass found")
         bike_mass = currentData["bike_mass"] #kg
-        print bike_mass        
         
         assert "gravity" in currentData, logging.critical("%s is missing data: gravity" % file)
         logging.info("gravity found")
         gravity = currentData["gravity"] 
-        print gravity        
         
         assert "air_resistance" in currentData, logging.critical("%s is missing data: air_resistance" % file)
         logging.info("air_resistance found")
         air_resistance = currentData["air_resistance"]
-        print air_resistance        
         
         assert "air_density" in currentData, logging.critical("%s is missing data: air_density" % file)
         logging.info("air_density found")
         air_density = currentData["air_density"]
-        print air_density        
         
         assert "frontal_area" in currentData, logging.critical("%s is missing data: frontal_area" % file)
         logging.info("frontal_area found")
         frontal_area =  currentData["frontal_area"] #m^2
-        print frontal_area        
         
         assert "rolling_resistance" in currentData, logging.critical("%s is missing data: rolling_resistance" % file)
         logging.info("rolling_resistance found")
         rolling_resistance = currentData["rolling_resistance"]
-        print rolling_resistance
 
         assert "top_motor_current" in currentData, logging.critical("%s is missing data: top_motor_current" % file)
         logging.info("top_motor_current found")
         top_motor_current = currentData['top_motor_current'] #amps        
-        print top_motor_current        
         
         assert "top_rpm" in currentData, logging.critical("%s is missing data: top_rpm" % file)
         logging.info("top_rpm found")
-        top_rpm = currentData["top_rpm"]
-        print "Top RPM"
-        print top_rpm        
+        top_rpm = currentData["top_rpm"]    
             
         assert "motor_top_power" in currentData, logging.critical("%s is missing data: motor_top_power" % file)
         logging.info("motor_top_power found")
         motor_top_power = currentData["motor_top_power"]
-        print motor_top_power        
-        
-        assert "chain_efficiency" in currentData, logging.critical("%s is missing data: chain_efficiency" % file)
-        logging.info("chain_efficiency found")
-        chain_efficiency = currentData["chain_efficiency"]
-        print chain_efficiency        
         
         assert "battery_efficiency" in currentData, logging.critical("%s is missing data: battery_efficiency" % file)
         logging.info("battery_efficiency found")
         battery_efficiency = currentData["battery_efficiency"]
-        print battery_efficiency        
         
         assert "motor_torque_constant" in currentData, logging.critical("%s is missing data: motor_torque_constant" % file)
         logging.info("motor_torque_constant found")
         motor_torque_constant = currentData["motor_torque_constant"] #torque to current constant of motor. torque/amp
-        print motor_torque_constant        
         
         assert "motor_rpm_constant" in currentData, logging.critical("%s is missing data: motor_rpm_constant" % file)
         logging.info("motor_rpm_constant found")
         motor_rpm_constant = currentData["motor_rpm_constant"] #rpm to voltage dc constant of motor. rpm/volt      
-        print motor_rpm_constant        
         
         assert "motor_thermal_conductivity" in currentData, logging.critical("%s is missing data: motor_thermal_conductivity" % file)
         logging.info("motor_thermal_conductivity")
         motor_thermal_conductivity = currentData["motor_thermal_conductivity"]
-        print motor_thermal_conductivity        
         
         assert "motor_heat_capacity" in currentData, logging.critical("%s is missing data: motor_heat_capacity" % file)
         logging.info("motor_heat_capacity")
         motor_heat_capacity = currentData["motor_heat_capacity"]
-        print motor_heat_capacity        
         
         assert "coolant_temp" in currentData, logging.critical("%s is missing data: coolant_temp" % file)
         logging.info("coolant_temp")
         coolant_temp = currentData["coolant_temp"]
-        print coolant_temp        
         
         assert "max_motor_temp" in currentData, logging.critical("%s is missing data: max_motor_temp" % file)
         logging.info("max_motor_temp")
         max_motor_temp = currentData["max_motor_temp"]
-        print max_motor_temp
     
         assert "series_cells" in currentData, logging.critical("%s is missing data: series_cells" % file)
         logging.info("series_cells found")
         series_cells = currentData["series_cells"]
-        print series_cells        
         
         assert "max_amphour" in currentData, logging.critical("%s is missing data: max_amphour" % file)
         logging.info("max_amphour")
         max_amphour = currentData["max_amphour"]
-        print max_amphour        
         
         assert "batt_max_current" in currentData, logging.critical("%s is missing data: batt_max_current" % file)
         logging.info("batt_max_current")
         batt_max_current = currentData["batt_max_current"]
-        print batt_max_current        
         
         assert "max_distance_travel" in currentData, logging.critical("%s is missing data: max_distance_travel" % file)
         logging.info("max_distance_travel found")
@@ -195,32 +165,29 @@ def Simulation(dict_in):
         assert "lean_angle_lookup" in currentData, logging.critical("%s is missing data: lean_angle_lookup" % file)
         logging.info("lean_angle_lookup found")
         lean_angle_lookup = currentData["lean_angle_lookup"][0]
+        
+        assert "chain_efficiency_lookup" in currentData, logging.critical("%s is missing data: chain_efficiency_lookup" % file)
+        logging.info("chain_efficiency_lookup found")
+        chain_efficiency_lookup = currentData["chain_efficiency_lookup"][0]
 	
         assert "tyreA" in currentData, logging.critical("%s is missing data: tyreA" % file)
         logging.info("tyreA found")
         tyreA = currentData["tyreA"][0]
-        print tyreA
         #tyreA = -2.069641313760728140e-05
 	
         assert "tyreB" in currentData, logging.critical("%s is missing data: tyreB" % file)
         logging.info("tyreB found")
         tyreB = currentData["tyreB"][0]
-        print tyreB
         #tyreB = 6.386679031823000125e-06
 	
         assert "tyreC" in currentData, logging.critical("%s is missing data: tyreC" % file)
         logging.info("tyreC found")
         TyreC = currentData["tyreC"][0]
-        print "TyreC"
-        print TyreC
-        TyreC = 3.197376543933548310e-01
-        print TyreC
- 
+        #TyreC = 3.197376543933548310e-01
+        
         assert "top_lean_angle" in currentData, logging.critical("%s is missing data: top_lean_angle" % file)
         logging.info("top_lean_angle found")
         top_lean_angle = currentData["top_lean_angle"][0]
-        print top_lean_angle
-        print "\n\n\n\n\n\n"
         
         #top_lean_angle = 45
         
@@ -395,7 +362,6 @@ def Simulation(dict_in):
             wx.CallAfter(pub.sendMessage, "AddStatus", msg)
             raise Exception("Unable to load \'" + motor_controller_eff_lookup + "\'")
             
-
         x = n[:,0].astype(np.float)
         y = n[:,1].astype(np.float)
         z = n[:,2].astype(np.float)
@@ -424,6 +390,23 @@ def Simulation(dict_in):
         grid_x, grid_y = np.mgrid[np.min(x):np.max(x)+1, np.min(y):np.max(y)+1]
         motor_eff_grid = griddata(points, values, (grid_x, grid_y), method='linear')
 
+
+        #chain efficiency
+        #rpm to chain efficiency %
+        chain_efficiency_lookup = "Lookup Files\\" + chain_efficiency_lookup
+        try:
+            n = np.loadtxt(chain_efficiency_lookup,dtype = 'string',delimiter = ',', skiprows = 1)
+            logging.info("%s loaded", chain_efficiency_lookup)
+            
+        except IOError:
+            logging.critical("Unable to load %s", chain_efficiency_lookup)
+            msg = datetime.now().strftime('%H:%M:%S') + ": " + "Unable to load " + chain_efficiency_lookup + " from " + file + ". Make sure the file exists and is not open."
+            wx.CallAfter(pub.sendMessage, "AddStatus", msg)
+            raise Exception("Unable to load \'" + chain_efficiency_lookup + "\'")
+        n = np.loadtxt(chain_efficiency_lookup,dtype = 'string',delimiter = ',', skiprows = 1)
+        x = n[:,0].astype(np.float)
+        y = n[:,1].astype(np.float)
+        chain_efficiency_map = interp1d(x,y)
 
         message = '';        
         
@@ -491,6 +474,13 @@ def Simulation(dict_in):
             message += 'WARNING: max_distance_travel greater than lean angle to distance look up --- '
             message += 'max_distance_travel changed to ' + repr(max_distance_travel) + ' for file ' + file
             wx.CallAfter(pub.sendMessage, "AddStatus", message)
+            
+        if np.max(chain_efficiency_map.x) < top_rpm:
+            top_rpm = np.max(chain_efficiency_map.x)
+            message = datetime.now().strftime('%H:%M:%S') + ": "
+            message += 'WARNING: top rpm is greater than the chain efficiency look up --- '
+            message += 'top rpm changed to' + repr(top_rpm) + ' for file ' + file
+            wx.CallAfter(pub.sendMessage, "AddStatus", message)
         
         wx.CallAfter(pub.sendMessage, "update", "")   
         '''
@@ -535,14 +525,14 @@ def Simulation(dict_in):
             motor_efficiency[n+1] = motor_eff_grid[np.int(np.around(motor_rpm[n+1]))][np.int(np.around(motor_torque[n+1]))]
             motor_controller_efficiency[n+1] = motor_controller_eff_grid[np.int(np.around(vrms[n+1]))][np.int(np.around(arms[n+1]))]
             
-            chain_power[n+1] = (p/(chain_efficiency))
+            chain_power[n+1] = (p/(chain_efficiency_map(motor_rpm[[n+1]])))
             motor_power[n+1] = (chain_power[n+1]/(motor_efficiency[n+1]))
             motor_controller_power[n+1] = (motor_power[n+1]/(motor_controller_efficiency[n+1]))
             battery_power[n+1] = (motor_controller_power[n+1]/(battery_efficiency))
             
             motor_loss[n+1] = motor_power[n+1]*(1-motor_efficiency[n+1])
             motor_controller_loss[n+1] = motor_controller_power[n+1]*(1-motor_controller_efficiency[n+1])
-            chain_loss[n+1] = chain_power[n+1]*(1-chain_efficiency)
+            chain_loss[n+1] = chain_power[n+1]*(1-chain_efficiency_map(motor_rpm[n+1]))
             battery_loss[n+1] = battery_power[n+1]*(1-battery_efficiency)
             return battery_power[n+1]
  
