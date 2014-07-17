@@ -296,7 +296,6 @@ def Efficiency(s,f,p,n):
     
     motor_loss[n+1] = motor_power[n+1]*(1-motor_efficiency[n+1])
     motor_controller_loss[n+1] = motor_controller_power[n+1]*(1-motor_controller_efficiency[n+1])
-    print chain_efficiency(motor_rpm[n+1])
     chain_loss[n+1] = chain_power[n+1]*(1-chain_efficiency(motor_rpm[n+1]))
     battery_loss[n+1] = battery_power[n+1]*(1-battery_efficiency)
     return battery_power[n+1]
