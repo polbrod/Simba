@@ -36,7 +36,7 @@ top_rpm = 3000
 motor_top_power = 80000.0
 max_distance_travel = 60350.0 #meters this needs to be calculated from lookups
 
-chain_efficiency = .98
+#chain_efficiency = .98 #no longer used with new lookup table
 battery_efficiency = .98
 
 motor_torque_constant = 2   #torque to current constant of motor. torque/amp
@@ -69,6 +69,7 @@ soc_to_voltage_lookup = 'aee.csv'
 throttlemap_lookup = 'throttle.csv'
 lean_angle_lookup = 'lean_IOM_video_data.csv'
 corner_radius_lookup = 'pikespeakradius.csv'
+chain_eff_lookup = 'chain_eff_30kW.csv'
 
 #simulation calcs
 steps = int(math.ceil(total_time/step))
@@ -203,6 +204,13 @@ values = np.array(z)
 grid_x, grid_y = np.mgrid[np.min(x):np.max(x)+1, np.min(y):np.max(y)+1]
 motor_eff_grid = griddata(points, values, (grid_x, grid_y), method='linear')
 
+#chain efficiency
+#rpm to chain efficiency %
+n = np.loadtxt(chain_eff_lookup,dtype = 'string',delimiter = ',', skiprows = 1)
+x = n[:,0].astype(np.float)
+y = n[:,1].astype(np.float)
+chain_efficiency = interp1d(x,y)
+
 
 #Make sure parameters don't extend lookups
 if np.max(distancetospeed_lookup.x) < max_distance_travel:
@@ -231,6 +239,11 @@ if np.max(throttlemap.x) < top_rpm:
     print 'top rpm is greater than throttle map look up'
     print 'top rpm ' + repr(top_rpm)
 
+if np.max(chain_efficiency.x) < top_rpm:
+    top_rpm = np.max(chain_efficiency.x)
+    print 'top rpm is greater than the chain efficiency look up'
+    print 'top rpm ' + repr(top_rpm)    
+    
 (x,y) = motor_eff_grid.shape
 if y-1 <  top_torque:
     top_torque = y-1
@@ -284,20 +297,22 @@ def Force(s,n):
 def Efficiency(s,f,p,n):
     motor_rpm[n+1] = ((s)/(wheel_radius[n+1]*2*np.pi)) * gearing * 60
     motor_torque[n+1] = (f * wheel_radius[n+1])/gearing
+    if motor_torque[n+1] > top_force[n+1]:
+        return float('nan')
     arms[n+1] = motor_torque[n+1]/motor_torque_constant
     vrms[n+1] = motor_rpm[n+1]/(motor_rpm_constant)*(1/(sqrt2))  
 
     motor_efficiency[n+1] = motor_eff_grid[np.int(np.around(motor_rpm[n+1]))][np.int(np.around(motor_torque[n+1]))]
     motor_controller_efficiency[n+1] = motor_controller_eff_grid[np.int(np.around(vrms[n+1]))][np.int(np.around(arms[n+1]))]
     
-    chain_power[n+1] = (p/(chain_efficiency))
+    chain_power[n+1] = (p/(chain_efficiency(motor_rpm[[n+1]])))
     motor_power[n+1] = (chain_power[n+1]/(motor_efficiency[n+1]))
     motor_controller_power[n+1] = (motor_power[n+1]/(motor_controller_efficiency[n+1]))
     battery_power[n+1] = (motor_controller_power[n+1]/(battery_efficiency))
     
     motor_loss[n+1] = motor_power[n+1]*(1-motor_efficiency[n+1])
     motor_controller_loss[n+1] = motor_controller_power[n+1]*(1-motor_controller_efficiency[n+1])
-    chain_loss[n+1] = chain_power[n+1]*(1-chain_efficiency)
+    chain_loss[n+1] = chain_power[n+1]*(1-chain_efficiency(motor_rpm[n+1]))
     battery_loss[n+1] = battery_power[n+1]*(1-battery_efficiency)
     return battery_power[n+1]
 
@@ -311,8 +326,7 @@ def Top_force(n):
 
 #Top Speed(allows for expandsion to one top speeds)
 def Top_speed(n):
-    return ((wheel_radius[n+1]*2*np.pi* (top_rpm) / (gearing))/60)
-
+    return max([0,((wheel_radius[n+1]*2*np.pi* (top_rpm) / (gearing))/60)])
 #Top Power 
 #check which has lower top power battery or motor
 def Top_power(n):
@@ -341,7 +355,8 @@ def Motor_Thermal(n):
 def Motor_Thermal_solve(s,n):
     f = Force(s,n)     
     p = Power(s,n)
-    Efficiency(s,f,p,n)
+    if Efficiency(s,f,p,n) == float('nan'):
+        return max_motor_temp
     Motor_Thermal(n)
     motor_thermal_error[n+1] = abs(motor_temp[n+1] - max_motor_temp)
     return motor_thermal_error[n+1]
@@ -363,7 +378,7 @@ def loop(n):
     for n in range(steps):
         time[n+1] = time[n] + step                  #increase time step
         distance[n+1] = distance[n] + speed[n]*step #move bike forward 
-        if (distance[n+1] > max_distance_travel):
+        if (distance[n+1] > max_distance_travel) or speed[n] == 0:            
             return n                                #stop if cross finish line
         
         wheel_radius[n+1] = Wheel_Radius(lean_angle_lookup(distance[n+1]), n)
@@ -387,7 +402,7 @@ def loop(n):
         
         if c_force[n+1] > top_force[n+1]:           #Limit speed to top force
             motor_torque_limit[n+1] = 1
-            p_speed[n+1] = (opt.fsolve(force_solve,t_speed[n+1],n))[0]
+            p_speed[n+1] = max([0,(opt.fsolve(force_solve,t_speed[n+1],n))[0]])
             p_force[n+1] = Force(p_speed[n+1],n)
         else:
             p_speed[n+1] = t_speed[n+1]
@@ -400,7 +415,7 @@ def loop(n):
                 motor_power_limit[n+1] = 1
             if is_batt_power:
                 batt_power_limit[n+1] = 1
-            mt_speed[n+1] = (opt.fsolve(power_solve,p_speed[n+1],n))[0]
+            mt_speed[n+1] = max([0,(opt.fsolve(power_solve,p_speed[n+1],n))[0]])
             mt_force[n+1] = Force(mt_speed[n+1],n)
             mt_power[n+1] = Power(mt_speed[n+1],n)
         else:
@@ -414,7 +429,7 @@ def loop(n):
         Motor_Thermal(n)                            #Limit speed to thermal limtis
         if motor_temp[n+1] > max_motor_temp:
             bnds = [(0,mt_speed[n+1])]
-            speed[n+1] = (opt.fmin_tnc(Motor_Thermal_solve,mt_speed[n+1]-1,args = (n,),bounds=bnds, approx_grad = True,messages = 0))[0]
+            speed[n+1] = (opt.fmin_tnc(Motor_Thermal_solve,mt_speed[n+1],args = (n,),bounds=bnds, approx_grad = True,messages = 0))[0]
             force[n+1] = Force(speed[n+1],n)
             power[n+1] = Power(speed[n+1],n)   
             total_power[n+1] = Efficiency(speed[n+1],force[n+1],power[n+1],n)
