@@ -1157,6 +1157,7 @@ class MainFrame(wx.Frame):
         self.currentFile = dict()   
         self.performSensitivityAnalysis = False
         # Load icon
+        
         if hasattr(sys, 'frozen'):
             iconLoc = os.path.join(os.path.dirname(sys.executable),"SIMBA.exe")
             iconLoc = wx.IconLocation(iconLoc,0)
