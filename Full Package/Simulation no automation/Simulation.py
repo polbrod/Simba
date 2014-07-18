@@ -37,7 +37,6 @@ motor_top_power = 80000.0
 max_distance_travel = 60350.0 #meters this needs to be calculated from lookups
 
 #chain_efficiency = .98 #no longer used with new lookup table
-
 battery_efficiency = .98
 
 motor_torque_constant = 2   #torque to current constant of motor. torque/amp
@@ -284,9 +283,6 @@ def Force(s,n):
 def Efficiency(s,f,p,n):
     motor_rpm[n+1] = ((s)/(wheel_radius[n+1]*2*np.pi)) * gearing * 60
     motor_torque[n+1] = (f * wheel_radius[n+1])/gearing
-    if motor_torque[n+1] > top_force[n+1]:
-        return float('nan')
-        
     arms[n+1] = motor_torque[n+1]/motor_torque_constant
     vrms[n+1] = motor_rpm[n+1]/(motor_rpm_constant)*(1/(sqrt2))  
 
@@ -314,7 +310,7 @@ def Top_force(n):
 
 #Top Speed(allows for expandsion to one top speeds)
 def Top_speed(n):
-    return max([0,((wheel_radius[n+1]*2*np.pi* (top_rpm) / (gearing))/60)])
+    return ((wheel_radius[n+1]*2*np.pi* (top_rpm) / (gearing))/60)
 
 #Top Power 
 #check which has lower top power battery or motor
@@ -344,8 +340,7 @@ def Motor_Thermal(n):
 def Motor_Thermal_solve(s,n):
     f = Force(s,n)     
     p = Power(s,n)
-    if Efficiency(s,f,p,n) == float('nan'):
-        return max_motor_temp
+    Efficiency(s,f,p,n)
     Motor_Thermal(n)
     motor_thermal_error[n+1] = abs(motor_temp[n+1] - max_motor_temp)
     return motor_thermal_error[n+1]
@@ -367,7 +362,7 @@ def loop(n):
     for n in range(steps):
         time[n+1] = time[n] + step                  #increase time step
         distance[n+1] = distance[n] + speed[n]*step #move bike forward 
-        if (distance[n+1] > max_distance_travel) or speed[n] == 0:
+        if (distance[n+1] > max_distance_travel):
             return n                                #stop if cross finish line
         
         wheel_radius[n+1] = Wheel_Radius(lean_angle_lookup(distance[n+1]), n)
@@ -391,7 +386,7 @@ def loop(n):
         
         if c_force[n+1] > top_force[n+1]:           #Limit speed to top force
             motor_torque_limit[n+1] = 1
-            p_speed[n+1] = max([0,(opt.fsolve(force_solve,t_speed[n+1],n))[0]])
+            p_speed[n+1] = (opt.fsolve(force_solve,t_speed[n+1],n))[0]
             p_force[n+1] = Force(p_speed[n+1],n)
         else:
             p_speed[n+1] = t_speed[n+1]
@@ -404,7 +399,7 @@ def loop(n):
                 motor_power_limit[n+1] = 1
             if is_batt_power:
                 batt_power_limit[n+1] = 1
-            mt_speed[n+1] = max([0,(opt.fsolve(power_solve,p_speed[n+1],n))[0]])
+            mt_speed[n+1] = (opt.fsolve(power_solve,p_speed[n+1],n))[0]
             mt_force[n+1] = Force(mt_speed[n+1],n)
             mt_power[n+1] = Power(mt_speed[n+1],n)
         else:
@@ -418,7 +413,7 @@ def loop(n):
         Motor_Thermal(n)                            #Limit speed to thermal limtis
         if motor_temp[n+1] > max_motor_temp:
             bnds = [(0,mt_speed[n+1])]
-            speed[n+1] = (opt.fmin_tnc(Motor_Thermal_solve,mt_speed[n+1],args = (n,),bounds=bnds, approx_grad = True,messages = 0))[0]       
+            speed[n+1] = (opt.fmin_tnc(Motor_Thermal_solve,mt_speed[n+1]-1,args = (n,),bounds=bnds, approx_grad = True,messages = 0))[0]
             force[n+1] = Force(speed[n+1],n)
             power[n+1] = Power(speed[n+1],n)   
             total_power[n+1] = Efficiency(speed[n+1],force[n+1],power[n+1],n)
