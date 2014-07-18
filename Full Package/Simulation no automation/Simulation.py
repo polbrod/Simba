@@ -68,6 +68,7 @@ motor_eff_lookup = 'Emrax_eff.csv'
 soc_to_voltage_lookup = 'aee.csv'
 throttlemap_lookup = 'throttle.csv'
 lean_angle_lookup = 'lean_IOM_video_data.csv'
+corner_radius_lookup = 'pikespeakradius.csv'
 
 #simulation calcs
 steps = int(math.ceil(total_time/step))
@@ -141,6 +142,8 @@ wheel_radius = np.zeros((steps+1,tests),dtype=float)
 
 lean_angle_limit = np.zeros((steps+1,tests),dtype=float)
 
+lateral_acc = np.zeros((steps+1,tests),dtype=float)
+
 #Lookups
 #soc to voltage
 n = np.loadtxt(soc_to_voltage_lookup,dtype = 'string',delimiter = ',', skiprows = 1)
@@ -171,6 +174,12 @@ n = np.loadtxt(lean_angle_lookup,dtype = 'string',delimiter = ',', skiprows = 1)
 x = n[:,0].astype(np.float)
 y = n[:,1].astype(np.float)
 lean_angle_lookup = interp1d(x,y)
+
+#distance to lean angle lookup
+n = np.loadtxt(corner_radius_lookup,dtype = 'string',delimiter = ',', skiprows = 1)
+x = n[:,0].astype(np.float)
+y = n[:,1].astype(np.float)
+cornerradius = interp1d(x,y)
 
 #motorcontroller efficiency 
 #[volts_rms][amps_rms] to efficiency %
@@ -207,6 +216,11 @@ if np.max(distancetoaltitude_lookup.x) < max_distance_travel:
     print 'max_distance_travel greater than altitude to distance look up'
     print 'max_distance_travel changed to ' + repr(max_distance_travel)
 
+if np.max(cornerradius.x) < max_distance_travel:
+    max_distance_travel =  np.max(cornerradius.x)  
+    print 'max_distance_travel greater than cornerradius to distance look up'
+    print 'max_distance_travel changed to ' + repr(max_distance_travel)
+
 if np.max(lean_angle_lookup.x) < max_distance_travel:
     max_distance_travel =  np.max(lean_angle_lookup.x)  
     print 'max_distance_travel greater than lean angle to distance look up'
@@ -216,7 +230,6 @@ if np.max(throttlemap.x) < top_rpm:
     top_rpm =  np.max(throttlemap.x) 
     print 'top rpm is greater than throttle map look up'
     print 'top rpm ' + repr(top_rpm)
-
 
 (x,y) = motor_eff_grid.shape
 if y-1 <  top_torque:
@@ -416,6 +429,8 @@ def loop(n):
         amphour[n+1] = amphour[n] + (total_power[n+1]/voltage[n+1])*(step/(60.0*60.0))
         energy[n+1] = energy[n] + total_power[n+1]*(step/(60.0*60.0))
         
+        lateral_acc[n+1] =  speed[n+1]**2/cornerradius(distance[n+1])
+        
     return steps
    #plot each loop here
 
@@ -433,12 +448,14 @@ print 'average power = ' + repr(np.mean(power[:end]))
 print 'max power = ' + repr(np.max(power[:end]))
 print 'energy = ' + repr(np.max(energy))
 print 'amphour = ' + repr(np.max(amphour))
+print 'max lateral acceleration = ' + repr(np.nanmax(lateral_acc))
 print '% motor rpm limit  = ' + repr(np.mean(motor_rpm_limit[:end])*100)
 print '% motor torque limit  = ' + repr(np.mean(motor_torque_limit[:end])*100)
 print '% motor power limit  = ' + repr(np.mean(motor_power_limit[:end])*100)
 print '% battery power limit  = ' + repr(np.mean(batt_power_limit[:end])*100)
 print '% motor thermal limit = ' + repr(np.mean(motor_thermal_limit[:end])*100)
 print '% motor lean angle limit = ' + repr(np.mean(lean_angle_limit[:end])*100)
+
 #finish plot
 
     
