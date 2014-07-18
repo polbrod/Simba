@@ -37,6 +37,7 @@ motor_top_power = 80000.0
 max_distance_travel = 60350.0 #meters this needs to be calculated from lookups
 
 #chain_efficiency = .98 #no longer used with new lookup table
+
 battery_efficiency = .98
 
 motor_torque_constant = 2   #torque to current constant of motor. torque/amp
