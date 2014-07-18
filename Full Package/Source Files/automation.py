@@ -42,15 +42,17 @@ def SensitivityAnalysis(dictionary, sensitivityValue):
     
     # Take any file since they all have the same input parameters
     for key in dictionary[dictionary.keys()[0]]:
-        if not isinstance(dictionary[dictionary.keys()[0]][key][0],basestring) and key != 'motor_torque_constant':
+        if not isinstance(dictionary[dictionary.keys()[0]][key][0],basestring):
             outputFiles = []
             originalDictionary = deepcopy(dictionary)
             
             # Plus x% from the current key in each file
             for file in dictionary:
                 originalData = dictionary[file][key]
+                
+                # Probably a bad solution to allow for the renaming of keys...
                 dictionary[file][key] = originalData * (1.0 + sensitivityValue)
-            
+                
             outputFiles.append(sim.Simulation(dictionary))
             dictionary = deepcopy(originalDictionary)
             
@@ -542,7 +544,7 @@ class SensitivityAnalysisFrame(wx.Frame):
         ################################################################
         # Define mainsplitter as child of Frame and add IOSplitterPanel and StatusPanel as children
         mainsplitter = wx.SplitterWindow(self, style = wx.SP_3D| wx.SP_LIVE_UPDATE)
-        mainsplitter.SetSashGravity(0.2)
+        #mainsplitter.SetSashGravity(0.2)
         mainsplitter.SetMinimumPaneSize(20)
 
         #splitterpanel = IOSplitterPanel(mainsplitter)
@@ -552,7 +554,7 @@ class SensitivityAnalysisFrame(wx.Frame):
 
         mainsplitter.SplitVertically(leftPanel, rightPanel)
         windowW, windowH = wx.DisplaySize()
-        mainsplitter.SetSashPosition(30, True)
+        mainsplitter.SetSashPosition(300, True)
         newW = windowW/0.6
         #mainsplitter.SetSashPosition(windowW - newW, True)
         #mainsplitter.SetSashPosition(-50, True)
@@ -569,12 +571,12 @@ class OptionsPanel(scrolled.ScrolledPanel):
         scrolled.ScrolledPanel.__init__(self, parent, *args, **kwargs)
         self.parent = parent
 
+        self.fillSizer = True
         self.SADict = collections.OrderedDict()
         self.sortArrays = collections.OrderedDict()
         pub.subscribe(self.TransferSortArrays, ("TransferSortArrays"))
         pub.subscribe(self.TransferSADict, ("TransferSADictionary")) 
         
-        self.leftPanel = wx.Panel(self)
         self.rightPanel = wx.Panel(self)
         #Create Sizers    
         
@@ -596,20 +598,35 @@ class OptionsPanel(scrolled.ScrolledPanel):
         self.sortText = wx.StaticText(self, wx.ID_ANY, "   Sorting options")
         self.sortText.SetFont(font)
         
+        self.rightSizer = wx.BoxSizer(wx.VERTICAL)
         
-        self.topSpeedItem = wx.RadioButton(self.leftPanel, -1, pos=(14,10), label='Top Speed', style=wx.RB_GROUP)
-        self.averageSpeedItem = wx.RadioButton(self.leftPanel, -1, pos=(14,25), label='Average Speed')
-        self.topPowerItem = wx.RadioButton(self.leftPanel, -1, pos=(14,40), label='Top Power')
-        self.averagePowerItem = wx.RadioButton(self.leftPanel, -1, pos=(14,55), label='Average Power')
-        self.energyItem = wx.RadioButton(self.leftPanel, -1, pos=(14,70), label='Energy')
-
-        self.largest2Smallest = wx.RadioButton(self.rightPanel, -1, pos = (14,10), label='Largest to Smallest', style=wx.RB_GROUP)
-        self.smallest2Largest = wx.RadioButton(self.rightPanel, -1, pos = (14,25), label='Smallest to Largest')
-        self.smallestDiff = wx.RadioButton(self.rightPanel, -1, pos=(14,40), label='Smallest Difference')
-        self.largestDiff = wx.RadioButton(self.rightPanel, -1, pos=(14,55), label='Largest Difference')
-        self.smallestPerc = wx.RadioButton(self.rightPanel, -1, pos=(14,70), label='Smallest Percent Difference')
-        self.largestPerc = wx.RadioButton(self.rightPanel, -1, pos=(14,85), label='Largest Percent Difference')
+        self.topSpeedItem = wx.RadioButton(self, -1, label='Top Speed', style=wx.RB_GROUP)
+        self.rightSizer.Add(self.topSpeedItem)
+        self.averageSpeedItem = wx.RadioButton(self, -1, label='Average Speed')
+        self.rightSizer.Add(self.averageSpeedItem)
+        self.topPowerItem = wx.RadioButton(self, -1, label='Top Power')
+        self.rightSizer.Add(self.topPowerItem)
+        self.averagePowerItem = wx.RadioButton(self, -1, label='Average Power')
+        self.rightSizer.Add(self.averagePowerItem)
+        self.energyItem = wx.RadioButton(self, -1, label='Energy')
+        self.rightSizer.Add(self.energyItem)
+        self.rightSizer.AddSpacer(10)
+        self.largest2Smallest = wx.RadioButton(self, -1, label='Largest to Smallest', style=wx.RB_GROUP)
+        self.rightSizer.Add(self.largest2Smallest)
+        self.smallest2Largest = wx.RadioButton(self, -1, label='Smallest to Largest')
+        self.rightSizer.Add(self.smallest2Largest)
+        self.smallestDiff = wx.RadioButton(self, -1, label='Smallest Difference')
+        self.rightSizer.Add(self.smallestDiff)
+        self.largestDiff = wx.RadioButton(self, -1, label='Largest Difference')
+        self.rightSizer.Add(self.largestDiff)
+        self.smallestPerc = wx.RadioButton(self, -1, label='Smallest Percent Difference')
+        self.rightSizer.Add(self.smallestPerc)
+        self.largestPerc = wx.RadioButton(self, -1, label='Largest Percent Difference')
+        self.rightSizer.Add(self.largestPerc)
         
+        self.offsetSizer = wx.BoxSizer(wx.HORIZONTAL)
+        self.offsetSizer.AddSpacer(14)
+        self.offsetSizer.Add(self.rightSizer)
         
         self.Bind(wx.EVT_RADIOBUTTON, self.Sort, self.topSpeedItem)
         self.Bind(wx.EVT_RADIOBUTTON, self.Sort, self.averageSpeedItem)
@@ -638,9 +655,11 @@ class OptionsPanel(scrolled.ScrolledPanel):
             self.outputs.append(key)
             self.Bind(wx.EVT_CHECKBOX, self.configureOutput, id = trigger.GetId())
             self.inputs.append(trigger)
-                
-        for inputItem in self.inputs: 
-            self.vSizer1.Add(inputItem, 0, wx.ALL, 1) 
+        
+        if self.fillSizer is True:
+            for inputItem in self.inputs: 
+                self.vSizer1.Add(inputItem, 0, wx.ALL, 1) 
+            self.fillSizer = False
             
             
         wx.CallAfter(pub.sendMessage, "DisplayOutputs", self.outputs)
@@ -650,8 +669,8 @@ class OptionsPanel(scrolled.ScrolledPanel):
         
         self.vSizer.AddSpacer(10)
         self.vSizer.Add(self.sortText)
-        self.vSizer.Add(self.leftPanel)
-        self.vSizer.Add(self.rightPanel)
+        #self.vSizer.Add(self.leftPanel)
+        self.vSizer.Add(self.offsetSizer)
         '''
         self.hSortSizer.Add(self.leftPanel, 1, wx.EXPAND)
         self.hSortSizer.AddSpacer(5)
@@ -770,15 +789,18 @@ class SAResultsPanel(wx.Panel):
         self.completeResults = collections.OrderedDict()
         self.directory = ''
         self.sensitivityValue = 0       
-    
+        self.cellBlockSize = 0
+        self.inputValues = dict()
         
         
         pub.subscribe(self.TransferSortArrays, ("TransferSortArrays"))
         pub.subscribe(self.TransferDictionary, ("TransferSADictionary"))
         pub.subscribe(self.TransferOutputDirectory, ("TransferOutputDirectory"))
         pub.subscribe(self.TransferSensitivityValue, ("TransferSensitivityValue"))
+        pub.subscribe(self.InsertPages, ("TransferSADictionary")) 
         pub.subscribe(self.UpdateNotebook, ("DisplayOutputs"))
         pub.subscribe(self.DetermineSortType, ("SortType"))
+        pub.subscribe(self.ObtainInputs, ("GetInputs"))
         
         self.lowerSizer = wx.BoxSizer(wx.HORIZONTAL)
         self.lowerSizer.AddSpacer(50)
@@ -803,14 +825,14 @@ class SAResultsPanel(wx.Panel):
         self.outputs = []
         self.SADict = collections.OrderedDict()
         self.notebook = wx.Notebook(self)
-        pub.subscribe(self.InsertPages, ("TransferSADictionary")) 
         sizer = wx.BoxSizer(wx.VERTICAL)
         sizer.Add(self.notebook, 1, wx.ALL | wx.EXPAND)
         self.lowerSizer.Layout()
         sizer.Add(self.lowerSizer)
         
         self.SetSizer(sizer)               
-
+        
+        
         #self.notebook.Bind(wx.EVT_MOTION, self.onMouseMove)        
         
         self.Layout()
@@ -827,6 +849,7 @@ class SAResultsPanel(wx.Panel):
         
     def TransferSensitivityValue(self,msg):
         self.sensitivityValue = msg.data
+        print self.sensitivityValue
 
     def DetermineSortType(self, msg):
         self.sortType = msg.data
@@ -835,11 +858,14 @@ class SAResultsPanel(wx.Panel):
     def UpdateNotebook(self, msg):
         self.outputs = msg.data
         self.RegeneratePages()
+
+    def ObtainInputs(self, msg):
+        self.inputValues = msg.data
     
     def RegeneratePages(self):
         pageNum = 0
         
-        
+        self.notebook.GetSize()
         for page in self.pages:
             page.myGrid.ClearGrid()
             tabName = self.notebook.GetPageText(pageNum)
@@ -849,43 +875,46 @@ class SAResultsPanel(wx.Panel):
         
     def InsertPages(self, msg):
         self.SADict = msg.data
-        
+        self.parent.Show()
+        self.GrandParent.Show()
         for file in self.SADict['gearing'][0]: 
             self.page = NewTabPanel(self.notebook)
             self.pages.append(self.page)
-            self.page.myGrid.CreateGrid(300,12)
+            self.page.myGrid.CreateGrid(450,30)
             self.page.myGrid.HideColLabels()
             self.page.myGrid.HideRowLabels()
             self.page.myGrid.EnableGridLines(False)
             #sortedArray = self.sortArrays[self.sortType][file]
             #print sortedArray
             #self.CreateOutputGrid(self.page, file, sortedArray)
-            self.notebook.AddPage(self.page, file)
-            
+            self.notebook.AddPage(self.page, file)            
         
         self.page.Update()
         
     def CreateOutputGrid(self, page, file, sortedArray):   
         
         #self.page.myGrid.SetCellHighlightColour(self,'#14FF63' )
+        currentBlocksInRow = 0
         row = 0
+        col = 0
         for parameter in sortedArray:
             if parameter[1] in self.outputs:
+                currentBlocksInRow += 1
                 #print "Current page for parameter " + parameter[1] + " is " + file
                 parameter = parameter[1]
-                col = 0
-                if page.myGrid.GetCellValue(row, 0) != "" and page.myGrid.GetCellValue(row, 6) == "":
-                    col = 6
+                
                 # Row 0, Col 0 or 8
                 page.myGrid.SetCellValue(row, col, parameter)
+                page.myGrid.SetCellValue(row, col+1, "Input Value")
+                page.myGrid.SetCellValue(row, col+2, str(self.inputValues[file][parameter][0]))
                 page.myGrid.SetCellFont(row, col, wx.Font(10, wx.FONTFAMILY_DEFAULT, wx.NORMAL, wx.BOLD))
     
                 # Row 1, Col 0 or 8
                 #self.parameterSizer.AddSpacer(0)
                 #self.parameterSizer.Add(plusStaticText)
-                page.myGrid.SetCellValue(row+1, col+1, "+X%")
+                page.myGrid.SetCellValue(row+1, col+1, "+" + str(self.sensitivityValue) + "%")
                 #self.parameterSizer.Add(negativeStaticText)
-                page.myGrid.SetCellValue(row+1, col+2, "-X%")
+                page.myGrid.SetCellValue(row+1, col+2, "-" + str(self.sensitivityValue) + "%")
                 #self.parameterSizer.Add(diffStaticText)
                 page.myGrid.SetCellValue(row+1, col+3, "Diff")
                 #self.parameterSizer.Add(pdStaticText)
@@ -917,7 +946,10 @@ class SAResultsPanel(wx.Panel):
                 page.myGrid.SetCellValue(row+2, col+2, repr(round(minusValue,2)))
                 diff = abs(plusValue - minusValue)
                 page.myGrid.SetCellValue(row+2, col+3, repr(round(diff,2)))
-                percentDiff = diff/(plusValue + minusValue)
+                if (plusValue+minusValue) == 0:
+                    percentDiff = 0
+                else:
+                    percentDiff = diff/(plusValue + minusValue) * 100
                 page.myGrid.SetCellValue(row+2, col+4, repr(round(percentDiff,2)))
                 
                 
@@ -946,7 +978,10 @@ class SAResultsPanel(wx.Panel):
                 page.myGrid.SetCellValue(row+3, col+2, repr(round(minusValue,2)))
                 diff = abs(plusValue - minusValue)
                 page.myGrid.SetCellValue(row+3, col+3, repr(round(diff,2)))
-                percentDiff = diff/(plusValue + minusValue)
+                if (plusValue+minusValue) == 0:
+                    percentDiff = 0
+                else:
+                    percentDiff = diff/(plusValue + minusValue) * 100
                 page.myGrid.SetCellValue(row+3, col+4, repr(round(percentDiff,2)))
                 
                 
@@ -975,7 +1010,10 @@ class SAResultsPanel(wx.Panel):
                 page.myGrid.SetCellValue(row+4, col+2, repr(round(minusValue,2)))
                 diff = abs(plusValue - minusValue)
                 page.myGrid.SetCellValue(row+4, col+3, repr(round(diff,2)))
-                percentDiff = diff/(plusValue + minusValue)
+                if (plusValue+minusValue) == 0:
+                    percentDiff = 0
+                else:
+                    percentDiff = diff/(plusValue + minusValue) * 100
                 page.myGrid.SetCellValue(row+4, col+4, repr(round(percentDiff,2)))
     
                 # Row 5, Col 0 or 8
@@ -1003,7 +1041,10 @@ class SAResultsPanel(wx.Panel):
                 page.myGrid.SetCellValue(row+5, col+2, repr(round(minusValue,2)))
                 diff = abs(plusValue - minusValue)
                 page.myGrid.SetCellValue(row+5, col+3, repr(round(diff,2)))
-                percentDiff = diff/(plusValue + minusValue)
+                if (plusValue+minusValue) == 0:
+                    percentDiff = 0
+                else:
+                    percentDiff = diff/(plusValue + minusValue) * 100
                 page.myGrid.SetCellValue(row+5, col+4, repr(round(percentDiff,2)))
                         
                 # Row 6, Col 0 or 8
@@ -1031,7 +1072,10 @@ class SAResultsPanel(wx.Panel):
                 page.myGrid.SetCellValue(row+6, col+2, repr(round(minusValue,2)))
                 diff = abs(plusValue - minusValue)
                 page.myGrid.SetCellValue(row+6, col+3, repr(round(diff,2)))
-                percentDiff = diff/(plusValue + minusValue)
+                if (plusValue+minusValue) == 0:
+                    percentDiff = 0
+                else:
+                    percentDiff = diff/(plusValue + minusValue) * 100
                 page.myGrid.SetCellValue(row+6, col+4, repr(round(percentDiff,2)))
                 
                 # Row 8, Col 0 or 8
@@ -1041,6 +1085,13 @@ class SAResultsPanel(wx.Panel):
                 minus_limit = self.SADict[parameter][1][file]['% Motor RPM Limit']
                 page.myGrid.SetCellValue(row+8, col+1, repr(round(plus_limit,2)))
                 page.myGrid.SetCellValue(row+8, col+2, repr(round(minus_limit,2)))
+                diff = abs(plus_limit - minus_limit)
+                page.myGrid.SetCellValue(row+8, col+3, repr(round(diff,2)))
+                if (plusValue+minusValue) == 0:
+                    percentDiff = 0
+                else:
+                    percentDiff = diff/(plusValue + minusValue) * 100
+                page.myGrid.SetCellValue(row+8, col+4, repr(round(percentDiff,2)))
                 
                 # Row 8, Col 0 or 8
                 # % Motor Torque Limit
@@ -1049,6 +1100,13 @@ class SAResultsPanel(wx.Panel):
                 minus_limit = self.SADict[parameter][1][file]['% Motor Torque Limit']
                 page.myGrid.SetCellValue(row+9, col+1, repr(round(plus_limit,2)))
                 page.myGrid.SetCellValue(row+9, col+2, repr(round(minus_limit,2)))
+                diff = abs(plus_limit - minus_limit)
+                page.myGrid.SetCellValue(row+9, col+3, repr(round(diff,2)))
+                if (plusValue+minusValue) == 0:
+                    percentDiff = 0
+                else:
+                    percentDiff = diff/(plusValue + minusValue) * 100
+                page.myGrid.SetCellValue(row+9, col+4, repr(round(percentDiff,2)))
                 
                 # Row 9, Col 0 or 8
                 # % Motor Power Limit
@@ -1057,6 +1115,13 @@ class SAResultsPanel(wx.Panel):
                 minus_limit = self.SADict[parameter][1][file]['% Motor Power Limit']
                 page.myGrid.SetCellValue(row+10, col+1, repr(round(plus_limit,2)))
                 page.myGrid.SetCellValue(row+10, col+2, repr(round(minus_limit,2)))
+                diff = abs(plus_limit - minus_limit)
+                page.myGrid.SetCellValue(row+10, col+3, repr(round(diff,2)))
+                if (plusValue+minusValue) == 0:
+                    percentDiff = 0
+                else:
+                    percentDiff = diff/(plusValue + minusValue) * 100
+                page.myGrid.SetCellValue(row+10, col+4, repr(round(percentDiff,2)))
                 
                 # Row 10, Col 0 or 8
                 # % Battery Power Limit
@@ -1065,6 +1130,13 @@ class SAResultsPanel(wx.Panel):
                 minus_limit = self.SADict[parameter][1][file]['% Battery Power Limit']
                 page.myGrid.SetCellValue(row+11, col+1, repr(round(plus_limit,2)))
                 page.myGrid.SetCellValue(row+11, col+2, repr(round(minus_limit,2)))
+                diff = abs(plus_limit - minus_limit)
+                page.myGrid.SetCellValue(row+11, col+3, repr(round(diff,2)))
+                if (plusValue+minusValue) == 0:
+                    percentDiff = 0
+                else:
+                    percentDiff = diff/(plusValue + minusValue) * 100
+                page.myGrid.SetCellValue(row+11, col+4, repr(round(percentDiff,2)))
                 
                 # Row 11, Col 0 or 8
                 # % Motor Thermal Limit
@@ -1073,6 +1145,13 @@ class SAResultsPanel(wx.Panel):
                 minus_limit = self.SADict[parameter][1][file]['% Motor Thermal Limit']
                 page.myGrid.SetCellValue(row+12, col+1, repr(round(plus_limit,2)))
                 page.myGrid.SetCellValue(row+12, col+2, repr(round(minus_limit,2)))
+                diff = abs(plus_limit - minus_limit)
+                page.myGrid.SetCellValue(row+12, col+3, repr(round(diff,2)))
+                if (plusValue+minusValue) == 0:
+                    percentDiff = 0
+                else:
+                    percentDiff = diff/(plusValue + minusValue) * 100
+                page.myGrid.SetCellValue(row+12, col+4, repr(round(percentDiff,2)))
                 
                 # Row 12, Col 0 or 8
                 # % Lean Angle Limit
@@ -1081,11 +1160,31 @@ class SAResultsPanel(wx.Panel):
                 minus_limit = self.SADict[parameter][1][file]['% Lean Angle Limit']
                 page.myGrid.SetCellValue(row+13, col+1, repr(round(plus_limit,2)))
                 page.myGrid.SetCellValue(row+13, col+2, repr(round(minus_limit,2)))
+                diff = abs(plus_limit - minus_limit)
+                page.myGrid.SetCellValue(row+13, col+3, repr(round(diff,2)))
+                if (plusValue+minusValue) == 0:
+                    percentDiff = 0
+                else:
+                    percentDiff = diff/(plusValue + minusValue) * 100
+                page.myGrid.SetCellValue(row+13, col+4, repr(round(percentDiff,2)))
                 
+                ''' If we haven't obtained the cell block size yet, resize the columns
+                after the first block is generated and then count the cells widths '''
+                if self.cellBlockSize == 0:
+                    page.myGrid.AutoSizeColumns()
+                    cellCountingCol = 0
+                    while cellCountingCol < 6:
+                        self.cellBlockSize += page.myGrid.GetColSize(cellCountingCol)
+                        cellCountingCol += 1
                 
-                if page.myGrid.GetCellValue(row, 6) != "":
+                if ((self.cellBlockSize) * (currentBlocksInRow+1)) < self.GetSize()[0]:
+                    col += 6
+                else:
+                    currentBlocksInRow = 0
+                    col = 0
                     row += 15
                     
+
         page.myGrid.AutoSizeColumns()
         #page.myGrid.ForceRefresh()
     
@@ -1134,7 +1233,6 @@ class SAResultsPanel(wx.Panel):
                 
                 pageNum += 1
                 
-            print("Data transfer to " + fileName + " complete")
             logging.info("Data converted and saved to %s", fileName)
 
 
@@ -1492,10 +1590,9 @@ class MainFrame(wx.Frame):
             self.dictionary[self.newParamName.GetValue()]["air_density"] = np.array([""])
             self.dictionary[self.newParamName.GetValue()]["gravity"] = np.array([""])
             self.dictionary[self.newParamName.GetValue()]["frontal_area"] = np.array([""])
-            self.dictionary[self.newParamName.GetValue()]["top_torque"] = np.array([""])
+            self.dictionary[self.newParamName.GetValue()]["top_motor_current"] = np.array([""])
             self.dictionary[self.newParamName.GetValue()]["top_rpm"] = np.array([""])
             self.dictionary[self.newParamName.GetValue()]["max_distance_travel"] = np.array([""])
-            self.dictionary[self.newParamName.GetValue()]["chain_efficiency"] = np.array([""])
             self.dictionary[self.newParamName.GetValue()]["battery_efficiency"] = np.array([""])
             self.dictionary[self.newParamName.GetValue()]["motor_torque_constant"] = np.array([""])
             self.dictionary[self.newParamName.GetValue()]["motor_rpm_constant"] = np.array([""])
@@ -1512,6 +1609,7 @@ class MainFrame(wx.Frame):
             self.dictionary[self.newParamName.GetValue()]["coolant_temp"] = np.array([""])
             self.dictionary[self.newParamName.GetValue()]["max_motor_temp"] = np.array([""])
             self.dictionary[self.newParamName.GetValue()]["throttlemap_lookup"] = np.array([""])
+            self.dictionary[self.newParamName.GetValue()]["chain_efficiency_lookup"] = np.array([""])
             self.dictionary[self.newParamName.GetValue()]["tyreA"] = np.array([""])
             self.dictionary[self.newParamName.GetValue()]["tyreB"] = np.array([""])
             self.dictionary[self.newParamName.GetValue()]["tyreC"] = np.array([""])
@@ -1630,12 +1728,13 @@ class MainFrame(wx.Frame):
         
 
 
-        
-
+    def TransferInput(self):
+        wx.CallAfter(pub.sendMessage, "GetInputs", self.dictionary)
     
     def OnRun(self, e):
         """Runs the simulation and opens files if needed"""
         wx.CallAfter(pub.sendMessage, "ClearTabs", "True")
+        self.TransferInput()
         logging.debug("Entered path: %s", self.project)
         
         dictionary = ProjectToParams(self.project)
@@ -1745,10 +1844,9 @@ class InputPanel(scrolled.ScrolledPanel):
         self.vSizer1.Add(wx.StaticText(self, wx.ID_ANY, "Air Density (kg/m^2)",size=(180,25)))
         self.vSizer1.Add(wx.StaticText(self, wx.ID_ANY, "Gravity (m/s^2)" ,size=(180,25)))
         self.vSizer1.Add(wx.StaticText(self, wx.ID_ANY, "Frontal Area (m^2)" ,size=(180,25)))
-        self.vSizer1.Add(wx.StaticText(self, wx.ID_ANY, "Top Torque (Nm)" ,size=(180,25)))
+        self.vSizer1.Add(wx.StaticText(self, wx.ID_ANY, "Top Motor Current (amps)" ,size=(180,25)))
         self.vSizer1.Add(wx.StaticText(self, wx.ID_ANY, "Top RPM (RPM)" ,size=(180,25)))
         self.vSizer1.Add(wx.StaticText(self, wx.ID_ANY, "Max Distance Travel (meters)" ,size=(180,25)))
-        self.vSizer1.Add(wx.StaticText(self, wx.ID_ANY, "Chain Efficiency" ,size=(180,25)))
         self.vSizer1.Add(wx.StaticText(self, wx.ID_ANY, "Battery Efficiency" ,size=(180,25)))
         self.vSizer1.Add(wx.StaticText(self, wx.ID_ANY, "Motor Torque Constant (Nm/amps rms)" ,size=(215,25)))
         self.vSizer1.Add(wx.StaticText(self, wx.ID_ANY, "Motor RPM Constant (RPM/Voltage)" ,size=(215,25)))
@@ -1767,6 +1865,7 @@ class InputPanel(scrolled.ScrolledPanel):
         self.vSizer1.Add(wx.StaticText(self, wx.ID_ANY, "SOC to Voltage Lookup" ,size=(180,25)))
         self.vSizer1.Add(wx.StaticText(self, wx.ID_ANY, "Throttlemap Lookup" ,size=(180,25)))
         self.vSizer1.Add(wx.StaticText(self, wx.ID_ANY, "Lean Angle Lookup" ,size=(180,25)))
+        self.vSizer1.Add(wx.StaticText(self, wx.ID_ANY, "Chain Efficiency Lookup" ,size=(180,25)))
 
         self.vSizer1.AddSpacer(3)
         self.vSizer1.Add(wx.StaticText(self, wx.ID_ANY, "Comments", size=(215,25)))
@@ -2026,7 +2125,7 @@ class InputPanel(scrolled.ScrolledPanel):
         except:
             self.p13.ChangeValue('')
         try:
-            self.p14.ChangeValue(str(currentFile["top_torque"][0]))  
+            self.p14.ChangeValue(str(currentFile["top_motor_current"][0]))  
         except:
             self.p14.ChangeValue('')
         try:
@@ -2038,79 +2137,79 @@ class InputPanel(scrolled.ScrolledPanel):
         except:
             self.p16.ChangeValue('')
         try:
-            self.p17.ChangeValue(str(currentFile["chain_efficiency"][0])) 
+            self.p17.ChangeValue(str(currentFile["battery_efficiency"][0]))
         except:
             self.p17.ChangeValue('')
         try:
-            self.p18.ChangeValue(str(currentFile["battery_efficiency"][0]))
+            self.p18.ChangeValue(str(currentFile["motor_torque_constant"][0]))    
         except:
             self.p18.ChangeValue('')
         try:
-            self.p19.ChangeValue(str(currentFile["motor_torque_constant"][0]))    
+            self.p19.ChangeValue(str(currentFile["motor_rpm_constant"][0]))
         except:
             self.p19.ChangeValue('')
         try:
-            self.p20.ChangeValue(str(currentFile["motor_rpm_constant"][0]))
+            self.p20.ChangeValue(str(currentFile["motor_top_power"][0]))
         except:
             self.p20.ChangeValue('')
         try:
-            self.p21.ChangeValue(str(currentFile["motor_top_power"][0]))
+            self.p21.ChangeValue(str(currentFile["motor_thermal_conductivity"][0]))
         except:
             self.p21.ChangeValue('')
         try:
-            self.p22.ChangeValue(str(currentFile["motor_thermal_conductivity"][0]))
+            self.p22.ChangeValue(str(currentFile["motor_heat_capacity"][0]))
         except:
             self.p22.ChangeValue('')
         try:
-            self.p23.ChangeValue(str(currentFile["motor_heat_capacity"][0]))
+            self.p23.ChangeValue(str(currentFile["max_motor_temp"][0]))
         except:
             self.p23.ChangeValue('')
         try:
-            self.p24.ChangeValue(str(currentFile["max_motor_temp"][0]))
+            self.p24.ChangeValue(str(currentFile["coolant_temp"][0]))
         except:
             self.p24.ChangeValue('')
         try:
-            self.p25.ChangeValue(str(currentFile["coolant_temp"][0]))
+            self.p25.ChangeValue(str(currentFile["batt_max_current"][0]))
         except:
             self.p25.ChangeValue('')
         try:
-            self.p26.ChangeValue(str(currentFile["batt_max_current"][0]))
+            self.p26.ChangeValue(str(currentFile["max_amphour"][0]))
         except:
             self.p26.ChangeValue('')
         try:
-            self.p27.ChangeValue(str(currentFile["max_amphour"][0]))
+            self.p27.ChangeValue(str(currentFile["series_cells"][0]))
         except:
             self.p27.ChangeValue('')
         try:
-            self.p28.ChangeValue(str(currentFile["series_cells"][0]))
+            self.p28.ChangeValue(str(currentFile["dist_to_alt_lookup"][0]))
         except:
             self.p28.ChangeValue('')
         try:
-            self.p29.ChangeValue(str(currentFile["dist_to_alt_lookup"][0]))
+            self.p29.ChangeValue(str(currentFile["dist_to_speed_lookup"][0]))
         except:
             self.p29.ChangeValue('')
         try:
-            self.p30.ChangeValue(str(currentFile["dist_to_speed_lookup"][0]))
+            self.p30.ChangeValue(str(currentFile["motor_eff_lookup"][0]))
         except:
             self.p30.ChangeValue('')
         try:
-            self.p31.ChangeValue(str(currentFile["motor_eff_lookup"][0]))
+            self.p31.ChangeValue(str(currentFile["motor_controller_eff_lookup"][0]))
         except:
             self.p31.ChangeValue('')
         try:
-            self.p32.ChangeValue(str(currentFile["motor_controller_eff_lookup"][0]))
+            self.p32.ChangeValue(str(currentFile["soc_to_voltage_lookup"][0]))
         except:
             self.p32.ChangeValue('')
         try:
-            self.p33.ChangeValue(str(currentFile["soc_to_voltage_lookup"][0]))
+            self.p33.ChangeValue(str(currentFile["throttlemap_lookup"][0]))
         except:
             self.p33.ChangeValue('')
         try:
-            self.p34.ChangeValue(str(currentFile["throttlemap_lookup"][0]))
+            self.p34.ChangeValue(str(currentFile["lean_angle_lookup"][0]))
         except:
             self.p34.ChangeValue('')
         try:
-            self.p35.ChangeValue(str(currentFile["lean_angle_lookup"][0]))
+            self.p35.ChangeValue(str(currentFile["chain_efficiency_lookup"][0])) 
         except:
             self.p35.ChangeValue('')
         try:
@@ -2261,10 +2360,10 @@ class InputPanel(scrolled.ScrolledPanel):
         
     def UpdateP14 (self, e):
         try:
-            previousValue = self.dictionary[self.fileToFile[self.dropDownList.GetValue()]]['top_torque'][0]
-            self.dictionary[self.fileToFile[self.dropDownList.GetValue()]]['top_torque'] = [self.p14.GetValue()]
+            previousValue = self.dictionary[self.fileToFile[self.dropDownList.GetValue()]]['top_motor_current'][0]
+            self.dictionary[self.fileToFile[self.dropDownList.GetValue()]]['top_motor_current'] = [self.p14.GetValue()]
             pub.sendMessage(("DictFromInput"), self.dictionary)
-            msg = datetime.now().strftime('%H:%M:%S') + ": " + "Top Torque changed from " + str(previousValue) + " to " + self.p14.GetValue()
+            msg = datetime.now().strftime('%H:%M:%S') + ": " + "Top Motor Current changed from " + str(previousValue) + " to " + self.p14.GetValue()
             pub.sendMessage(("AddStatus"), msg)
         except:
             pass
@@ -2292,194 +2391,195 @@ class InputPanel(scrolled.ScrolledPanel):
         
     def UpdateP17 (self, e):
         try:
-            previousValue = self.dictionary[self.fileToFile[self.dropDownList.GetValue()]]['chain_efficiency'][0]
-            self.dictionary[self.fileToFile[self.dropDownList.GetValue()]]['chain_efficiency'] = [self.p17.GetValue()]
+            previousValue = self.dictionary[self.fileToFile[self.dropDownList.GetValue()]]['battery_efficiency'][0]
+            self.dictionary[self.fileToFile[self.dropDownList.GetValue()]]['battery_efficiency'] = [self.p17.GetValue()]
             pub.sendMessage(("DictFromInput"), self.dictionary)
-            msg = datetime.now().strftime('%H:%M:%S') + ": " + "Chain Efficiency changed from " + str(previousValue) + " to " + self.p17.GetValue()
+            msg = datetime.now().strftime('%H:%M:%S') + ": " + "Battery Efficiency changed from " + str(previousValue) + " to " + self.p17.GetValue()
             pub.sendMessage(("AddStatus"), msg)
         except:
             pass
         
     def UpdateP18 (self, e):
         try:
-            previousValue = self.dictionary[self.fileToFile[self.dropDownList.GetValue()]]['battery_efficiency'][0]
-            self.dictionary[self.fileToFile[self.dropDownList.GetValue()]]['battery_efficiency'] = [self.p18.GetValue()]
+            previousValue = self.dictionary[self.fileToFile[self.dropDownList.GetValue()]]['motor_torque_constant'][0]
+            self.dictionary[self.fileToFile[self.dropDownList.GetValue()]]['motor_torque_constant'] = [self.p18.GetValue()]
             pub.sendMessage(("DictFromInput"), self.dictionary)
-            msg = datetime.now().strftime('%H:%M:%S') + ": " + "Battery Efficiency changed from " + str(previousValue) + " to " + self.p18.GetValue()
+            msg = datetime.now().strftime('%H:%M:%S') + ": " + "Motor Torque Constant changed from " + str(previousValue) + " to " + self.p18.GetValue()
             pub.sendMessage(("AddStatus"), msg)
         except:
             pass
         
     def UpdateP19 (self, e):
         try:
-            previousValue = self.dictionary[self.fileToFile[self.dropDownList.GetValue()]]['motor_torque_constant'][0]
-            self.dictionary[self.fileToFile[self.dropDownList.GetValue()]]['motor_torque_constant'] = [self.p19.GetValue()]
+            previousValue = self.dictionary[self.fileToFile[self.dropDownList.GetValue()]]['motor_rpm_constant'][0]
+            self.dictionary[self.fileToFile[self.dropDownList.GetValue()]]['motor_rpm_constant'] = [self.p19.GetValue()]
             pub.sendMessage(("DictFromInput"), self.dictionary)
-            msg = datetime.now().strftime('%H:%M:%S') + ": " + "Motor Torque Constant changed from " + str(previousValue) + " to " + self.p19.GetValue()
+            msg = datetime.now().strftime('%H:%M:%S') + ": " + "Motor RPM Constant changed from " + str(previousValue) + " to " + self.p19.GetValue()
             pub.sendMessage(("AddStatus"), msg)
         except:
             pass
         
     def UpdateP20 (self, e):
         try:
-            previousValue = self.dictionary[self.fileToFile[self.dropDownList.GetValue()]]['motor_rpm_constant'][0]
-            self.dictionary[self.fileToFile[self.dropDownList.GetValue()]]['motor_rpm_constant'] = [self.p20.GetValue()]
+            previousValue = self.dictionary[self.fileToFile[self.dropDownList.GetValue()]]['motor_top_power'][0]
+            self.dictionary[self.fileToFile[self.dropDownList.GetValue()]]['motor_top_power'] = [self.p20.GetValue()]
             pub.sendMessage(("DictFromInput"), self.dictionary)
-            msg = datetime.now().strftime('%H:%M:%S') + ": " + "Motor RPM Constant changed from " + str(previousValue) + " to " + self.p20.GetValue()
+            msg = datetime.now().strftime('%H:%M:%S') + ": " + "Motor Top Power changed from " + str(previousValue) + " to " + self.p20.GetValue()
             pub.sendMessage(("AddStatus"), msg)
         except:
             pass
+        
         
     def UpdateP21 (self, e):
         try:
-            previousValue = self.dictionary[self.fileToFile[self.dropDownList.GetValue()]]['motor_top_power'][0]
-            self.dictionary[self.fileToFile[self.dropDownList.GetValue()]]['motor_top_power'] = [self.p21.GetValue()]
+            previousValue = self.dictionary[self.fileToFile[self.dropDownList.GetValue()]]['motor_thermal_conductivity'][0]
+            self.dictionary[self.fileToFile[self.dropDownList.GetValue()]]['motor_thermal_conductivity'] = [self.p21.GetValue()]
             pub.sendMessage(("DictFromInput"), self.dictionary)
-            msg = datetime.now().strftime('%H:%M:%S') + ": " + "Motor Top Power changed from " + str(previousValue) + " to " + self.p21.GetValue()
+            msg = datetime.now().strftime('%H:%M:%S') + ": " + "Motor Thermal Conductivity changed from " + str(previousValue) + " to " + self.p21.GetValue()
             pub.sendMessage(("AddStatus"), msg)
         except:
             pass
-        
         
     def UpdateP22 (self, e):
         try:
-            previousValue = self.dictionary[self.fileToFile[self.dropDownList.GetValue()]]['motor_thermal_conductivity'][0]
-            self.dictionary[self.fileToFile[self.dropDownList.GetValue()]]['motor_thermal_conductivity'] = [self.p22.GetValue()]
-            pub.sendMessage(("DictFromInput"), self.dictionary)
-            msg = datetime.now().strftime('%H:%M:%S') + ": " + "Motor Thermal Conductivity changed from " + str(previousValue) + " to " + self.p22.GetValue()
-            pub.sendMessage(("AddStatus"), msg)
-        except:
-            pass
-        
-    def UpdateP23 (self, e):
-        try:
             previousValue = self.dictionary[self.fileToFile[self.dropDownList.GetValue()]]['motor_heat_capacity'][0]
-            self.dictionary[self.fileToFile[self.dropDownList.GetValue()]]['motor_heat_capacity'] = [self.p23.GetValue()]
+            self.dictionary[self.fileToFile[self.dropDownList.GetValue()]]['motor_heat_capacity'] = [self.p22.GetValue()]
             pub.sendMessage(("DictFromInput"), self.dictionary)
-            msg = datetime.now().strftime('%H:%M:%S') + ": " + "Motor Heat Capacity changed from " + str(previousValue) + " to " + self.p23.GetValue()
+            msg = datetime.now().strftime('%H:%M:%S') + ": " + "Motor Heat Capacity changed from " + str(previousValue) + " to " + self.p22.GetValue()
             pub.sendMessage(("AddStatus"), msg)
         except:
             pass
     
-    def UpdateP24 (self, e):
+    def UpdateP23 (self, e):
         try:
             previousValue = self.dictionary[self.fileToFile[self.dropDownList.GetValue()]]['max_motor_temp'][0]
-            self.dictionary[self.fileToFile[self.dropDownList.GetValue()]]['max_motor_temp'] = [self.p24.GetValue()]
+            self.dictionary[self.fileToFile[self.dropDownList.GetValue()]]['max_motor_temp'] = [self.p23.GetValue()]
             pub.sendMessage(("DictFromInput"), self.dictionary)
-            msg = datetime.now().strftime('%H:%M:%S') + ": " + "Max Motor Temp changed from " + str(previousValue) + " to " + self.p24.GetValue()
+            msg = datetime.now().strftime('%H:%M:%S') + ": " + "Max Motor Temp changed from " + str(previousValue) + " to " + self.p23.GetValue()
             pub.sendMessage(("AddStatus"), msg)
         except:
             pass
+
+    def UpdateP24 (self, e):
+        try:
+            previousValue = self.dictionary[self.fileToFile[self.dropDownList.GetValue()]]['coolant_temp'][0]
+            self.dictionary[self.fileToFile[self.dropDownList.GetValue()]]['coolant_temp'] = [self.p24.GetValue()]
+            pub.sendMessage(("DictFromInput"), self.dictionary)
+            msg = datetime.now().strftime('%H:%M:%S') + ": " + "Coolant Temp changed from " + str(previousValue) + " to " + self.p24.GetValue()
+            pub.sendMessage(("AddStatus"), msg)
+        except:
+            pass    
 
     def UpdateP25 (self, e):
         try:
-            previousValue = self.dictionary[self.fileToFile[self.dropDownList.GetValue()]]['coolant_temp'][0]
-            self.dictionary[self.fileToFile[self.dropDownList.GetValue()]]['coolant_temp'] = [self.p25.GetValue()]
-            pub.sendMessage(("DictFromInput"), self.dictionary)
-            msg = datetime.now().strftime('%H:%M:%S') + ": " + "Coolant Temp changed from " + str(previousValue) + " to " + self.p25.GetValue()
-            pub.sendMessage(("AddStatus"), msg)
-        except:
-            pass    
-
-    def UpdateP26 (self, e):
-        try:
             previousValue = self.dictionary[self.fileToFile[self.dropDownList.GetValue()]]['batt_max_current'][0]
-            self.dictionary[self.fileToFile[self.dropDownList.GetValue()]]['batt_max_current'] = [self.p26.GetValue()]
+            self.dictionary[self.fileToFile[self.dropDownList.GetValue()]]['batt_max_current'] = [self.p25.GetValue()]
             pub.sendMessage(("DictFromInput"), self.dictionary)
-            msg = datetime.now().strftime('%H:%M:%S') + ": " + "Battery Max Current changed from " + str(previousValue) + " to " + self.p26.GetValue()
+            msg = datetime.now().strftime('%H:%M:%S') + ": " + "Battery Max Current changed from " + str(previousValue) + " to " + self.p25.GetValue()
             pub.sendMessage(("AddStatus"), msg)
         except:
             pass    
         
-    def UpdateP27 (self, e):
+    def UpdateP26 (self, e):
         try:
             previousValue = self.dictionary[self.fileToFile[self.dropDownList.GetValue()]]['max_amphour'][0]
-            self.dictionary[self.fileToFile[self.dropDownList.GetValue()]]['max_amphour'] = [self.p27.GetValue()]
+            self.dictionary[self.fileToFile[self.dropDownList.GetValue()]]['max_amphour'] = [self.p26.GetValue()]
             pub.sendMessage(("DictFromInput"), self.dictionary)
-            msg = datetime.now().strftime('%H:%M:%S') + ": " + "Max Amphour changed from " + str(previousValue) + " to " + self.p27.GetValue()
+            msg = datetime.now().strftime('%H:%M:%S') + ": " + "Max Amphour changed from " + str(previousValue) + " to " + self.p26.GetValue()
             pub.sendMessage(("AddStatus"), msg)
         except:
             pass
         
-    def UpdateP28 (self, e):
+    def UpdateP27 (self, e):
         try:
             previousValue = self.dictionary[self.fileToFile[self.dropDownList.GetValue()]]['series_cells'][0]
-            self.dictionary[self.fileToFile[self.dropDownList.GetValue()]]['series_cells'] = [self.p28.GetValue()]
+            self.dictionary[self.fileToFile[self.dropDownList.GetValue()]]['series_cells'] = [self.p27.GetValue()]
             pub.sendMessage(("DictFromInput"), self.dictionary)
-            msg = datetime.now().strftime('%H:%M:%S') + ": " + "Cell Amount in Series changed from " + str(previousValue) + " to " + self.p28.GetValue()
+            msg = datetime.now().strftime('%H:%M:%S') + ": " + "Cell Amount in Series changed from " + str(previousValue) + " to " + self.p27.GetValue()
+            pub.sendMessage(("AddStatus"), msg)
+        except:
+            pass  
+        
+    def UpdateP28 (self, e):
+        try:
+            previousValue = self.dictionary[self.fileToFile[self.dropDownList.GetValue()]]['dist_to_alt_lookup'][0]
+            self.dictionary[self.fileToFile[self.dropDownList.GetValue()]]['dist_to_alt_lookup'] = [self.p28.GetValue()]
+            pub.sendMessage(("DictFromInput"), self.dictionary)
+            msg = datetime.now().strftime('%H:%M:%S') + ": " + "Distance to Altitude Lookup changed from " + str(previousValue) + " to " + self.p28.GetValue()
             pub.sendMessage(("AddStatus"), msg)
         except:
             pass  
         
     def UpdateP29 (self, e):
         try:
-            previousValue = self.dictionary[self.fileToFile[self.dropDownList.GetValue()]]['dist_to_alt_lookup'][0]
-            self.dictionary[self.fileToFile[self.dropDownList.GetValue()]]['dist_to_alt_lookup'] = [self.p29.GetValue()]
-            pub.sendMessage(("DictFromInput"), self.dictionary)
-            msg = datetime.now().strftime('%H:%M:%S') + ": " + "Distance to Altitude Lookup changed from " + str(previousValue) + " to " + self.p29.GetValue()
-            pub.sendMessage(("AddStatus"), msg)
-        except:
-            pass  
-        
-    def UpdateP30 (self, e):
-        try:
             previousValue = self.dictionary[self.fileToFile[self.dropDownList.GetValue()]]['dist_to_speed_lookup'][0]
-            self.dictionary[self.fileToFile[self.dropDownList.GetValue()]]['dist_to_speed_lookup'] = [self.p30.GetValue()]
+            self.dictionary[self.fileToFile[self.dropDownList.GetValue()]]['dist_to_speed_lookup'] = [self.p29.GetValue()]
             pub.sendMessage(("DictFromInput"), self.dictionary)
-            msg = datetime.now().strftime('%H:%M:%S') + ": " + "Distance to Speed Lookup changed from " + str(previousValue) + " to " + self.p30.GetValue()
+            msg = datetime.now().strftime('%H:%M:%S') + ": " + "Distance to Speed Lookup changed from " + str(previousValue) + " to " + self.p29.GetValue()
             pub.sendMessage(("AddStatus"), msg)
         except:
             pass
     
-    def UpdateP31 (self, e):
+    def UpdateP30 (self, e):
         try:
             previousValue = self.dictionary[self.fileToFile[self.dropDownList.GetValue()]]['motor_eff_lookup'][0]
-            self.dictionary[self.fileToFile[self.dropDownList.GetValue()]]['motor_eff_lookup'] = [self.p31.GetValue()]
+            self.dictionary[self.fileToFile[self.dropDownList.GetValue()]]['motor_eff_lookup'] = [self.p30.GetValue()]
             pub.sendMessage(("DictFromInput"), self.dictionary)
-            msg = datetime.now().strftime('%H:%M:%S') + ": " + "Motor Efficiency Lookup changed from " + str(previousValue) + " to " + self.p31.GetValue()
+            msg = datetime.now().strftime('%H:%M:%S') + ": " + "Motor Efficiency Lookup changed from " + str(previousValue) + " to " + self.p30.GetValue()
+            pub.sendMessage(("AddStatus"), msg)
+        except:
+            pass 
+    
+    def UpdateP31 (self, e):
+        try:
+            previousValue = self.dictionary[self.fileToFile[self.dropDownList.GetValue()]]['motor_controller_eff_lookup'][0]
+            self.dictionary[self.fileToFile[self.dropDownList.GetValue()]]['motor_controller_eff_lookup'] = [self.p31.GetValue()]
+            pub.sendMessage(("DictFromInput"), self.dictionary)
+            msg = datetime.now().strftime('%H:%M:%S') + ": " + "Motor Controller Efficiency Lookup changed from " + str(previousValue) + " to " + self.p31.GetValue()
             pub.sendMessage(("AddStatus"), msg)
         except:
             pass 
     
     def UpdateP32 (self, e):
         try:
-            previousValue = self.dictionary[self.fileToFile[self.dropDownList.GetValue()]]['motor_controller_eff_lookup'][0]
-            self.dictionary[self.fileToFile[self.dropDownList.GetValue()]]['motor_controller_eff_lookup'] = [self.p32.GetValue()]
+            previousValue = self.dictionary[self.fileToFile[self.dropDownList.GetValue()]]['soc_to_voltage_lookup'][0]
+            self.dictionary[self.fileToFile[self.dropDownList.GetValue()]]['soc_to_voltage_lookup'] = [self.p32.GetValue()]
             pub.sendMessage(("DictFromInput"), self.dictionary)
-            msg = datetime.now().strftime('%H:%M:%S') + ": " + "Motor Controller Efficiency Lookup changed from " + str(previousValue) + " to " + self.p32.GetValue()
+            msg = datetime.now().strftime('%H:%M:%S') + ": " + "SOC to Voltage Lookup changed from " + str(previousValue) + " to " + self.p32.GetValue()
             pub.sendMessage(("AddStatus"), msg)
         except:
             pass 
     
     def UpdateP33 (self, e):
         try:
-            previousValue = self.dictionary[self.fileToFile[self.dropDownList.GetValue()]]['soc_to_voltage_lookup'][0]
-            self.dictionary[self.fileToFile[self.dropDownList.GetValue()]]['soc_to_voltage_lookup'] = [self.p33.GetValue()]
+            previousValue = self.dictionary[self.fileToFile[self.dropDownList.GetValue()]]['throttlemap_lookup'][0]
+            self.dictionary[self.fileToFile[self.dropDownList.GetValue()]]['throttlemap_lookup'] = [self.p33.GetValue()]
             pub.sendMessage(("DictFromInput"), self.dictionary)
-            msg = datetime.now().strftime('%H:%M:%S') + ": " + "SOC to Voltage Lookup changed from " + str(previousValue) + " to " + self.p33.GetValue()
+            msg = datetime.now().strftime('%H:%M:%S') + ": " + "Throttle Map Lookup changed from " + str(previousValue) + " to " + self.p33.GetValue()
             pub.sendMessage(("AddStatus"), msg)
         except:
             pass 
-    
+        
     def UpdateP34 (self, e):
         try:
-            previousValue = self.dictionary[self.fileToFile[self.dropDownList.GetValue()]]['throttlemap_lookup'][0]
-            self.dictionary[self.fileToFile[self.dropDownList.GetValue()]]['throttlemap_lookup'] = [self.p34.GetValue()]
+            previousValue = self.dictionary[self.fileToFile[self.dropDownList.GetValue()]]['lean_angle_lookup'][0]
+            self.dictionary[self.fileToFile[self.dropDownList.GetValue()]]['lean_angle_lookup'] = [self.p34.GetValue()]
             pub.sendMessage(("DictFromInput"), self.dictionary)
-            msg = datetime.now().strftime('%H:%M:%S') + ": " + "Throttle Map Lookup changed from " + str(previousValue) + " to " + self.p34.GetValue()
+            msg = datetime.now().strftime('%H:%M:%S') + ": " + "Lean Angle Lookup changed from " + str(previousValue) + " to " + self.p34.GetValue()
             pub.sendMessage(("AddStatus"), msg)
         except:
             pass 
         
     def UpdateP35 (self, e):
         try:
-            previousValue = self.dictionary[self.fileToFile[self.dropDownList.GetValue()]]['lean_angle_lookup'][0]
-            self.dictionary[self.fileToFile[self.dropDownList.GetValue()]]['lean_angle_lookup'] = [self.p35.GetValue()]
+            previousValue = self.dictionary[self.fileToFile[self.dropDownList.GetValue()]]['chain_efficiency_lookup'][0]
+            self.dictionary[self.fileToFile[self.dropDownList.GetValue()]]['chain_efficiency_lookup'] = [self.p35.GetValue()]
             pub.sendMessage(("DictFromInput"), self.dictionary)
-            msg = datetime.now().strftime('%H:%M:%S') + ": " + "Lean Angle Lookup changed from " + str(previousValue) + " to " + self.p35.GetValue()
+            msg = datetime.now().strftime('%H:%M:%S') + ": " + "Chain Efficiency Lookup changed from " + str(previousValue) + " to " + self.p35.GetValue()
             pub.sendMessage(("AddStatus"), msg)
         except:
-            pass 
+            pass
+        
     def UpdateComments (self, e):
         try:
             previousValue = self.dictionary[self.fileToFile[self.dropDownList.GetValue()]]['comments'][0]
@@ -2586,22 +2686,19 @@ class StatusPanel(wx.Panel):
 
         
     def AddStatus(self, msg):
-        #currentTextCtrl = self.statusTextCtrl.GetValue()
-        #ewTextCtrl = currentTextCtrl + msg.data + os.linesep
         
         if "WARNING" in msg.data:
-            print "WARNING"
-            self.statusTextCtrl.BeginTextColour((255, 0, 0))
-            self.statusTextCtrl.WriteText(msg.data)
-            self.statusTextCtrl.EndTextColour()
-            self.statusTextCtrl.Newline()
+            # Get the status string not including the time stamp
+            if msg.data[10:] not in self.statusTextCtrl.GetValue():
+                self.statusTextCtrl.BeginTextColour((255, 0, 0))
+                self.statusTextCtrl.WriteText(msg.data)
+                self.statusTextCtrl.EndTextColour()
+                self.statusTextCtrl.Newline()
         else:
             self.statusTextCtrl.WriteText(msg.data)
             self.statusTextCtrl.Newline()
         
         self.statusTextCtrl.ShowPosition(self.statusTextCtrl.GetLastPosition())
-        #self.statusTextCtrl.SetValue(newTextCtrl)
-        #self.statusTextCtrl.ShowPosition(self.statusTextCtrl.GetLastPosition())
         
 ##############################################################################        
     
@@ -2660,6 +2757,8 @@ class SimulationThread(Thread):
         # Sensitivity Analysis Function calls
         #percentChange = 15
         if self.performSensitivityAnalysis:
+            sensitivityValue = self.sensitivityControl.GetValue()
+            wx.CallAfter(pub.sendMessage, "TransferSensitivityValue", sensitivityValue)
             decimalEquiv = self.sensitivityControl.GetValue() / 100.0
             saDict = collections.OrderedDict()            
             saDict = SensitivityAnalysis(deepcopy(dictionary), decimalEquiv)
@@ -2674,7 +2773,7 @@ class SimulationThread(Thread):
 
         folder = self.folderControl.GetValue()
         wx.CallAfter(pub.sendMessage, "TransferOutputDirectory", folder)
-        wx.CallAfter(pub.sendMessage, "TransferSensitivityValue", self.sensitivityControl.GetValue())
+        
                 
         outputDirectory = self.folderControl.GetValue()
         logging.debug("Entered out path: %s",outputDirectory)
@@ -2686,6 +2785,7 @@ class SimulationThread(Thread):
         fileNames = np.array(outputDict.keys())
         #fileNames = np.append(outputDict.keys(), senseAnalysisDict.keys())
         #resultsWindow = QuickResultsWindow(None, "Quick Results")
+        testWindow.Freeze()
         index = 1
         for key in fileNames:
             inFiles[index, 2] = dictionary[key]["comments"][0]
@@ -2707,8 +2807,9 @@ class SimulationThread(Thread):
         except:
             logging.critical("Could not save project at the end of the simulation")
             
-        SA_Frame.Show()
+        #SA_Frame.Show()
         SA_Frame.Raise()
+        testWindow.Thaw()
             
         
     def stopThread(self, msg):
@@ -2762,7 +2863,7 @@ class RuntimeDialog(wx.Dialog):
         self.Bind(wx.EVT_CLOSE, self.OnExit)
         # create a pubsub listener
         pub.subscribe(self.updateProgress, "update")
- 
+
     #----------------------------------------------------------------------
     def updateProgress(self, msg):
         """
