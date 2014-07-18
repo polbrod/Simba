@@ -70,10 +70,6 @@ def Simulation(dict_in):
         logging.info("air_resistance found")
         air_resistance = currentData["air_resistance"]
         
-        assert "air_density" in currentData, logging.critical("%s is missing data: air_density" % file)
-        logging.info("air_density found")
-        air_density = currentData["air_density"]
-        
         assert "frontal_area" in currentData, logging.critical("%s is missing data: frontal_area" % file)
         logging.info("frontal_area found")
         frontal_area =  currentData["frontal_area"] #m^2
@@ -221,6 +217,7 @@ def Simulation(dict_in):
         slope = np.zeros((steps+1,tests),dtype=float)
         incline = np.zeros((steps+1,tests),dtype=float)
         rolling = np.zeros((steps+1,tests),dtype=float)
+        air_density = np.zeros((steps+1,tests),dtype=float)
 
         motor_rpm = np.zeros((steps+1,tests),dtype=float)
         motor_torque = np.zeros((steps+1,tests),dtype=float)
@@ -508,8 +505,9 @@ def Simulation(dict_in):
         #Find Force at point n+1
         def Force(s,n):
             acceleration[n+1] = mass*((s - speed[n])/step)
-            drag[n+1] = 0.5 * drag_area*air_density*s**2
             altitude[n+1] = distancetoaltitude_lookup(distance[n+1])
+            air_density[n+1] = (((altitude[n+1]/1000)-44.3308)/-42.2665) ** 4.25588
+            drag[n+1] = 0.5 * drag_area*air_density[n+1]*s**2
             slope[n+1] = (altitude[n+1] - altitude[n])/(distance[n+1] - distance[n])    
             incline[n+1] = mass*gravity*slope[n+1]
             rolling[n+1] = mass*gravity*rolling_resistance
@@ -591,6 +589,7 @@ def Simulation(dict_in):
         distance[0] = .1 #can't be 0 because not in look up
         speed[0] = .1 #can't be 0 or the bike will never start moving
         altitude[0] = distancetoaltitude_lookup(1)
+        air_density[0] = (((altitude[0]/1000)-44.3308)/-42.2665) ** 4.25588
         voltage[0] = soctovoltage_lookup(0) * series_cells
         
 
@@ -695,6 +694,7 @@ def Simulation(dict_in):
         newData["Slope (Ratio)"] = (slope[:end])
         newData["Incline (N)"] = (incline[:end])
         newData["Rolling (N)"] = (rolling[:end])
+        newData["Air Density(kg/m^3)"] = (air_density[:end])
         newData["Motor RPM"] = (motor_rpm[:end])
         newData["Motor Torque (Nm)"] = (motor_torque[:end])      
         newData["Motor Loss (Watts)"] = (motor_loss[:end])
