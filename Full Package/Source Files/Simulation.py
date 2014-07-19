@@ -500,14 +500,14 @@ def Simulation(dict_in):
             top_rpm = np.max(chain_efficiency_map.x)
             message = datetime.now().strftime('%H:%M:%S') + ": "
             message += 'WARNING: top rpm is greater than the chain efficiency look up --- '
-            message += 'top rpm changed to' + repr(top_rpm) + ' for file ' + file
+            message += 'top rpm changed to ' + repr(top_rpm) + ' for file ' + file
             wx.CallAfter(pub.sendMessage, "AddStatus", message)
         
         if np.max(cornerradius.x) < max_distance_travel:
             max_distance_travel = np.max(cornerradius.x)
             message = datetime.now().strftime('%H:%M:%S') + ": "
             message += 'WARNING: max_distance_travel is greater than cornerradius to distance look up --- '
-            message += 'max_distance_travel changed to' + repr(max_distance_travel) + ' for file ' + file
+            message += 'max_distance_travel changed to ' + repr(max_distance_travel) + ' for file ' + file
             wx.CallAfter(pub.sendMessage, "AddStatus", message)
             
         wx.CallAfter(pub.sendMessage, "update", "")   
