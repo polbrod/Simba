@@ -169,7 +169,11 @@ def Simulation(dict_in):
         assert "chain_efficiency_lookup" in currentData, logging.critical("%s is missing data: chain_efficiency_lookup" % file)
         logging.info("chain_efficiency_lookup found")
         chain_efficiency_lookup = currentData["chain_efficiency_lookup"][0]
-	
+
+        assert "corner_radius_lookup" in currentData, logging.critical("%s is missing data: corner_radius_lookup" % file)
+        logging.info("corner_radius_lookup found")
+        corner_radius_lookup = currentData["corner_radius_lookup"][0]
+ 
         assert "tyreA" in currentData, logging.critical("%s is missing data: tyreA" % file)
         logging.info("tyreA found")
         tyreA = currentData["tyreA"][0]
@@ -263,6 +267,7 @@ def Simulation(dict_in):
         
         wheel_radius = np.zeros((steps+1,tests),dtype=float)
         lean_angle_limit = np.zeros((steps+1,tests),dtype=float)
+        lateral_acc = np.zeros((steps+1, tests), dtype=float)        
         
         #Lookups
         dist_to_speed_lookup = "Lookup Files\\" + dist_to_speed_lookup
@@ -408,6 +413,22 @@ def Simulation(dict_in):
         y = n[:,1].astype(np.float)
         chain_efficiency_map = interp1d(x,y)
 
+        #distance to corner radius lookup
+        corner_radius_lookup = "Lookup Files\\" + corner_radius_lookup
+        try:
+            n = np.loadtxt(corner_radius_lookup,dtype = 'string',delimiter = ',', skiprows = 1)
+            logging.info("%s loaded", corner_radius_lookup)
+            
+        except IOError:
+            logging.critical("Unable to load %s", corner_radius_lookup)
+            msg = datetime.now().strftime('%H:%M:%S') + ": " + "Unable to load " + corner_radius_lookup + " from " + file + ". Make sure the file exists and is not open."
+            wx.CallAfter(pub.sendMessage, "AddStatus", msg)
+            raise Exception("Unable to load \'" + corner_radius_lookup + "\'")
+        n = np.loadtxt(corner_radius_lookup,dtype = 'string',delimiter = ',', skiprows = 1)
+        x = n[:,0].astype(np.float)
+        y = n[:,1].astype(np.float)
+        cornerradius = interp1d(x,y)
+
         message = '';        
         
         #Make sure parameters don't extend lookups
@@ -482,6 +503,13 @@ def Simulation(dict_in):
             message += 'top rpm changed to' + repr(top_rpm) + ' for file ' + file
             wx.CallAfter(pub.sendMessage, "AddStatus", message)
         
+        if np.max(cornerradius.x) < max_distance_travel:
+            max_distance_travel = np.max(cornerradius.x)
+            message = datetime.now().strftime('%H:%M:%S') + ": "
+            message += 'WARNING: max_distance_travel is greater than cornerradius to distance look up --- '
+            message += 'max_distance_travel changed to' + repr(max_distance_travel) + ' for file ' + file
+            wx.CallAfter(pub.sendMessage, "AddStatus", message)
+            
         wx.CallAfter(pub.sendMessage, "update", "")   
         '''
         if len(message) > 1:
@@ -662,6 +690,7 @@ def Simulation(dict_in):
                 #Find amphours and energy
                 amphour[n+1] = amphour[n] + (total_power[n+1]/voltage[n+1])*(step/(60.0*60.0))
                 energy[n+1] = energy[n] + total_power[n+1]*(step/(60.0*60.0))
+                lateral_acc[n+1] = speed[n+1]**2/cornerradius(distance[n+1])
                 
             return steps
            #plot each loop here
@@ -690,6 +719,7 @@ def Simulation(dict_in):
         newData["Power (Watts)"] = (power[:end])
         newData["Energy (Wh)"] = (energy[:end])
         newData["Acceleration (N)"] = (acceleration[:end])
+        newData["Lateral Acceleration (N)"] = (lateral_acc[:end])
         newData["Drag (N)"] = (drag[:end])
         newData["Altitude (Meters)"] = (altitude[:end])
         newData["Slope (Ratio)"] = (slope[:end])

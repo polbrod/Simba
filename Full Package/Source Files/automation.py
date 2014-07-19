@@ -1610,6 +1610,7 @@ class MainFrame(wx.Frame):
             self.dictionary[self.newParamName.GetValue()]["max_motor_temp"] = np.array([""])
             self.dictionary[self.newParamName.GetValue()]["throttlemap_lookup"] = np.array([""])
             self.dictionary[self.newParamName.GetValue()]["chain_efficiency_lookup"] = np.array([""])
+            self.dictionary[self.newParamName.GetValue()]["corner_radius_lookup"] = np.array([""])
             self.dictionary[self.newParamName.GetValue()]["tyreA"] = np.array([""])
             self.dictionary[self.newParamName.GetValue()]["tyreB"] = np.array([""])
             self.dictionary[self.newParamName.GetValue()]["tyreC"] = np.array([""])
@@ -1866,6 +1867,7 @@ class InputPanel(scrolled.ScrolledPanel):
         self.vSizer1.Add(wx.StaticText(self, wx.ID_ANY, "Throttlemap Lookup" ,size=(180,25)))
         self.vSizer1.Add(wx.StaticText(self, wx.ID_ANY, "Lean Angle Lookup" ,size=(180,25)))
         self.vSizer1.Add(wx.StaticText(self, wx.ID_ANY, "Chain Efficiency Lookup" ,size=(180,25)))
+        self.vSizer1.Add(wx.StaticText(self, wx.ID_ANY, "Corner Radius Lookup", size=(180,25)))
 
         self.vSizer1.AddSpacer(3)
         self.vSizer1.Add(wx.StaticText(self, wx.ID_ANY, "Comments", size=(215,25)))
@@ -1909,6 +1911,7 @@ class InputPanel(scrolled.ScrolledPanel):
         self.p33 = wx.TextCtrl(self, size=(150,25))
         self.p34 = wx.TextCtrl(self, size=(150,25))
         self.p35 = wx.TextCtrl(self, size=(150,25))
+        self.p36 = wx.TextCtrl(self, size=(150,25))
         self.comments = wx.TextCtrl(self, size = (390,160), style = wx.TE_MULTILINE)
         
         self.textCtrlList = (self.p0, self.p1, self.p2, self.p3, self.p4, self.p5,
@@ -1917,7 +1920,8 @@ class InputPanel(scrolled.ScrolledPanel):
                         self.p16, self.p17, self.p18, self.p19,
                         self.p20, self.p21, self.p22, self.p23, self.p24,
                         self.p25, self.p26, self.p27, self.p28, self.p29, self.p30,
-                        self.p31, self.p32, self.p33, self.p34, self.p35, self.comments)
+                        self.p31, self.p32, self.p33, self.p34, self.p35, self.p36,
+                        self.comments)
         
         for i in xrange(len(self.textCtrlList) - 1):
             self.textCtrlList[i+1].MoveAfterInTabOrder(self.textCtrlList[i])
@@ -1958,6 +1962,7 @@ class InputPanel(scrolled.ScrolledPanel):
         self.p33.Bind(wx.EVT_TEXT, self.UpdateP33)
         self.p34.Bind(wx.EVT_TEXT, self.UpdateP34)
         self.p35.Bind(wx.EVT_TEXT, self.UpdateP35)
+        self.p36.Bind(wx.EVT_TEXT, self.UpdateP36)
         self.comments.Bind(wx.EVT_TEXT, self.UpdateComments)
         
 
@@ -2212,6 +2217,10 @@ class InputPanel(scrolled.ScrolledPanel):
             self.p35.ChangeValue(str(currentFile["chain_efficiency_lookup"][0])) 
         except:
             self.p35.ChangeValue('')
+        try:
+            self.p36.ChangeValue(str(currentFile["corner_radius_lookup"][0])) 
+        except:
+            self.p36.ChangeValue('')
         try:
             self.comments.ChangeValue(str(currentFile["comments"][0]))
         except:
@@ -2576,6 +2585,16 @@ class InputPanel(scrolled.ScrolledPanel):
             self.dictionary[self.fileToFile[self.dropDownList.GetValue()]]['chain_efficiency_lookup'] = [self.p35.GetValue()]
             pub.sendMessage(("DictFromInput"), self.dictionary)
             msg = datetime.now().strftime('%H:%M:%S') + ": " + "Chain Efficiency Lookup changed from " + str(previousValue) + " to " + self.p35.GetValue()
+            pub.sendMessage(("AddStatus"), msg)
+        except:
+            pass
+        
+    def UpdateP36 (self, e):
+        try:
+            previousValue = self.dictionary[self.fileToFile[self.dropDownList.GetValue()]]['corner_radius_lookup'][0]
+            self.dictionary[self.fileToFile[self.dropDownList.GetValue()]]['corner_radius_lookup'] = [self.p36.GetValue()]
+            pub.sendMessage(("DictFromInput"), self.dictionary)
+            msg = datetime.now().strftime('%H:%M:%S') + ": " + "Corner Radius Lookup changed from " + str(previousValue) + " to " + self.p36.GetValue()
             pub.sendMessage(("AddStatus"), msg)
         except:
             pass
