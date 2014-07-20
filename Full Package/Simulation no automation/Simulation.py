@@ -460,6 +460,7 @@ n = 0
 end = loop(n)
 n+=1
 
+print 'finish time (s) = ' + repr(time[end][0])
 print 'max mph = ' + repr(np.max(speed[:end])*2.23)
 print 'average mph = ' + repr(np.mean(speed[:end])*2.23)
 print 'average power = ' + repr(np.mean(power[:end]))

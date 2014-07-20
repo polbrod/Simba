@@ -767,12 +767,14 @@ def Simulation(dict_in):
         newData["% Motor Thermal Limit"] = (np.mean(motor_thermal_limit[:end])*100)
         newData["% Lean Angle Limit"] = (np.mean(lean_angle_limit[:end])*100)
 
+        newData["Finish Time (s)"] = time[end][0]
         newData["Average MPH"] = (round(np.mean(speed[:end])*2.23,3))
         newData["Max MPH"] = (round(np.max(speed[:end])*2.23,3))
         newData["Average Power (Watts)"] = (round(np.mean(power[:end]),3))
         newData["Max Power (Watts)"] = (round(np.max(power),3))
         newData["Max Energy (Wh)"] = (round(np.max(energy),3))
         newData["Max Amphours"] = (round(np.max(amphour),3))
+        newData['Max Lateral Acceleration (N)'] = np.nanmax(lateral_acc)
         
  
 
