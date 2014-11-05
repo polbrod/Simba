@@ -2423,3 +2423,27 @@
 2014-05-14 14:03:40,381 - INFO - Current file to search for data: IOM_check.csv
 2014-05-14 14:03:40,381 - INFO - Data extraction from IOM_check.csv complete
 2014-05-14 14:03:40,381 - INFO - Files have been converted to dictionaries
+2014-11-05 00:51:45,783 - INFO - STARTING automation.py
+2014-11-05 00:51:59,183 - INFO - STARTING FUNCTIONS FileToParams
+2014-11-05 00:51:59,184 - DEBUG - Options file location passed: C:\Users\Polina Brodsky\Desktop\Simba-master\Full Package\test_in\PP_Sensitivity\OPTIONS.csv
+2014-11-05 00:51:59,187 - INFO - Current file to search for data: PP_sensitivity_analysis.csv
+2014-11-05 00:51:59,188 - INFO - Data extraction from PP_sensitivity_analysis.csv complete
+2014-11-05 00:51:59,190 - INFO - Files have been converted to dictionaries
+2014-11-05 00:53:58,470 - INFO - STARTING FUNCTION SaveInput
+2014-11-05 00:53:58,470 - INFO - Converting dictionary PP_sensitivity_analysis.csv to file
+2014-11-05 00:53:58,470 - DEBUG - File will be saved at C:\Users\Polina Brodsky\Desktop\Simba-master\Full Package\test_in\PP_Sensitivity\PP_sensitivity_analysis.csv
+2014-11-05 00:53:58,480 - INFO - Data converted and saved to C:\Users\Polina Brodsky\Desktop\Simba-master\Full Package\test_in\PP_Sensitivity\PP_sensitivity_analysis.csv
+2014-11-05 00:53:59,691 - INFO - STARTING FUNCTION SaveInput
+2014-11-05 00:53:59,693 - INFO - Converting dictionary PP_sensitivity_analysis.csv to file
+2014-11-05 00:53:59,693 - DEBUG - File will be saved at C:\Users\Polina Brodsky\Desktop\Simba-master\Full Package\test_in\PP_Sensitivity\PP_sensitivity_analysis.csv
+2014-11-05 00:53:59,697 - INFO - Data converted and saved to C:\Users\Polina Brodsky\Desktop\Simba-master\Full Package\test_in\PP_Sensitivity\PP_sensitivity_analysis.csv
+2014-11-05 00:54:07,213 - INFO - STARTING FUNCTION SaveInput
+2014-11-05 00:54:07,213 - INFO - Converting dictionary PP_sensitivity_analysis.csv to file
+2014-11-05 00:54:07,213 - DEBUG - File will be saved at C:\Users\Polina Brodsky\Desktop\Simba-master\Full Package\test_in\PP_Sensitivity\PP_sensitivity_analysis.csv
+2014-11-05 00:54:07,217 - INFO - Data converted and saved to C:\Users\Polina Brodsky\Desktop\Simba-master\Full Package\test_in\PP_Sensitivity\PP_sensitivity_analysis.csv
+2014-11-05 00:55:59,167 - INFO - STARTING automation.py
+2014-11-05 00:56:12,036 - INFO - STARTING FUNCTIONS FileToParams
+2014-11-05 00:56:12,038 - DEBUG - Options file location passed: C:\Users\Polina Brodsky\Desktop\Simba-master\Full Package\test_in\PP_Sensitivity\OPTIONS.csv
+2014-11-05 00:56:12,040 - INFO - Current file to search for data: PP_sensitivity_analysis.csv
+2014-11-05 00:56:12,042 - INFO - Data extraction from PP_sensitivity_analysis.csv complete
+2014-11-05 00:56:12,046 - INFO - Files have been converted to dictionaries
